@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <!-- title -->
+
+
+
+
+<!-- keywords -->
+
+
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" >
+    <meta name="author" content="luqc">
+    <meta name="renderer" content="webkit">
+    <meta name="copyright" content="luqc">
+    
+    <meta name="keywords" content="hexo,hexo-theme,hexo-blog">
+    
+    <meta name="description" content="">
+    <meta name="description" content="前言紧接上一篇文章，简单在URP实现以下屏幕空间平面反射，同样会和上篇一样着重于原理以及基础实现，不会涉及更加深层次的东西比如多平台优化（如果想学习更加深入的，可以移步Colin的ColinLeung-NiloCat&#x2F;UnityURP-MobileScreenSpacePlanarReflection: Reusable RendererFeature of MobileScreenSpacePl">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【Unity-URP】快速入门屏幕空间平面反射(SSPR)————（1）">
+<meta property="og:url" content="https://ever17-luqc.github.io/SSPR/index.html">
+<meta property="og:site_name" content="ever17Blog">
+<meta property="og:description" content="前言紧接上一篇文章，简单在URP实现以下屏幕空间平面反射，同样会和上篇一样着重于原理以及基础实现，不会涉及更加深层次的东西比如多平台优化（如果想学习更加深入的，可以移步Colin的ColinLeung-NiloCat&#x2F;UnityURP-MobileScreenSpacePlanarReflection: Reusable RendererFeature of MobileScreenSpacePl">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ever17-luqc.github.io/SSPR/SSPIR_NoDistort.jpg">
+<meta property="og:image" content="https://ever17-luqc.github.io/SSPR/SSPIR_WriteUAV-1.png">
+<meta property="og:image" content="https://ever17-luqc.github.io/SSPR/QQ图片20210606144901.png">
+<meta property="og:image" content="https://ever17-luqc.github.io/SSPR/QQ图片20210606145432.png">
+<meta property="article:published_time" content="2021-06-06T03:34:12.000Z">
+<meta property="article:modified_time" content="2021-06-06T07:46:51.926Z">
+<meta property="article:author" content="luqc">
+<meta property="article:tag" content="Unity">
+<meta property="article:tag" content="Urp">
+<meta property="article:tag" content="Shader">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ever17-luqc.github.io/SSPR/SSPIR_NoDistort.jpg">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    
+    <title>【Unity-URP】快速入门屏幕空间平面反射(SSPR)————（1） · Ever17&#39;s Studio</title>
+    <style type="text/css">
+    @font-face {
+        font-family: 'Oswald-Regular';
+        src: url("/font/Oswald-Regular.ttf");
+    }
+
+    body {
+        margin: 0;
+    }
+
+    header,
+    footer,
+    .back-top,
+    .sidebar,
+    .container,
+    .site-intro-meta,
+    .toc-wrapper {
+        display: none;
+    }
+
+    .site-intro {
+        position: relative;
+        z-index: 3;
+        width: 100%;
+        /* height: 50vh; */
+        overflow: hidden;
+    }
+
+    .site-intro-placeholder {
+        position: absolute;
+        z-index: -2;
+        top: 0;
+        left: 0;
+        width: calc(100% + 300px);
+        height: 100%;
+        background: repeating-linear-gradient(-45deg, #444 0, #444 80px, #333 80px, #333 160px);
+        background-position: center center;
+        transform: translate3d(-226px, 0, 0);
+        animation: gradient-move 2.5s ease-out 0s infinite;
+    }
+
+    @keyframes gradient-move {
+        0% {
+            transform: translate3d(-226px, 0, 0);
+        }
+        100% {
+            transform: translate3d(0, 0, 0);
+        }
+    }
+
+</style>
+
+    <link rel="preload" href= "/css/style.css?v=20210204" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+    <link rel="stylesheet" href= "/css/mobile.css?v=20210204" media="(max-width: 980px)">
+    
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+    
+    <!-- /*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
+/* This file is meant as a standalone workflow for
+- testing support for link[rel=preload]
+- enabling async CSS loading in browsers that do not support rel=preload
+- applying rel preload css once loaded, whether supported or not.
+*/ -->
+<script>
+(function( w ){
+	"use strict";
+	// rel=preload support test
+	if( !w.loadCSS ){
+		w.loadCSS = function(){};
+	}
+	// define on the loadCSS obj
+	var rp = loadCSS.relpreload = {};
+	// rel=preload feature support test
+	// runs once and returns a function for compat purposes
+	rp.support = (function(){
+		var ret;
+		try {
+			ret = w.document.createElement( "link" ).relList.supports( "preload" );
+		} catch (e) {
+			ret = false;
+		}
+		return function(){
+			return ret;
+		};
+	})();
+
+	// if preload isn't supported, get an asynchronous load by using a non-matching media attribute
+	// then change that media back to its intended value on load
+	rp.bindMediaToggle = function( link ){
+		// remember existing media attr for ultimate state, or default to 'all'
+		var finalMedia = link.media || "all";
+
+		function enableStylesheet(){
+			link.media = finalMedia;
+		}
+
+		// bind load handlers to enable media
+		if( link.addEventListener ){
+			link.addEventListener( "load", enableStylesheet );
+		} else if( link.attachEvent ){
+			link.attachEvent( "onload", enableStylesheet );
+		}
+
+		// Set rel and non-applicable media type to start an async request
+		// note: timeout allows this to happen async to let rendering continue in IE
+		setTimeout(function(){
+			link.rel = "stylesheet";
+			link.media = "only x";
+		});
+		// also enable media after 3 seconds,
+		// which will catch very old browsers (android 2.x, old firefox) that don't support onload on link
+		setTimeout( enableStylesheet, 3000 );
+	};
+
+	// loop through link elements in DOM
+	rp.poly = function(){
+		// double check this to prevent external calls from running
+		if( rp.support() ){
+			return;
+		}
+		var links = w.document.getElementsByTagName( "link" );
+		for( var i = 0; i < links.length; i++ ){
+			var link = links[ i ];
+			// qualify links to those with rel=preload and as=style attrs
+			if( link.rel === "preload" && link.getAttribute( "as" ) === "style" && !link.getAttribute( "data-loadcss" ) ){
+				// prevent rerunning on link
+				link.setAttribute( "data-loadcss", true );
+				// bind listeners to toggle media back
+				rp.bindMediaToggle( link );
+			}
+		}
+	};
+
+	// if unsupported, run the polyfill
+	if( !rp.support() ){
+		// run once at least
+		rp.poly();
+
+		// rerun poly on an interval until onload
+		var run = w.setInterval( rp.poly, 500 );
+		if( w.addEventListener ){
+			w.addEventListener( "load", function(){
+				rp.poly();
+				w.clearInterval( run );
+			} );
+		} else if( w.attachEvent ){
+			w.attachEvent( "onload", function(){
+				rp.poly();
+				w.clearInterval( run );
+			} );
+		}
+	}
+
+
+	// commonjs
+	if( typeof exports !== "undefined" ){
+		exports.loadCSS = loadCSS;
+	}
+	else {
+		w.loadCSS = loadCSS;
+	}
+}( typeof global !== "undefined" ? global : this ) );
+</script>
+
+    <link rel="icon" href= "/assets/favicon2.ico" />
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/webfontloader@1.6.28/webfontloader.min.js" as="script" />
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js" as="script" />
+    <link rel="preload" href="/scripts/main.js?v=20210204" as="script" />
+    <link rel="preload" as="font" href="/font/Oswald-Regular.ttf" crossorigin>
+    <link rel="preload" as="font" href="https://at.alicdn.com/t/font_327081_1dta1rlogw17zaor.woff" crossorigin>
+    <script src="https://cdn.bootcdn.net/ajax/libs/font-awesome/5.15.3/js/all.min.js"  data-auto-replace-svg="nest" ></script>
+    
+    <!-- fancybox -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" defer></script>
+    <!-- 百度统计  -->
+    
+    <!-- 谷歌统计  -->
+    
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+    
+        <body class="post-body">
+    
+    
+<header class="header">
+
+    <div class="read-progress"></div>
+    <div class="header-sidebar-menu">&#xe775;</div>
+    <!-- post页的toggle banner  -->
+    
+    <div class="banner">
+            <div class="blog-title">
+                <a href="/" >Ever17&#39;s Studio.</a>
+            </div>
+            <div class="post-title">
+                <a href="#" class="post-name">【Unity-URP】快速入门屏幕空间平面反射(SSPR)————（1）</a>
+            </div>
+    </div>
+    
+    <a class="home-link" href=/>Ever17's Studio.</a>
+</header>
+    <div class="wrapper">
+        <div class="site-intro" style="
+
+
+
+
+
+
+
+height:50vh;
+">
+    
+    <!-- 主页  -->
+    
+    
+    <!-- 404页  -->
+            
+    <div class="site-intro-placeholder"></div>
+    <div class="site-intro-img" style="background-image: url(/intro/post-bg.jpg)"></div>
+    <div class="site-intro-meta">
+        <!-- 标题  -->
+        <h1 class="intro-title">
+            <!-- 主页  -->
+            
+            【Unity-URP】快速入门屏幕空间平面反射(SSPR)————（1）
+            <!-- 404 -->
+            
+        </h1>
+        <!-- 副标题 -->
+        <p class="intro-subtitle">
+            <!-- 主页副标题  -->
+            
+            
+            <!-- 404 -->
+            
+        </p>
+        <!-- 文章页meta -->
+        
+            <div class="post-intros">
+                <!-- 文章页标签  -->
+                
+                    <div class= post-intro-tags >
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags = "Unity">Unity</a>
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags = "Urp">Urp</a>
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags = "Shader">Shader</a>
+    
+</div>
+                
+                
+                    <div class="post-intro-read">
+                        <span>字数统计: <span class="post-count word-count">2k</span>阅读时长: <span class="post-count reading-time">8 min</span></span>
+                    </div>
+                
+                <div class="post-intro-meta">
+                    <span class="post-intro-calander iconfont-archer">&#xe676;</span>
+                    <span class="post-intro-time">2021/06/06</span>
+                    
+                    <span id="busuanzi_container_page_pv" class="busuanzi-pv">
+                        <span class="iconfont-archer">&#xe602;</span>
+                        <span id="busuanzi_value_page_pv"></span>
+                    </span>
+                    
+                    <span class="shareWrapper">
+                        <span class="iconfont-archer shareIcon">&#xe71d;</span>
+                        <span class="shareText">Share</span>
+                        <ul class="shareList">
+                            <li class="iconfont-archer share-qr" data-type="qr">&#xe75b;
+                                <div class="share-qrcode"></div>
+                            </li>
+                            <li class="iconfont-archer" data-type="weibo">&#xe619;</li>
+                            <li class="iconfont-archer" data-type="qzone">&#xe62e;</li>
+                            <li class="iconfont-archer" data-type="twitter">&#xe634;</li>
+                            <li class="iconfont-archer" data-type="facebook">&#xe67a;</li>
+                        </ul>
+                    </span>
+                </div>
+            </div>
+        
+    </div>
+</div>
+        <script>
+ 
+  // get user agent
+  var browser = {
+    versions: function () {
+      var u = window.navigator.userAgent;
+      return {
+        userAgent: u,
+        trident: u.indexOf('Trident') > -1, //IE内核
+        presto: u.indexOf('Presto') > -1, //opera内核
+        webKit: u.indexOf('AppleWebKit') > -1, //苹果、谷歌内核
+        gecko: u.indexOf('Gecko') > -1 && u.indexOf('KHTML') == -1, //火狐内核
+        mobile: !!u.match(/AppleWebKit.*Mobile.*/), //是否为移动终端
+        ios: !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/), //ios终端
+        android: u.indexOf('Android') > -1 || u.indexOf('Linux') > -1, //android终端或者uc浏览器
+        iPhone: u.indexOf('iPhone') > -1 || u.indexOf('Mac') > -1, //是否为iPhone或者安卓QQ浏览器
+        iPad: u.indexOf('iPad') > -1, //是否为iPad
+        webApp: u.indexOf('Safari') == -1, //是否为web应用程序，没有头部与底部
+        weixin: u.indexOf('MicroMessenger') == -1, //是否为微信浏览器
+        uc: u.indexOf('UCBrowser') > -1 //是否为android下的UC浏览器
+      };
+    }()
+  }
+  console.log("userAgent:" + browser.versions.userAgent);
+
+  // callback
+  function fontLoaded() {
+    console.log('font loaded');
+    if (document.getElementsByClassName('site-intro-meta')) {
+      document.getElementsByClassName('intro-title')[0].classList.add('intro-fade-in');
+      document.getElementsByClassName('intro-subtitle')[0].classList.add('intro-fade-in');
+      var postIntros = document.getElementsByClassName('post-intros')[0]
+      if (postIntros) {
+        postIntros.classList.add('post-fade-in');
+      }
+    }
+  }
+
+  // UC不支持跨域，所以直接显示
+  function asyncCb(){
+    if (browser.versions.uc) {
+      console.log("UCBrowser");
+      fontLoaded();
+    } else {
+      WebFont.load({
+        custom: {
+          families: ['Oswald-Regular']
+        },
+        loading: function () {  //所有字体开始加载
+          // console.log('loading');
+        },
+        active: function () {  //所有字体已渲染
+          fontLoaded();
+        },
+        inactive: function () { //字体预加载失败，无效字体或浏览器不支持加载
+          console.log('inactive: timeout');
+          fontLoaded();
+        },
+        timeout: 5000 // Set the timeout to two seconds
+      });
+    }
+  }
+
+  function asyncErr(){
+    console.warn('script load from CDN failed, will load local script')
+  }
+
+  // load webfont-loader async, and add callback function
+  function async(u, cb, err) {
+    var d = document, t = 'script',
+      o = d.createElement(t),
+      s = d.getElementsByTagName(t)[0];
+    o.src = u;
+    if (cb) { o.addEventListener('load', function (e) { cb(null, e); }, false); }
+    if (err) { o.addEventListener('error', function (e) { err(null, e); }, false); }
+    s.parentNode.insertBefore(o, s);
+  }
+
+  var asyncLoadWithFallBack = function(arr, success, reject) {
+      var currReject = function(){
+        reject()
+        arr.shift()
+        if(arr.length)
+          async(arr[0], success, currReject)
+        }
+
+      async(arr[0], success, currReject)
+  }
+
+  asyncLoadWithFallBack([
+    "https://cdn.jsdelivr.net/npm/webfontloader@1.6.28/webfontloader.min.js", 
+    "https://cdn.bootcss.com/webfont/1.6.28/webfontloader.js",
+    "/lib/webfontloader.min.js"
+  ], asyncCb, asyncErr)
+</script>        
+        <img class="loading" src="/assets/loading.svg" style="display: block; margin: 6rem auto 0 auto; width: 6rem; height: 6rem;" />
+        <div class="container container-unloaded">
+            <main class="main post-page">
+    <article class="article-entry">
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>紧接上一篇文章，简单在URP实现以下屏幕空间平面反射，同样会和上篇一样着重于原理以及基础实现，不会涉及更加深层次的东西比如多平台优化（如果想学习更加深入的，可以移步Colin的<a target="_blank" rel="noopener" href="https://github.com/ColinLeung-NiloCat/UnityURP-MobileScreenSpacePlanarReflection">ColinLeung-NiloCat/UnityURP-MobileScreenSpacePlanarReflection: Reusable RendererFeature of MobileScreenSpacePlanarReflection (github.com)</a>   或者<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/150890059">Unity URP 移动平台的屏幕空间平面反射（SSPR）趟坑记 - 知乎 (zhihu.com)</a>），当然，后续如果有空了可能会把这部分学完了作为（2）发布（虽然基本只是给自己画饼，最近沉迷学习SD和玩Ghost runner，可能后续会出Ghost runner的shader复刻）。当然为SSPR会涉及到computeshader，是一个不错的入门computeshader的切入点。</p>
+<h1 id="关于ScreenSpacePlanarReflection-SSPR"><a href="#关于ScreenSpacePlanarReflection-SSPR" class="headerlink" title="关于ScreenSpacePlanarReflection(SSPR)"></a>关于ScreenSpacePlanarReflection(SSPR)</h1><p>没怎么仔细考究到底是哪家先提出的概念，但是最有名的估计还属Ubisoft在ghost-recon-wildlands中使用的SSPR。Ubisoft的图形程序remi-genin在自己的博客也发布了他们的做法（<a target="_blank" rel="noopener" href="http://remi-genin.fr/blog/screen-space-plane-indexed-reflection-in-ghost-recon-wildlands/">Screen Space Planar Reflections in Ghost Recon Wildlands – Rémi Génin (remi-genin.fr)</a>）。相比SSR，SSPR免去了Rymarching的高消耗，性能大幅提升，甚至可以适用于移动端，相比平面反射也不存在drawcall翻倍的情况，当然没有免费的午餐，和SSR一样无法映射屏幕外的物体，而且会由于透视的问题导致gaps的出现需要自己处理拉伸</p>
+<img src="/SSPR/SSPIR_NoDistort.jpg" alt="SSPIR_NoDistort" style="zoom:80%;">
+
+<p>[^]: <a target="_blank" rel="noopener" href="http://remi-genin.fr/blog/screen-space-plane-indexed-reflection-in-ghost-recon-wildlands/">图源：Screen Space Planar Reflections in Ghost Recon Wildlands – Rémi Génin (remi-genin.fr)</a></p>
+<p>同时也会存在许多的问题需要补救。</p>
+<h1 id="ScreenSpacePlanarReflection原理"><a href="#ScreenSpacePlanarReflection原理" class="headerlink" title="ScreenSpacePlanarReflection原理"></a>ScreenSpacePlanarReflection原理</h1><img src="/SSPR/SSPIR_WriteUAV-1.png" alt="SSPIR_WriteUAV-1" style="zoom:80%;">
+
+<p>类似SSR，我们需要首先通过深度图重建世界坐标，然后通过预定的高度进行坐标翻转，再用翻转后的屏幕坐标会对应翻转前的屏幕颜色。相比SSR会比较好理解。</p>
+<h1 id="关于ComputeShader"><a href="#关于ComputeShader" class="headerlink" title="关于ComputeShader"></a>关于ComputeShader</h1><p>由于实现SSR会需要用到ComputeShader，也许也有许多和笔者一样没怎么接触过的，这里可以稍微对computeshader做一些前置理解。</p>
+<h2 id="首先是为什么SSPR需要computeshader"><a href="#首先是为什么SSPR需要computeshader" class="headerlink" title="首先是为什么SSPR需要computeshader"></a>首先是为什么SSPR需要computeshader</h2><p>因为sspr需要把一个坐标的颜色记录到另一个坐标，传统的shader在fragment阶段都是对对应的fragment处理，而computeshader可以做到这种操作（乱序写入）</p>
+<h2 id="computeshader的优点"><a href="#computeshader的优点" class="headerlink" title="computeshader的优点"></a>computeshader的优点</h2><p>CPU和GPU最大的区别在于GPU具有高并行结构（highly parallel stucture），GPU 拥有更多的 ALU （Arithmetic Logic Unit，逻辑运算单元）用于数据处理，这样的结构适合对密集型数据进行并行处理。</p>
+
+
+<p>computeshader能充分利用GPU的数据处理能力，把大量重复的计算放在GPU端处理（瓶颈在于需要CPU传输数据到GPU）。</p>
+<h2 id="computeshader的名词解释"><a href="#computeshader的名词解释" class="headerlink" title="computeshader的名词解释"></a>computeshader的名词解释</h2><p>（以下摘自 <a target="_blank" rel="noopener" href="https://www.bilibili.com/read/cv6995587">URP管线的自学HLSL之路 第二十九篇 ComputeShader释义 - 哔哩哔哩专栏 (bilibili.com)</a>，可以去原文进一步了解，这里只放我认为比较重要的）</p>
+<p>线程（Thread）：最基础工元。</p>
+<p>线程组（ThreadGroup）：多个线程的组合，一个线程组的线程是按XYZ3个维度进行排布。如[numthreads(4,8,12)]是定义x方向4个线程，y方向8个线程，z方向12个线程的一个线程组。1个线程组的大小（ThreadGroupSize）最大为1024，也就是x<em>y</em>z&lt;=1024。</p>
+<p>对于AMD的GPU平台，线程组的大小建议定义成64的倍数（WaveFront构架）。</p>
+<p>对于Nvidia的GPU平台，线程组的大小建议定义成32的倍数（SIMD32(Warp)构架）。</p>
+<p>调度（Dispatch）：多个线程组的组合，一个Dispatch的线程组是按XYZ3个维度进行排布。如Dispatch（KernelID，3，9，12）是定义x方向3个线程组，y方向9个线程组，z方向12个线程组，调用ComputeShader里KernelID的kernel函数的一个调度。</p>
+<p><strong><em>这里对以上做一个总结，线程是员工，线程组是一个团队，而调度是公司能调动的所有团队。因此在SSPR中调度的线程数</em>线程组内线程的数目需要满足申请的RT的大小，同时考虑到平台，这里用64作为线程组的大小，也就是[numthreads(8,8,1)]  （Texture是二维的，没有z，所以z用1）</strong></p>
+<h1 id="SSPR-开冲"><a href="#SSPR-开冲" class="headerlink" title="SSPR 开冲"></a>SSPR 开冲</h1><h2 id="Volume编写（其实直接放在RenderFeature里也行，写在后处理面板方便调试）"><a href="#Volume编写（其实直接放在RenderFeature里也行，写在后处理面板方便调试）" class="headerlink" title="Volume编写（其实直接放在RenderFeature里也行，写在后处理面板方便调试）"></a>Volume编写（其实直接放在RenderFeature里也行，写在后处理面板方便调试）</h2><p>同上一篇博客，写法框架很死了。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">using System.Collections;</span><br><span class="line">using System.Collections.Generic;</span><br><span class="line">using UnityEngine;</span><br><span class="line">using System;</span><br><span class="line">namespace UnityEngine.Rendering.Universal</span><br><span class="line">&#123;</span><br><span class="line">    [Serializable,VolumeComponentMenu(&quot;Reflection/ScreenSpacePlanarReflection&quot;)]</span><br><span class="line">    public class ScreenSpacePlanarReflection : VolumeComponent,IPostProcessComponent</span><br><span class="line">    &#123;   </span><br><span class="line">       </span><br><span class="line">        </span><br><span class="line">      </span><br><span class="line">        public BoolParameter isActive = new BoolParameter(false, false);</span><br><span class="line">        public FloatParameter RT_Size =new FloatParameter( 512,false);</span><br><span class="line">        public FloatParameter Height = new FloatParameter(0, false);</span><br><span class="line">        public bool IsActive()</span><br><span class="line">        &#123;</span><br><span class="line">           return isActive.value;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        public bool IsTileCompatible()</span><br><span class="line">        &#123;</span><br><span class="line">            return false;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line"> </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="RenderFeature编写"><a href="#RenderFeature编写" class="headerlink" title="RenderFeature编写"></a>RenderFeature编写</h2><p>二话不多说，直接粘贴上一篇SSR博客的renderfeatur（经典废物利用环节），只不过这次不需要material去Blit了，RenderFeature只负责调度ComputeShader，首先自然是需要处理RT申请，这里有一个注意事项</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">descriptor = new RenderTextureDescriptor(Mathf.CeilToInt(sspr.RT_Size.value* aspect), Mathf.CeilToInt(sspr.RT_Size.value), RenderTextureFormat.ARGB32);</span><br><span class="line">           descriptor.enableRandomWrite = true;</span><br><span class="line">           cmd.GetTemporaryRT(sspr_handle.id, descriptor, FilterMode.Bilinear);</span><br></pre></td></tr></table></figure>
+
+<p>就是Mathf.CeilToInt，因为Float转到Int会自动截去小数部分，这会导致RT最后的图有黑边（比如512.4会变成512，这个512-512.4的部分就莫得了）</p>
+<p>在Execute（）方法内传递ComputeShader需要的属性</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">                 //sspr</span><br><span class="line">                   cmd.SetComputeFloatParam(cs,Shader.PropertyToID(&quot;_PlaneHeight&quot;), sspr.Height.value);</span><br><span class="line">                   cmd.SetComputeVectorParam(cs, Shader.PropertyToID(&quot;_RT_Size&quot;),new  Vector2( sspr.RT_Size.value*aspect, sspr.RT_Size.value));</span><br><span class="line">                   cmd.SetComputeTextureParam(cs, 0,Shader.PropertyToID(&quot;_SSPRTexture&quot;),sspr_handle.Identifier());</span><br><span class="line">                   cmd.SetComputeTextureParam(cs, 0, Shader.PropertyToID(&quot;_CameraColorTexture&quot;), new RenderTargetIdentifier(&quot;_CameraColorTexture&quot;));</span><br><span class="line">                   cmd.SetComputeTextureParam(cs, 0, Shader.PropertyToID(&quot;_CameraDepthTexture&quot;), new RenderTargetIdentifier(&quot;_CameraDepthTexture&quot;));</span><br><span class="line">                   cmd.SetComputeTextureParam(cs, 0, heightID, heightIdentifier);</span><br><span class="line">                  </span><br><span class="line">                   cmd.DispatchCompute(cs, 0, Mathf.CeilToInt(sspr.RT_Size.value* aspect / 8), Mathf.CeilToInt(sspr.RT_Size.value / 8 ), 1);</span><br><span class="line">cmd.SetGlobalTexture(sspr_handle.id, sspr_handle.Identifier());</span><br></pre></td></tr></table></figure>
+
+<h2 id="重头戏ComputeShader编写"><a href="#重头戏ComputeShader编写" class="headerlink" title="重头戏ComputeShader编写"></a>重头戏ComputeShader编写</h2><p>上次写深度重建用的在知乎偷来的方法，前几天VScode瞎搜发现unity在common里有另一种做法，并且封装好了，就是ComputeWorldSpacePosition，在Common.hlsl中可以看到。这里我们用的colin大佬的做法去解决排序问题，通过写入世界坐标的Y值来做比较解决这个问题</p>
+<img src="/SSPR/QQ图片20210606144901.png" alt="QQ图片20210606144901" style="zoom:80%;">
+
+<p>[^]: 深度排序问题的原因是经过投影可能不同高度对应同一像素，我们使用最小的Y，因为在 “看的到” 的物体里，不存在Y小还被挡住的情况</p>
+<figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#include &quot;Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl&quot;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">float2 _RT_Size;</span><br><span class="line"><span class="type">float</span> _PlaneHeight;</span><br><span class="line"></span><br><span class="line"><span class="comment">// Create a RenderTexture with enableRandomWrite flag and set it</span></span><br><span class="line"><span class="comment">// with cs.SetTexture</span></span><br><span class="line">RWTexture2D&lt;float4&gt; _SSPRTexture;</span><br><span class="line">RWTexture2D&lt;<span class="type">float</span>&gt; _ReflectHeightBuffer;</span><br><span class="line">Texture2D&lt;float4&gt; _CameraColorTexture;</span><br><span class="line">Texture2D&lt;float4&gt; _CameraDepthTexture;</span><br><span class="line">SAMPLER(sampler_CameraDepthTexture);</span><br><span class="line">SAMPLER(sampler_CameraColorTexture);</span><br><span class="line"><span class="comment">// Each #kernel tells which function to compile; you can have many kernels</span></span><br><span class="line"><span class="meta">#pragma kernel CSMain</span></span><br><span class="line">[numthreads(<span class="number">8</span>,<span class="number">8</span>,<span class="number">1</span>)]</span><br><span class="line"><span class="type">void</span> CSMain (uint3 id : SV_DispatchThreadID)</span><br><span class="line">&#123;</span><br><span class="line">    _SSPRTexture[id.xy]=float4(<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>);</span><br><span class="line">    _ReflectHeightBuffer[id.xy]=HALF_MAX;</span><br><span class="line">    float2 screenUV=id.xy/_RT_Size;</span><br><span class="line">    <span class="type">float</span>  depth=_CameraDepthTexture.SampleLevel(sampler_CameraDepthTexture,screenUV,<span class="number">0</span>).r;</span><br><span class="line">    <span class="comment">//重建世界坐标（NDC空间方法）</span></span><br><span class="line">    <span class="comment">//float4 viewRayPS=float4(screenUV*2-1,1,1)*_ProjectionParams.z;</span></span><br><span class="line">    <span class="comment">//float4 rayVS=mul(unity_CameraInvProjection,viewRayPS);</span></span><br><span class="line">    <span class="comment">//half L01Depth=Linear01Depth(depth,_ZBufferParams);</span></span><br><span class="line">    <span class="comment">//float3 PosVS=rayVS.xyz*L01Depth;</span></span><br><span class="line">    <span class="comment">//float3 PosWS=mul(UNITY_MATRIX_I_VP,TransformWViewToHClip(PosVS));</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">//重建世界坐标(另一种Untiy Common.hlsl自带的)</span></span><br><span class="line">    </span><br><span class="line">    float3 PosWS=ComputeWorldSpacePosition( screenUV,depth, UNITY_MATRIX_I_VP);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    <span class="comment">//simple planar reflect </span></span><br><span class="line">    float3 reflectPosWS=PosWS;</span><br><span class="line">    <span class="comment">////////////(y1+y2)/2=h/////////////</span></span><br><span class="line">    reflectPosWS.y=-reflectPosWS.y+<span class="number">2</span>*_PlaneHeight;</span><br><span class="line">    float4 reflectPosPS=TransformWorldToHClip(reflectPosWS);</span><br><span class="line">    float2 reflectUV=(reflectPosPS.xy/reflectPosPS.w)*<span class="number">0.5</span>+<span class="number">0.5</span>;</span><br><span class="line">  <span class="meta">#ifdef UNITY_UV_STARTS_AT_TOP </span></span><br><span class="line">reflectUV.y = <span class="number">1</span> - reflectUV.y;     </span><br><span class="line">  <span class="meta">#endif</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    float2 reflectPixelIndex=reflectUV*_RT_Size;  </span><br><span class="line">   <span class="keyword">if</span>(PosWS.y&lt;_PlaneHeight||reflectUV.x&gt;<span class="number">1</span>||reflectUV.x&gt;<span class="number">1</span>||reflectUV.x&lt;<span class="number">0</span>||reflectUV.y&lt;<span class="number">0</span>) <span class="keyword">return</span>;</span><br><span class="line">    <span class="keyword">if</span>(PosWS.y&lt;_ReflectHeightBuffer[reflectPixelIndex])</span><br><span class="line">    &#123;</span><br><span class="line">        _ReflectHeightBuffer[reflectPixelIndex]=PosWS.y;</span><br><span class="line">    _SSPRTexture[reflectPixelIndex]=_CameraColorTexture.SampleLevel(sampler_CameraColorTexture,screenUV,<span class="number">0</span>);</span><br><span class="line">    </span><br><span class="line">    </span><br><span class="line">    &#125; </span><br><span class="line">    </span><br><span class="line">&#125;   </span><br></pre></td></tr></table></figure>
+
+<img src="/SSPR/QQ图片20210606145432.png" alt="QQ图片20210606145432" style="zoom:80%;">
+
+
+
+<h1 id="SSPR额外"><a href="#SSPR额外" class="headerlink" title="SSPR额外"></a>SSPR额外</h1><p>经过上述内容，基本的SSPR算法已经阐述过一边，简单在URP上做了一个幼儿园入门版的，有许多地方需要解决：比如由于CS乱序写入的闪面（分两个pass写入深度也许能解决？未尝试），相近像素对应到同像素导致的黑洞问题（移步colin大神的github，CS里加一个补洞的pass，或者简单粗暴点按照像素灰度确定是否是洞做补洞）等等。</p>
+<p>另外如果对SSPR感兴趣可以去看<a target="_blank" rel="noopener" href="http://remi-genin.fr/blog/screen-space-plane-indexed-reflection-in-ghost-recon-wildlands/">Screen Space Planar Reflections in Ghost Recon Wildlands – Rémi Génin (remi-genin.fr)</a>原文，其中也提到了Ubisoft对于不同水平面的处理，以及拉伸的处理。</p>
+<p>2017年的SIGGRAPH上也有一篇平面反射的优化论文，<a target="_blank" rel="noopener" href="http://advances.realtimerendering.com/s2017/PixelProjectedReflectionsAC_v_1.92_withNotes.pdf">Prezentacja programu PowerPoint (realtimerendering.com)</a></p>
+<p>如果学有余力可以去深挖，笔者写本文更多在于常规做法学习以及computeshader练手并未涉及（问就是不会）。</p>
+<p>  以上，本篇完。去通GhostRunner了。</p>
+
+    </article>
+    <!-- license  -->
+    
+        <div class="license-wrapper">
+            <p>原文作者：<a href="https://ever17-luqc.github.io">luqc</a>
+            <p>原文链接：<a href="https://ever17-luqc.github.io/SSPR/">https://ever17-luqc.github.io/SSPR/</a>
+            <p>发表日期：<a href="https://ever17-luqc.github.io/SSPR/">June 6th 2021, 11:34:12 am</a>
+            <p>更新日期：<a href="https://ever17-luqc.github.io/SSPR/">June 6th 2021, 3:46:51 pm</a>
+            <p>版权声明：本文采用<a rel="license noopener" target="_blank" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可</p>
+        </div>
+    
+    <!-- paginator  -->
+    <ul class="post-paginator">
+        <li class="next">
+            
+        </li>
+        <li class="previous">
+            
+                <div class="prevSlogan">Previous Post</div>
+                <a href= "/SSR/" title= "【Unity-URP】快速入门屏幕空间反射(SSR)">
+                    <div class="prevTitle">【Unity-URP】快速入门屏幕空间反射(SSR)</div>
+                </a>
+            
+        </li>
+    </ul>
+    <!-- 评论插件 -->
+    <!-- 来必力City版安装代码 -->
+
+<!-- City版安装代码已完成 -->
+    
+    
+    <!-- gitalk评论 -->
+
+    <!-- utteranc评论 -->
+
+    <!-- partial('_partial/comment/changyan') -->
+    <!--PC版-->
+
+
+    
+    
+
+    <!-- 评论 -->
+
+    <!-- idea from: https://hexo.fluid-dev.com/posts/hexo-injector/#%E6%96%87%E7%AB%A0%E6%97%B6%E6%95%88%E6%80%A7%E6%8F%90%E7%A4%BA -->
+    
+</main>
+
+            <!-- profile -->
+            
+        </div>
+        <footer class="footer footer-unloaded">
+    <!-- social  -->
+    
+    <div class="social">
+        
+    
+        
+            
+                <a href="mailto:1477030987@qq.com" class="iconfont-archer email" title=email ></a>
+            
+        
+    
+        
+            
+                <a href="//github.com/ever17-luqc" class="iconfont-archer github" target="_blank" title=github></a>
+            
+        
+    
+        
+    
+        
+    
+        
+    
+        
+            
+                <a href="https://www.zhihu.com/people/ever_17" class="iconfont-archer zhihu" target="_blank" title=zhihu></a>
+            
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+            
+                <a href="https://www.artstation.com/ever17" class="iconfont-archer artstation" target="_blank" title=artstation></a>
+            
+        
+    
+        
+    
+
+    </div>
+    
+    <!-- powered by Hexo  -->
+    <div class="copyright">
+        <span id="hexo-power">Powered by <a href="https://hexo.io/" target="_blank">Hexo</a></span><span class="iconfont-archer power">&#xe635;</span><span id="theme-info">theme <a href="https://github.com/fi3ework/hexo-theme-archer" target="_blank">Archer</a></span>
+    </div>
+    <!-- 不蒜子  -->
+    
+    <div class="busuanzi-container">
+    
+     
+    <span id="busuanzi_container_site_pv">PV: <span id="busuanzi_value_site_pv"></span> :)</span>
+    
+    </div>
+    
+</footer>
+    </div>
+    <!-- toc -->
+    
+    <div class="toc-wrapper" style=
+    
+
+
+
+
+
+
+
+top:50vh;
+
+    >
+        <div class="toc-catalog">
+            <span class="iconfont-archer catalog-icon">&#xe613;</span><span>CATALOG</span>
+        </div>
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%85%B3%E4%BA%8EScreenSpacePlanarReflection-SSPR"><span class="toc-number">2.</span> <span class="toc-text">关于ScreenSpacePlanarReflection(SSPR)</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#ScreenSpacePlanarReflection%E5%8E%9F%E7%90%86"><span class="toc-number">3.</span> <span class="toc-text">ScreenSpacePlanarReflection原理</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%85%B3%E4%BA%8EComputeShader"><span class="toc-number">4.</span> <span class="toc-text">关于ComputeShader</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A6%96%E5%85%88%E6%98%AF%E4%B8%BA%E4%BB%80%E4%B9%88SSPR%E9%9C%80%E8%A6%81computeshader"><span class="toc-number">4.1.</span> <span class="toc-text">首先是为什么SSPR需要computeshader</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#computeshader%E7%9A%84%E4%BC%98%E7%82%B9"><span class="toc-number">4.2.</span> <span class="toc-text">computeshader的优点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#computeshader%E7%9A%84%E5%90%8D%E8%AF%8D%E8%A7%A3%E9%87%8A"><span class="toc-number">4.3.</span> <span class="toc-text">computeshader的名词解释</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#SSPR-%E5%BC%80%E5%86%B2"><span class="toc-number">5.</span> <span class="toc-text">SSPR 开冲</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Volume%E7%BC%96%E5%86%99%EF%BC%88%E5%85%B6%E5%AE%9E%E7%9B%B4%E6%8E%A5%E6%94%BE%E5%9C%A8RenderFeature%E9%87%8C%E4%B9%9F%E8%A1%8C%EF%BC%8C%E5%86%99%E5%9C%A8%E5%90%8E%E5%A4%84%E7%90%86%E9%9D%A2%E6%9D%BF%E6%96%B9%E4%BE%BF%E8%B0%83%E8%AF%95%EF%BC%89"><span class="toc-number">5.1.</span> <span class="toc-text">Volume编写（其实直接放在RenderFeature里也行，写在后处理面板方便调试）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#RenderFeature%E7%BC%96%E5%86%99"><span class="toc-number">5.2.</span> <span class="toc-text">RenderFeature编写</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%87%8D%E5%A4%B4%E6%88%8FComputeShader%E7%BC%96%E5%86%99"><span class="toc-number">5.3.</span> <span class="toc-text">重头戏ComputeShader编写</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#SSPR%E9%A2%9D%E5%A4%96"><span class="toc-number">6.</span> <span class="toc-text">SSPR额外</span></a></li></ol>
+    </div>
+    
+    <div class="back-top iconfont-archer">&#xe639;</div>
+    <div class="sidebar sidebar-hide">
+    <ul class="sidebar-tabs sidebar-tabs-active-0">
+        <li class="sidebar-tab-archives"><span class="iconfont-archer">&#xe67d;</span><span class="tab-name">Archive</span></li>
+        <li class="sidebar-tab-tags"><span class="iconfont-archer">&#xe61b;</span><span class="tab-name">Tag</span></li>
+        <li class="sidebar-tab-categories"><span class="iconfont-archer">&#xe666;</span><span class="tab-name">Cate</span></li>
+    </ul>
+    <div class="sidebar-content sidebar-content-show-archive">
+          <div class="sidebar-panel-archives">
+    <!-- 在ejs中将archive按照时间排序 -->
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <div class="total-and-search">
+        <div class="total-archive">
+        Total : 2
+        </div>
+        <!-- search  -->
+        
+    </div>
+    
+    <div class="post-archive">
+    
+    
+    
+    
+    <div class="archive-year"> 2021 </div>
+    <ul class="year-list">
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">06/06</span><a class="archive-post-title" href= "/SSPR/" >【Unity-URP】快速入门屏幕空间平面反射(SSPR)————（1）</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">05/30</span><a class="archive-post-title" href= "/SSR/" >【Unity-URP】快速入门屏幕空间反射(SSR)</a>
+        </li>
+    
+    </div>
+  </div>
+        <div class="sidebar-panel-tags">
+    <div class="sidebar-tags-name">
+    
+        <span class="sidebar-tag-name" data-tags="Unity"><span class="iconfont-archer">&#xe606;</span>Unity</span>
+    
+        <span class="sidebar-tag-name" data-tags="Urp"><span class="iconfont-archer">&#xe606;</span>Urp</span>
+    
+        <span class="sidebar-tag-name" data-tags="Shader"><span class="iconfont-archer">&#xe606;</span>Shader</span>
+    
+    </div>
+    <div class="iconfont-archer sidebar-tags-empty">&#xe678;</div>
+    <div class="tag-load-fail" style="display: none; color: #ccc; font-size: 0.6rem;">
+    缺失模块。<br/>
+    1、请确保node版本大于6.2<br/>
+    2、在博客根目录（注意不是archer根目录）执行以下命令：<br/>
+    <span style="color: #f75357; font-size: 1rem; line-height: 2rem;">npm i hexo-generator-json-content --save</span><br/>
+    3、在根目录_config.yml里添加配置：
+    <pre style="color: #787878; font-size: 0.6rem;">
+jsonContent:
+  meta: false
+  pages: false
+  posts:
+    title: true
+    date: true
+    path: true
+    text: false
+    raw: false
+    content: false
+    slug: false
+    updated: false
+    comments: false
+    link: false
+    permalink: false
+    excerpt: false
+    categories: true
+    tags: true</pre>
+    </div> 
+    <div class="sidebar-tags-list"></div>
+</div>
+        <div class="sidebar-panel-categories">
+    <div class="sidebar-categories-name">
+    
+        <span class="sidebar-category-name" data-categories="Unity"><span class="iconfont-archer">&#xe60a;</span>Unity</span>
+    
+    </div>
+    <div class="iconfont-archer sidebar-categories-empty">&#xe678;</div>
+    <div class="sidebar-categories-list"></div>
+</div>
+    </div>
+</div> 
+    <script>
+    var siteMeta = {
+        root: "/",
+        author: "luqc"
+    }
+</script>
+    <!-- CDN failover -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
+    <script type="text/javascript">
+        if (typeof window.$ === 'undefined')
+        {
+            console.warn('jquery load from jsdelivr failed, will load local script')
+            document.write('<script src="/lib/jquery.min.js">\x3C/script>')
+        }
+    </script>
+    <script src="/scripts/main.js"></script>
+    <!-- algolia -->
+    
+    <!-- busuanzi  -->
+    
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    
+    <!-- CNZZ  -->
+    
+    </div>
+    <!-- async load share.js -->
+    
+        <script src="/scripts/share.js" async></script>    
+     
+    </body>
+</html>
+
+
