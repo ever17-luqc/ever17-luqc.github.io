@@ -20,17 +20,31 @@
     <meta name="keywords" content="hexo,hexo-theme,hexo-blog">
     
     <meta name="description" content="">
-    <meta property="og:type" content="website">
-<meta property="og:title" content="ever17Blog">
-<meta property="og:url" content="https://ever17-luqc.github.io/categories/%E5%8E%9F%E7%94%BB/index.html">
+    <meta name="description" content="前言零零散散接触了一段时间SD，一直都是看些教程学一些思路，最近在看Daneil Thiger的教程发现他用了一个重复纹理的节点（他自制的），但是自己尝试复现的 时候法线常规的tile sampler实现不了这种重叠的纹理，而如果用transform又无法控制个数，于是自己找到了FXMap这个功能节点。算是SD非常具有代表性的东西了。我看了些关于FXMAP的文章和案例，于是尝试用FXMAP来做一个">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SD_FX">
+<meta property="og:url" content="https://ever17-luqc.github.io/SD-FX/index.html">
 <meta property="og:site_name" content="ever17Blog">
+<meta property="og:description" content="前言零零散散接触了一段时间SD，一直都是看些教程学一些思路，最近在看Daneil Thiger的教程发现他用了一个重复纹理的节点（他自制的），但是自己尝试复现的 时候法线常规的tile sampler实现不了这种重叠的纹理，而如果用transform又无法控制个数，于是自己找到了FXMap这个功能节点。算是SD非常具有代表性的东西了。我看了些关于FXMAP的文章和案例，于是尝试用FXMAP来做一个">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ever17-luqc.github.io/SD-FX/1.png">
+<meta property="og:image" content="https://ever17-luqc.github.io/SD-FX/2.png">
+<meta property="og:image" content="https://ever17-luqc.github.io/SD-FX/3.png">
+<meta property="og:image" content="https://ever17-luqc.github.io/SD-FX/4.png">
+<meta property="og:image" content="https://ever17-luqc.github.io/SD-FX/5.png">
+<meta property="og:image" content="https://ever17-luqc.github.io/SD-FX/6.png">
+<meta property="og:image" content="https://ever17-luqc.github.io/SD-FX/7.png">
+<meta property="article:published_time" content="2021-06-29T17:10:10.000Z">
+<meta property="article:modified_time" content="2021-06-29T17:13:28.183Z">
 <meta property="article:author" content="luqc">
+<meta property="article:tag" content="Substance Designer">
+<meta property="article:tag" content="Material">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ever17-luqc.github.io/SD-FX/1.png">
     <meta http-equiv="Cache-control" content="no-cache">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
     
-    <title>Ever17&#39;s Studio</title>
+    <title>SD_FX · Ever17&#39;s Studio</title>
     <style type="text/css">
     @font-face {
         font-family: 'Oswald-Regular';
@@ -212,12 +226,23 @@
 <meta name="generator" content="Hexo 5.4.0"></head>
 
     
+        <body class="post-body">
+    
     
 <header class="header">
 
     <div class="read-progress"></div>
     <div class="header-sidebar-menu">&#xe775;</div>
     <!-- post页的toggle banner  -->
+    
+    <div class="banner">
+            <div class="blog-title">
+                <a href="/" >Ever17&#39;s Studio.</a>
+            </div>
+            <div class="post-title">
+                <a href="#" class="post-name">SD_FX</a>
+            </div>
+    </div>
     
     <a class="home-link" href=/>Ever17's Studio.</a>
 </header>
@@ -229,24 +254,76 @@
 
 
 
+
+height:50vh;
 ">
     
     <!-- 主页  -->
+    
+    
+    <!-- 404页  -->
             
     <div class="site-intro-placeholder"></div>
-    <div class="site-intro-img" style="background-image: url(/)"></div>
+    <div class="site-intro-img" style="background-image: url(/intro/post-bg.jpg)"></div>
     <div class="site-intro-meta">
         <!-- 标题  -->
         <h1 class="intro-title">
             <!-- 主页  -->
+            
+            SD_FX
+            <!-- 404 -->
             
         </h1>
         <!-- 副标题 -->
         <p class="intro-subtitle">
             <!-- 主页副标题  -->
             
+            
+            <!-- 404 -->
+            
         </p>
         <!-- 文章页meta -->
+        
+            <div class="post-intros">
+                <!-- 文章页标签  -->
+                
+                    <div class= post-intro-tags >
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags = "Substance Designer">Substance Designer</a>
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags = "Material">Material</a>
+    
+</div>
+                
+                
+                    <div class="post-intro-read">
+                        <span>字数统计: <span class="post-count word-count">1.1k</span>阅读时长: <span class="post-count reading-time">4 min</span></span>
+                    </div>
+                
+                <div class="post-intro-meta">
+                    <span class="post-intro-calander iconfont-archer">&#xe676;</span>
+                    <span class="post-intro-time">2021/06/30</span>
+                    
+                    <span id="busuanzi_container_page_pv" class="busuanzi-pv">
+                        <span class="iconfont-archer">&#xe602;</span>
+                        <span id="busuanzi_value_page_pv"></span>
+                    </span>
+                    
+                    <span class="shareWrapper">
+                        <span class="iconfont-archer shareIcon">&#xe71d;</span>
+                        <span class="shareText">Share</span>
+                        <ul class="shareList">
+                            <li class="iconfont-archer share-qr" data-type="qr">&#xe75b;
+                                <div class="share-qrcode"></div>
+                            </li>
+                            <li class="iconfont-archer" data-type="weibo">&#xe619;</li>
+                            <li class="iconfont-archer" data-type="qzone">&#xe62e;</li>
+                            <li class="iconfont-archer" data-type="twitter">&#xe634;</li>
+                            <li class="iconfont-archer" data-type="facebook">&#xe67a;</li>
+                        </ul>
+                    </span>
+                </div>
+            </div>
         
     </div>
 </div>
@@ -347,46 +424,134 @@
 </script>        
         <img class="loading" src="/assets/loading.svg" style="display: block; margin: 6rem auto 0 auto; width: 6rem; height: 6rem;" />
         <div class="container container-unloaded">
-            <main class="main index-page">
-    
-    
-    
-    
-    
-    
-    <article class="index-post">
-        <a class="abstract-title" href = "/PaintingPractice01/" >
-            
-                <span>【原画日常练习】速途场景，套皮以前毕业设计的设定</span>
-        </a>
-        <div class="abstract-content">
-            场景原画练习，找找上色的感觉
+            <main class="main post-page">
+    <article class="article-entry">
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>零零散散接触了一段时间SD，一直都是看些教程学一些思路，最近在看Daneil Thiger的教程发现他用了一个重复纹理的节点（他自制的），但是自己尝试复现的</p>
+<p>时候法线常规的tile sampler实现不了这种重叠的纹理，而如果用transform又无法控制个数，于是自己找到了FXMap这个功能节点。算是SD非常具有代表性的东西了。我看了些关于FXMAP的文章和案例，于是尝试用FXMAP来做一个重叠纹理的自制节点，做法比较简单，也非常能体现FXMAP的便捷性，同样非常适合入门SD的初学者去理解。</p>
+<h1 id="关于FXMAP"><a href="#关于FXMAP" class="headerlink" title="关于FXMAP"></a>关于FXMAP</h1><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">The FX-Map node allows the creation of procedural images. It is one of the most powerful features of the Substance technology.</span><br></pre></td></tr></table></figure>
 
+<p>从官网这个功能的第一句话就能知道FXMap的含金量了。FXMap非常适合用于制作重复性的纹理，他允许用户创建象限（Quadrant），象限会将图分成4个象限，每个象限节点代表图的级别(level)或者八度(octave),使用者可以通过继续加入象限节点对对应象限继续划分（四叉树结构）。</p>
+<p>FXMap有迭代器功能（Iterate），没错，非常方便实现循环。本文就会基于迭代器实现纹理的叠加重复。</p>
+<p>Switch本文没用到，和程序里的switch一个道理用于根据输入做切换。</p>
+<h1 id="FXMAP的系统变量"><a href="#FXMAP的系统变量" class="headerlink" title="FXMAP的系统变量"></a>FXMAP的系统变量</h1><p>这里直接用官网的google翻译</p>
+<p>FX-Maps 支持系统变量。这些变量总是以美元符号（“$”）开头，如下所示：</p>
+<table>
+<thead>
+<tr>
+<th align="left">名称</th>
+<th align="left">特殊性</th>
+<th align="left">数据类型</th>
+<th align="left">目的</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">$time</td>
+<td align="left">——</td>
+<td align="left">float1</td>
+<td align="left">此变量返回自 Substance 渲染引擎启动以来的时间（以秒为单位）。它非常适合需要根据时间设置动画的物质。（例如时钟的指针。）在某些应用程序中，包括 Substance Player，使用 $time 的 Substance 将导致时间线出现在用户界面中。</td>
+</tr>
+<tr>
+<td align="left">$depth</td>
+<td align="left">——</td>
+<td align="left">float1</td>
+<td align="left">返回 FX-Map 节点的八度（电平）数。这允许节点根据它代表的四叉树中的哪个级别来修改其行为。</td>
+</tr>
+<tr>
+<td align="left">$depthpow2</td>
+<td align="left">——</td>
+<td align="left">float1</td>
+<td align="left">同上，但返回 2 的八度（电平）数次方。这是一个辅助值，对一些常见的计算很有用。</td>
+</tr>
+<tr>
+<td align="left">$number</td>
+<td align="left">仅迭代节点</td>
+<td align="left">float1</td>
+<td align="left">返回绘制图案的编号。这可以通过控制迭代节点的动态函数图访问，以在每个迭代步骤修改其行为。（注意 $number 从 0 开始计数，而不是 1。）</td>
+</tr>
+<tr>
+<td align="left">$size</td>
+<td align="left">——</td>
+<td align="left">float1</td>
+<td align="left">返回当前节点的大小（以像素为单位）。</td>
+</tr>
+<tr>
+<td align="left">$sizelog2</td>
+<td align="left">——</td>
+<td align="left">float2</td>
+<td align="left">同上，但返回大小为 2 的幂值（例如：对于 2048*2048 图像，$sizelog2 返回 11）。</td>
+</tr>
+<tr>
+<td align="left">$pos</td>
+<td align="left">仅限象限节点</td>
+<td align="left">float2</td>
+<td align="left">返回模式的出生位置。结果始终是 0 到 1 之间的值。</td>
+</tr>
+</tbody></table>
+<h1 id="FXMAP开冲"><a href="#FXMAP开冲" class="headerlink" title="FXMAP开冲"></a>FXMAP开冲</h1><img src="/SD-FX/1.png" alt="1" style="zoom:80%;">
 
-        </div>
-        <div class="abstract-post-meta">
-            <!-- date  -->
-            <div class="abstract-date">
-                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2021/06/13</span>
-            </div>
-            <!-- tags  -->
-            
-            <div class= abstract-tags >
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "原画">原画</a>
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "场景">场景</a>
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "速途">速途</a>
-    
-</div>
-            
-        </div>
+<p>  先在Graph层创建一个float2变量用于平铺的偏移，再用一个int类型变量控制重叠的图案复制个数。</p>
+<p>我们需要一个灰度的input，一个output，这样就构成了一个自定义节点的输入-处理-输出。<img src="/SD-FX/2.png" alt="2" style="zoom:75%;"></p>
+<img src="/SD-FX/3.png" alt="3" style="zoom:75%;">
+
+<p>​    创建一个迭代器，右边的output连接到下方input，因为迭代器左侧output是直通直通 连接器。它接收到的图像直接传递到节点的输出连接器。然后我们将迭代器的迭代次数设置function，在内部获得我们设置的迭代次数参数（Get Integer）。</p>
+<p>​    来到象限节点，为了实现图像的偏移，我们为Pattern Offset设置empty function。</p>
+<img src="/SD-FX/4.png" alt="4" style="zoom:75%;">
+
+<p>我们通过插值，将offset从0-我们最大的offset依据当前的迭代数在总迭代数中的占比求出。</p>
+<p>节点的基本功能就完成了。然后开始稍微完善下细节和使用体验。<img src="/SD-FX/5.png" alt="5" style="zoom:75%;"></p>
+<p>我们在graph节点下添加一个Int值，他将会作为DropDownList的形式（Enum）来作为BlendingMode的参数（在象限节点中，对BlendingMode创建emptyfunction，同样get Integer），加入一个Toggle栏作为是否开启灰度渐变，以及添加一个灰度保底值防止第一次迭代纯黑。</p>
+<p>然后我们在Color/Luminosity中添加一个emptyFunction来把控迭代过程中是否需要开启颜色依次变亮。</p>
+<p>做法和前面的大<img src="/SD-FX/6.png" alt="6" style="zoom:75%;">同小异。</p>
+<p>这样大体就结束了这个节点的制作。我们把这个graph封装成节点后就能快乐使用了。</p>
+<img src="/SD-FX/7.png" alt="7" style="zoom:75%;">
     </article>
+    <!-- license  -->
+    
+        <div class="license-wrapper">
+            <p>原文作者：<a href="https://ever17-luqc.github.io">luqc</a>
+            <p>原文链接：<a href="https://ever17-luqc.github.io/SD-FX/">https://ever17-luqc.github.io/SD-FX/</a>
+            <p>发表日期：<a href="https://ever17-luqc.github.io/SD-FX/">June 30th 2021, 1:10:10 am</a>
+            <p>更新日期：<a href="https://ever17-luqc.github.io/SD-FX/">June 30th 2021, 1:13:28 am</a>
+            <p>版权声明：本文采用<a rel="license noopener" target="_blank" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可</p>
+        </div>
     
     <!-- paginator  -->
+    <ul class="post-paginator">
+        <li class="next">
+            
+        </li>
+        <li class="previous">
+            
+                <div class="prevSlogan">Previous Post</div>
+                <a href= "/SD1/" title= "【Substance Designer】入门级SD技巧-1">
+                    <div class="prevTitle">【Substance Designer】入门级SD技巧-1</div>
+                </a>
+            
+        </li>
+    </ul>
+    <!-- 评论插件 -->
+    <!-- 来必力City版安装代码 -->
+
+<!-- City版安装代码已完成 -->
+    
+    
+    <!-- gitalk评论 -->
+
+    <!-- utteranc评论 -->
+
+    <!-- partial('_partial/comment/changyan') -->
+    <!--PC版-->
+
+
+    
+    
+
+    <!-- 评论 -->
+
+    <!-- idea from: https://hexo.fluid-dev.com/posts/hexo-injector/#%E6%96%87%E7%AB%A0%E6%97%B6%E6%95%88%E6%80%A7%E6%8F%90%E7%A4%BA -->
     
 </main>
+
             <!-- profile -->
             
         </div>
@@ -469,6 +634,24 @@
 </footer>
     </div>
     <!-- toc -->
+    
+    <div class="toc-wrapper" style=
+    
+
+
+
+
+
+
+
+top:50vh;
+
+    >
+        <div class="toc-catalog">
+            <span class="iconfont-archer catalog-icon">&#xe613;</span><span>CATALOG</span>
+        </div>
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%85%B3%E4%BA%8EFXMAP"><span class="toc-number">2.</span> <span class="toc-text">关于FXMAP</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#FXMAP%E7%9A%84%E7%B3%BB%E7%BB%9F%E5%8F%98%E9%87%8F"><span class="toc-number">3.</span> <span class="toc-text">FXMAP的系统变量</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#FXMAP%E5%BC%80%E5%86%B2"><span class="toc-number">4.</span> <span class="toc-text">FXMAP开冲</span></a></li></ol>
+    </div>
     
     <div class="back-top iconfont-archer">&#xe639;</div>
     <div class="sidebar sidebar-hide">
@@ -658,6 +841,8 @@ jsonContent:
     
     </div>
     <!-- async load share.js -->
+    
+        <script src="/scripts/share.js" async></script>    
      
     </body>
 </html>
