@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <!-- title -->
+
+
+
+
+<!-- keywords -->
+
+
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" >
+    <meta name="author" content="luqc">
+    <meta name="renderer" content="webkit">
+    <meta name="copyright" content="luqc">
+    
+    <meta name="keywords" content="hexo,hexo-theme,hexo-blog">
+    
+    <meta name="description" content="">
+    <meta name="description" content="前言SD教程看的多了，需要自己整点活把学的东西吸收成自己的，于是有了个点子，把程序纹理和拼纹理在一个工程里去实战一次，本篇会挑重点阐述一下SD里制作3090以及底下的编织沙发的思路做法。 最终效果图    完整节点  细节思路大型搭建  做法是我在快速入门SD（1）中提及的，利用edge detect的软角扩边，因为3090本身是具有弧度的，制作出大型之后，后续的各种切图案都会用得上 外框部分">
+<meta property="og:type" content="article">
+<meta property="og:title" content="快速实战SD之3090核弹卡">
+<meta property="og:url" content="https://ever17-luqc.github.io/SD-3090/index.html">
+<meta property="og:site_name" content="ever17Blog">
+<meta property="og:description" content="前言SD教程看的多了，需要自己整点活把学的东西吸收成自己的，于是有了个点子，把程序纹理和拼纹理在一个工程里去实战一次，本篇会挑重点阐述一下SD里制作3090以及底下的编织沙发的思路做法。 最终效果图    完整节点  细节思路大型搭建  做法是我在快速入门SD（1）中提及的，利用edge detect的软角扩边，因为3090本身是具有弧度的，制作出大型之后，后续的各种切图案都会用得上 外框部分">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ever17-luqc.github.io/SD-3090/10.png">
+<meta property="og:image" content="https://ever17-luqc.github.io/SD-3090/1.png">
+<meta property="og:image" content="https://ever17-luqc.github.io/SD-3090/3.png">
+<meta property="og:image" content="https://ever17-luqc.github.io/SD-3090/a.png">
+<meta property="og:image" content="https://ever17-luqc.github.io/SD-3090/b.png">
+<meta property="og:image" content="https://ever17-luqc.github.io/SD-3090/c.png">
+<meta property="og:image" content="https://ever17-luqc.github.io/SD-3090/d.png">
+<meta property="og:image" content="https://ever17-luqc.github.io/SD-3090/e.png">
+<meta property="og:image" content="https://ever17-luqc.github.io/SD-3090/f.png">
+<meta property="og:image" content="https://ever17-luqc.github.io/SD-3090/g.png">
+<meta property="og:image" content="https://ever17-luqc.github.io/SD-3090/h.png">
+<meta property="article:published_time" content="2021-07-07T11:26:54.000Z">
+<meta property="article:modified_time" content="2021-07-07T12:34:33.306Z">
+<meta property="article:author" content="luqc">
+<meta property="article:tag" content="Substance Designer">
+<meta property="article:tag" content="Material">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ever17-luqc.github.io/SD-3090/10.png">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    
+    <title>快速实战SD之3090核弹卡 · Ever17&#39;s Studio</title>
+    <style type="text/css">
+    @font-face {
+        font-family: 'Oswald-Regular';
+        src: url("/font/Oswald-Regular.ttf");
+    }
+
+    body {
+        margin: 0;
+    }
+
+    header,
+    footer,
+    .back-top,
+    .sidebar,
+    .container,
+    .site-intro-meta,
+    .toc-wrapper {
+        display: none;
+    }
+
+    .site-intro {
+        position: relative;
+        z-index: 3;
+        width: 100%;
+        /* height: 50vh; */
+        overflow: hidden;
+    }
+
+    .site-intro-placeholder {
+        position: absolute;
+        z-index: -2;
+        top: 0;
+        left: 0;
+        width: calc(100% + 300px);
+        height: 100%;
+        background: repeating-linear-gradient(-45deg, #444 0, #444 80px, #333 80px, #333 160px);
+        background-position: center center;
+        transform: translate3d(-226px, 0, 0);
+        animation: gradient-move 2.5s ease-out 0s infinite;
+    }
+
+    @keyframes gradient-move {
+        0% {
+            transform: translate3d(-226px, 0, 0);
+        }
+        100% {
+            transform: translate3d(0, 0, 0);
+        }
+    }
+
+</style>
+
+    <link rel="preload" href= "/css/style.css?v=20210204" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+    <link rel="stylesheet" href= "/css/mobile.css?v=20210204" media="(max-width: 980px)">
+    
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+    
+    <!-- /*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
+/* This file is meant as a standalone workflow for
+- testing support for link[rel=preload]
+- enabling async CSS loading in browsers that do not support rel=preload
+- applying rel preload css once loaded, whether supported or not.
+*/ -->
+<script>
+(function( w ){
+	"use strict";
+	// rel=preload support test
+	if( !w.loadCSS ){
+		w.loadCSS = function(){};
+	}
+	// define on the loadCSS obj
+	var rp = loadCSS.relpreload = {};
+	// rel=preload feature support test
+	// runs once and returns a function for compat purposes
+	rp.support = (function(){
+		var ret;
+		try {
+			ret = w.document.createElement( "link" ).relList.supports( "preload" );
+		} catch (e) {
+			ret = false;
+		}
+		return function(){
+			return ret;
+		};
+	})();
+
+	// if preload isn't supported, get an asynchronous load by using a non-matching media attribute
+	// then change that media back to its intended value on load
+	rp.bindMediaToggle = function( link ){
+		// remember existing media attr for ultimate state, or default to 'all'
+		var finalMedia = link.media || "all";
+
+		function enableStylesheet(){
+			link.media = finalMedia;
+		}
+
+		// bind load handlers to enable media
+		if( link.addEventListener ){
+			link.addEventListener( "load", enableStylesheet );
+		} else if( link.attachEvent ){
+			link.attachEvent( "onload", enableStylesheet );
+		}
+
+		// Set rel and non-applicable media type to start an async request
+		// note: timeout allows this to happen async to let rendering continue in IE
+		setTimeout(function(){
+			link.rel = "stylesheet";
+			link.media = "only x";
+		});
+		// also enable media after 3 seconds,
+		// which will catch very old browsers (android 2.x, old firefox) that don't support onload on link
+		setTimeout( enableStylesheet, 3000 );
+	};
+
+	// loop through link elements in DOM
+	rp.poly = function(){
+		// double check this to prevent external calls from running
+		if( rp.support() ){
+			return;
+		}
+		var links = w.document.getElementsByTagName( "link" );
+		for( var i = 0; i < links.length; i++ ){
+			var link = links[ i ];
+			// qualify links to those with rel=preload and as=style attrs
+			if( link.rel === "preload" && link.getAttribute( "as" ) === "style" && !link.getAttribute( "data-loadcss" ) ){
+				// prevent rerunning on link
+				link.setAttribute( "data-loadcss", true );
+				// bind listeners to toggle media back
+				rp.bindMediaToggle( link );
+			}
+		}
+	};
+
+	// if unsupported, run the polyfill
+	if( !rp.support() ){
+		// run once at least
+		rp.poly();
+
+		// rerun poly on an interval until onload
+		var run = w.setInterval( rp.poly, 500 );
+		if( w.addEventListener ){
+			w.addEventListener( "load", function(){
+				rp.poly();
+				w.clearInterval( run );
+			} );
+		} else if( w.attachEvent ){
+			w.attachEvent( "onload", function(){
+				rp.poly();
+				w.clearInterval( run );
+			} );
+		}
+	}
+
+
+	// commonjs
+	if( typeof exports !== "undefined" ){
+		exports.loadCSS = loadCSS;
+	}
+	else {
+		w.loadCSS = loadCSS;
+	}
+}( typeof global !== "undefined" ? global : this ) );
+</script>
+
+    <link rel="icon" href= "/assets/favicon2.ico" />
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/webfontloader@1.6.28/webfontloader.min.js" as="script" />
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js" as="script" />
+    <link rel="preload" href="/scripts/main.js?v=20210204" as="script" />
+    <link rel="preload" as="font" href="/font/Oswald-Regular.ttf" crossorigin>
+    <link rel="preload" as="font" href="https://at.alicdn.com/t/font_327081_1dta1rlogw17zaor.woff" crossorigin>
+    <script src="https://cdn.bootcdn.net/ajax/libs/font-awesome/5.15.3/js/all.min.js"  data-auto-replace-svg="nest" ></script>
+    
+    <!-- fancybox -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" defer></script>
+    <!-- 百度统计  -->
+    
+    <!-- 谷歌统计  -->
+    
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+    
+        <body class="post-body">
+    
+    
+<header class="header">
+
+    <div class="read-progress"></div>
+    <div class="header-sidebar-menu">&#xe775;</div>
+    <!-- post页的toggle banner  -->
+    
+    <div class="banner">
+            <div class="blog-title">
+                <a href="/" >Ever17&#39;s Studio.</a>
+            </div>
+            <div class="post-title">
+                <a href="#" class="post-name">快速实战SD之3090核弹卡</a>
+            </div>
+    </div>
+    
+    <a class="home-link" href=/>Ever17's Studio.</a>
+</header>
+    <div class="wrapper">
+        <div class="site-intro" style="
+
+
+
+
+
+
+
+height:50vh;
+">
+    
+    <!-- 主页  -->
+    
+    
+    <!-- 404页  -->
+            
+    <div class="site-intro-placeholder"></div>
+    <div class="site-intro-img" style="background-image: url(/intro/post-bg.jpg)"></div>
+    <div class="site-intro-meta">
+        <!-- 标题  -->
+        <h1 class="intro-title">
+            <!-- 主页  -->
+            
+            快速实战SD之3090核弹卡
+            <!-- 404 -->
+            
+        </h1>
+        <!-- 副标题 -->
+        <p class="intro-subtitle">
+            <!-- 主页副标题  -->
+            
+            
+            <!-- 404 -->
+            
+        </p>
+        <!-- 文章页meta -->
+        
+            <div class="post-intros">
+                <!-- 文章页标签  -->
+                
+                    <div class= post-intro-tags >
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags = "Substance Designer">Substance Designer</a>
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags = "Material">Material</a>
+    
+</div>
+                
+                
+                    <div class="post-intro-read">
+                        <span>字数统计: <span class="post-count word-count">1.3k</span>阅读时长: <span class="post-count reading-time">4 min</span></span>
+                    </div>
+                
+                <div class="post-intro-meta">
+                    <span class="post-intro-calander iconfont-archer">&#xe676;</span>
+                    <span class="post-intro-time">2021/07/07</span>
+                    
+                    <span id="busuanzi_container_page_pv" class="busuanzi-pv">
+                        <span class="iconfont-archer">&#xe602;</span>
+                        <span id="busuanzi_value_page_pv"></span>
+                    </span>
+                    
+                    <span class="shareWrapper">
+                        <span class="iconfont-archer shareIcon">&#xe71d;</span>
+                        <span class="shareText">Share</span>
+                        <ul class="shareList">
+                            <li class="iconfont-archer share-qr" data-type="qr">&#xe75b;
+                                <div class="share-qrcode"></div>
+                            </li>
+                            <li class="iconfont-archer" data-type="weibo">&#xe619;</li>
+                            <li class="iconfont-archer" data-type="qzone">&#xe62e;</li>
+                            <li class="iconfont-archer" data-type="twitter">&#xe634;</li>
+                            <li class="iconfont-archer" data-type="facebook">&#xe67a;</li>
+                        </ul>
+                    </span>
+                </div>
+            </div>
+        
+    </div>
+</div>
+        <script>
+ 
+  // get user agent
+  var browser = {
+    versions: function () {
+      var u = window.navigator.userAgent;
+      return {
+        userAgent: u,
+        trident: u.indexOf('Trident') > -1, //IE内核
+        presto: u.indexOf('Presto') > -1, //opera内核
+        webKit: u.indexOf('AppleWebKit') > -1, //苹果、谷歌内核
+        gecko: u.indexOf('Gecko') > -1 && u.indexOf('KHTML') == -1, //火狐内核
+        mobile: !!u.match(/AppleWebKit.*Mobile.*/), //是否为移动终端
+        ios: !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/), //ios终端
+        android: u.indexOf('Android') > -1 || u.indexOf('Linux') > -1, //android终端或者uc浏览器
+        iPhone: u.indexOf('iPhone') > -1 || u.indexOf('Mac') > -1, //是否为iPhone或者安卓QQ浏览器
+        iPad: u.indexOf('iPad') > -1, //是否为iPad
+        webApp: u.indexOf('Safari') == -1, //是否为web应用程序，没有头部与底部
+        weixin: u.indexOf('MicroMessenger') == -1, //是否为微信浏览器
+        uc: u.indexOf('UCBrowser') > -1 //是否为android下的UC浏览器
+      };
+    }()
+  }
+  console.log("userAgent:" + browser.versions.userAgent);
+
+  // callback
+  function fontLoaded() {
+    console.log('font loaded');
+    if (document.getElementsByClassName('site-intro-meta')) {
+      document.getElementsByClassName('intro-title')[0].classList.add('intro-fade-in');
+      document.getElementsByClassName('intro-subtitle')[0].classList.add('intro-fade-in');
+      var postIntros = document.getElementsByClassName('post-intros')[0]
+      if (postIntros) {
+        postIntros.classList.add('post-fade-in');
+      }
+    }
+  }
+
+  // UC不支持跨域，所以直接显示
+  function asyncCb(){
+    if (browser.versions.uc) {
+      console.log("UCBrowser");
+      fontLoaded();
+    } else {
+      WebFont.load({
+        custom: {
+          families: ['Oswald-Regular']
+        },
+        loading: function () {  //所有字体开始加载
+          // console.log('loading');
+        },
+        active: function () {  //所有字体已渲染
+          fontLoaded();
+        },
+        inactive: function () { //字体预加载失败，无效字体或浏览器不支持加载
+          console.log('inactive: timeout');
+          fontLoaded();
+        },
+        timeout: 5000 // Set the timeout to two seconds
+      });
+    }
+  }
+
+  function asyncErr(){
+    console.warn('script load from CDN failed, will load local script')
+  }
+
+  // load webfont-loader async, and add callback function
+  function async(u, cb, err) {
+    var d = document, t = 'script',
+      o = d.createElement(t),
+      s = d.getElementsByTagName(t)[0];
+    o.src = u;
+    if (cb) { o.addEventListener('load', function (e) { cb(null, e); }, false); }
+    if (err) { o.addEventListener('error', function (e) { err(null, e); }, false); }
+    s.parentNode.insertBefore(o, s);
+  }
+
+  var asyncLoadWithFallBack = function(arr, success, reject) {
+      var currReject = function(){
+        reject()
+        arr.shift()
+        if(arr.length)
+          async(arr[0], success, currReject)
+        }
+
+      async(arr[0], success, currReject)
+  }
+
+  asyncLoadWithFallBack([
+    "https://cdn.jsdelivr.net/npm/webfontloader@1.6.28/webfontloader.min.js", 
+    "https://cdn.bootcss.com/webfont/1.6.28/webfontloader.js",
+    "/lib/webfontloader.min.js"
+  ], asyncCb, asyncErr)
+</script>        
+        <img class="loading" src="/assets/loading.svg" style="display: block; margin: 6rem auto 0 auto; width: 6rem; height: 6rem;" />
+        <div class="container container-unloaded">
+            <main class="main post-page">
+    <article class="article-entry">
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>SD教程看的多了，需要自己整点活把学的东西吸收成自己的，于是有了个点子，把程序纹理和拼纹理在一个工程里去实战一次，本篇会挑重点阐述一下SD里制作3090以及底下的编织沙发的思路做法。</p>
+<h1 id="最终效果图"><a href="#最终效果图" class="headerlink" title="最终效果图"></a>最终效果图</h1><img src="/SD-3090/10.png" alt="10" style="zoom:80%;">
+
+<img src="/SD-3090/1.png" alt="1" style="zoom:80%;">
+
+<h1 id="完整节点"><a href="#完整节点" class="headerlink" title="完整节点"></a>完整节点</h1><img src="/SD-3090/3.png" alt="3" style="zoom:150%;">
+
+<h1 id="细节思路"><a href="#细节思路" class="headerlink" title="细节思路"></a>细节思路</h1><h2 id="大型搭建"><a href="#大型搭建" class="headerlink" title="大型搭建"></a>大型搭建</h2><img src="/SD-3090/a.png" alt="a" style="zoom:80%;">
+
+<p>做法是我在快速入门SD（1）中提及的，利用edge detect的软角扩边，因为3090本身是具有弧度的，制作出大型之后，后续的各种切图案都会用得上</p>
+<h2 id="外框部分"><a href="#外框部分" class="headerlink" title="外框部分"></a>外框部分</h2><img src="/SD-3090/b.png" alt="b" style="zoom:80%;">
+
+<p>切，就嗯切！拿polygon调整段数到3角形，压扁mirror出三角部分。拿之前的大型的边缘检测做一次相减，再和用三角形边缘检测获得的X做一个max，获得边缘框的大形状（但是事实上这样的效果还是转角很硬，我后续还给他做了利用linear gradient的directional warp来做出平滑的过度，没什么技术含量，就嗯切嗯试，让我想到了之前看的一个布料的SD教程，作者拼图狂魔，切了一堆图案），<strong>做完记得curve来做非平滑的过度，让这个边框带点棱角</strong>。</p>
+<h2 id="3090的细分图案"><a href="#3090的细分图案" class="headerlink" title="3090的细分图案"></a>3090的细分图案</h2><img src="/SD-3090/c.png" alt="c" style="zoom:150%;">
+
+
+
+<img src="/SD-3090/d.png" alt="d" style="zoom:80%;">
+
+
+
+<p>废物利用之前的外框，通过floodfill转到floodfilltoBBoxsize，因为左右图案是对称的，非常好获取他的边缘以及shape，这里不用edgedetect只是因为效果不太好，边粗而且我们不需要软边，干脆就用histogram select。这里说一下为什么三角形图案我不用polygon三角形去拼，因为3090的三角形和比边框长，为了让图案不要那么纯手动拼（不然就纯变成拼图练习了），就选了这种比较麻烦的做法，好处是和之前的图案相关联，不会因为边框三角形的变形而需要再拼图。</p>
+<h2 id="3090条纹散热部分"><a href="#3090条纹散热部分" class="headerlink" title="3090条纹散热部分"></a>3090条纹散热部分</h2><img src="/SD-3090/e.png" alt="e" style="zoom:80%;">
+
+<p>相对之前的部分显得格外简单，拿之前的内部shape通过blend切掉一半面，然后偏移相减，尝龟操作，3090有一部分是没有这个散热片的，注意切掉</p>
+<p>（我最右边又扣了一个mask）。</p>
+<h2 id="风扇部分"><a href="#风扇部分" class="headerlink" title="风扇部分"></a>风扇部分</h2><img src="/SD-3090/f.png" alt="f" style="zoom:80%;">
+
+<p>这里涉及到一个非常实用的节点，shape mapper，非常方便做这种圆形旋转平铺的纹理，我们用Gradient linear 取消tiling 拉出大型，然后扭曲一下因为3090的显卡风扇是弯的。同样我们需要获取他的边做边缘部分，因为他的边缘并不是很锋利的。</p>
+<h2 id="盒子部分"><a href="#盒子部分" class="headerlink" title="盒子部分"></a>盒子部分</h2><img src="/SD-3090/g.png" class title="g">
+
+<p>盒子部分相对之前也是非常简单了，我们拿到之前的大型，拿一个长方体做减就完事了 ，其中因为这次的高度需要比较大的高度，如果是硬边的shape会细分的非常难看，我们适当的给点blur就能解决这个问题，因为blur了就能有一个斜斜的坡度，而不是纯直角导致面数不够看拉伸的厉害（当然纯直角除非面数无限多，不然永远是拉伸的）。</p>
+<h2 id="针织部分"><a href="#针织部分" class="headerlink" title="针织部分"></a>针织部分</h2><img src="/SD-3090/h.png" alt="h" style="zoom:80%;">
+
+<p>针织部分其实我做的东西比较多，这里就简单讲讲，等以后开一个针织相关的SD文章再拉出来细讲。这里就讲讲基础的图案做法，我比较习惯这种圆形shape压扁然后斜着做tile sampler，因为这样可以有颜色的随机大小的随机，出效果比自己拼快，我们可以用多个噪音叠加wrap，去获得扭曲，甚至是毛边的感觉，我这次的选择是竖方向的纹理用粗的，横向的用细线堆叠做出横竖的差异，否则图案太单调，我个人不喜欢太重复的纹理。</p>
+<h2 id="颜色以及其他"><a href="#颜色以及其他" class="headerlink" title="颜色以及其他"></a>颜色以及其他</h2><p>颜色部分更多偏向个人想法和审美，我个人喜欢针织部分更加随机有各种褪色感，所以拿脏迹以及noise去做紊乱的掉色。然后我也特地筛选了横方向的针织纹理给一个亮色，点缀的更加有年代感。金属度和粗糙度各位需要紧记于心，金属度别取中间值，尽量在0-50,200-255附近取，先不谈现实生活中是否有这些中间的金属度物体，中间值的金属度本身不伦不类让人不好分辨，因为金属度是非常影响F0项的，也就是反射率，金属为什么是金属，就是因为他的F0非常高导致了光基本全被反射了。如果你给了中间调，那么就散射反射都半吊子灰不拉几的。。。粗糙度就不用说了，凭感觉给！！！！相对于金属度个人的发挥空间非常大，可以多参照现实世界，最常用的规律就是边缘会因为磨损稍微滑一点。</p>
+
+    </article>
+    <!-- license  -->
+    
+        <div class="license-wrapper">
+            <p>原文作者：<a href="https://ever17-luqc.github.io">luqc</a>
+            <p>原文链接：<a href="https://ever17-luqc.github.io/SD-3090/">https://ever17-luqc.github.io/SD-3090/</a>
+            <p>发表日期：<a href="https://ever17-luqc.github.io/SD-3090/">July 7th 2021, 7:26:54 pm</a>
+            <p>更新日期：<a href="https://ever17-luqc.github.io/SD-3090/">July 7th 2021, 8:34:33 pm</a>
+            <p>版权声明：本文采用<a rel="license noopener" target="_blank" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可</p>
+        </div>
+    
+    <!-- paginator  -->
+    <ul class="post-paginator">
+        <li class="next">
+            
+        </li>
+        <li class="previous">
+            
+                <div class="prevSlogan">Previous Post</div>
+                <a href= "/PaintingPractice02/" title= "【原画练习】一张角色速途">
+                    <div class="prevTitle">【原画练习】一张角色速途</div>
+                </a>
+            
+        </li>
+    </ul>
+    <!-- 评论插件 -->
+    <!-- 来必力City版安装代码 -->
+
+<!-- City版安装代码已完成 -->
+    
+    
+    <!-- gitalk评论 -->
+
+    <!-- utteranc评论 -->
+
+    <!-- partial('_partial/comment/changyan') -->
+    <!--PC版-->
+
+
+    
+    
+
+    <!-- 评论 -->
+
+    <!-- idea from: https://hexo.fluid-dev.com/posts/hexo-injector/#%E6%96%87%E7%AB%A0%E6%97%B6%E6%95%88%E6%80%A7%E6%8F%90%E7%A4%BA -->
+    
+</main>
+
+            <!-- profile -->
+            
+        </div>
+        <footer class="footer footer-unloaded">
+    <!-- social  -->
+    
+    <div class="social">
+        
+    
+        
+            
+                <a href="mailto:1477030987@qq.com" class="iconfont-archer email" title=email ></a>
+            
+        
+    
+        
+            
+                <a href="//github.com/ever17-luqc" class="iconfont-archer github" target="_blank" title=github></a>
+            
+        
+    
+        
+    
+        
+    
+        
+    
+        
+            
+                <a href="https://www.zhihu.com/people/ever_17" class="iconfont-archer zhihu" target="_blank" title=zhihu></a>
+            
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+            
+                <a href="https://www.artstation.com/ever17" class="iconfont-archer artstation" target="_blank" title=artstation></a>
+            
+        
+    
+        
+    
+
+    </div>
+    
+    <!-- powered by Hexo  -->
+    <div class="copyright">
+        <span id="hexo-power">Powered by <a href="https://hexo.io/" target="_blank">Hexo</a></span><span class="iconfont-archer power">&#xe635;</span><span id="theme-info">theme <a href="https://github.com/fi3ework/hexo-theme-archer" target="_blank">Archer</a></span>
+    </div>
+    <!-- 不蒜子  -->
+    
+    <div class="busuanzi-container">
+    
+     
+    <span id="busuanzi_container_site_pv">PV: <span id="busuanzi_value_site_pv"></span> :)</span>
+    
+    </div>
+    
+</footer>
+    </div>
+    <!-- toc -->
+    
+    <div class="toc-wrapper" style=
+    
+
+
+
+
+
+
+
+top:50vh;
+
+    >
+        <div class="toc-catalog">
+            <span class="iconfont-archer catalog-icon">&#xe613;</span><span>CATALOG</span>
+        </div>
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%9C%80%E7%BB%88%E6%95%88%E6%9E%9C%E5%9B%BE"><span class="toc-number">2.</span> <span class="toc-text">最终效果图</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AE%8C%E6%95%B4%E8%8A%82%E7%82%B9"><span class="toc-number">3.</span> <span class="toc-text">完整节点</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%BB%86%E8%8A%82%E6%80%9D%E8%B7%AF"><span class="toc-number">4.</span> <span class="toc-text">细节思路</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%A7%E5%9E%8B%E6%90%AD%E5%BB%BA"><span class="toc-number">4.1.</span> <span class="toc-text">大型搭建</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%A4%96%E6%A1%86%E9%83%A8%E5%88%86"><span class="toc-number">4.2.</span> <span class="toc-text">外框部分</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3090%E7%9A%84%E7%BB%86%E5%88%86%E5%9B%BE%E6%A1%88"><span class="toc-number">4.3.</span> <span class="toc-text">3090的细分图案</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3090%E6%9D%A1%E7%BA%B9%E6%95%A3%E7%83%AD%E9%83%A8%E5%88%86"><span class="toc-number">4.4.</span> <span class="toc-text">3090条纹散热部分</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A3%8E%E6%89%87%E9%83%A8%E5%88%86"><span class="toc-number">4.5.</span> <span class="toc-text">风扇部分</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%92%E5%AD%90%E9%83%A8%E5%88%86"><span class="toc-number">4.6.</span> <span class="toc-text">盒子部分</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%92%88%E7%BB%87%E9%83%A8%E5%88%86"><span class="toc-number">4.7.</span> <span class="toc-text">针织部分</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A2%9C%E8%89%B2%E4%BB%A5%E5%8F%8A%E5%85%B6%E4%BB%96"><span class="toc-number">4.8.</span> <span class="toc-text">颜色以及其他</span></a></li></ol></li></ol>
+    </div>
+    
+    <div class="back-top iconfont-archer">&#xe639;</div>
+    <div class="sidebar sidebar-hide">
+    <ul class="sidebar-tabs sidebar-tabs-active-0">
+        <li class="sidebar-tab-archives"><span class="iconfont-archer">&#xe67d;</span><span class="tab-name">Archive</span></li>
+        <li class="sidebar-tab-tags"><span class="iconfont-archer">&#xe61b;</span><span class="tab-name">Tag</span></li>
+        <li class="sidebar-tab-categories"><span class="iconfont-archer">&#xe666;</span><span class="tab-name">Cate</span></li>
+    </ul>
+    <div class="sidebar-content sidebar-content-show-archive">
+          <div class="sidebar-panel-archives">
+    <!-- 在ejs中将archive按照时间排序 -->
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <div class="total-and-search">
+        <div class="total-archive">
+        Total : 7
+        </div>
+        <!-- search  -->
+        
+    </div>
+    
+    <div class="post-archive">
+    
+    
+    
+    
+    <div class="archive-year"> 2021 </div>
+    <ul class="year-list">
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/07</span><a class="archive-post-title" href= "/PaintingPractice02/" >【原画练习】一张角色速途</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/07</span><a class="archive-post-title" href= "/SD-3090/" >快速实战SD之3090核弹卡</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">06/30</span><a class="archive-post-title" href= "/SD-FX/" >【Substance Designer】快速入门SD:FXMap</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">06/27</span><a class="archive-post-title" href= "/SD1/" >【Substance Designer】入门级SD技巧-1</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">06/13</span><a class="archive-post-title" href= "/PaintingPractice01/" >【原画日常练习】速途场景，套皮以前毕业设计的设定</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">06/06</span><a class="archive-post-title" href= "/SSPR/" >【Unity-URP】快速入门屏幕空间平面反射(SSPR)————（1）</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">05/30</span><a class="archive-post-title" href= "/SSR/" >【Unity-URP】快速入门屏幕空间反射(SSR)</a>
+        </li>
+    
+    </div>
+  </div>
+        <div class="sidebar-panel-tags">
+    <div class="sidebar-tags-name">
+    
+        <span class="sidebar-tag-name" data-tags="Unity"><span class="iconfont-archer">&#xe606;</span>Unity</span>
+    
+        <span class="sidebar-tag-name" data-tags="Urp"><span class="iconfont-archer">&#xe606;</span>Urp</span>
+    
+        <span class="sidebar-tag-name" data-tags="Shader"><span class="iconfont-archer">&#xe606;</span>Shader</span>
+    
+        <span class="sidebar-tag-name" data-tags="原画"><span class="iconfont-archer">&#xe606;</span>原画</span>
+    
+        <span class="sidebar-tag-name" data-tags="场景"><span class="iconfont-archer">&#xe606;</span>场景</span>
+    
+        <span class="sidebar-tag-name" data-tags="速途"><span class="iconfont-archer">&#xe606;</span>速途</span>
+    
+        <span class="sidebar-tag-name" data-tags="Substance Designer"><span class="iconfont-archer">&#xe606;</span>Substance Designer</span>
+    
+        <span class="sidebar-tag-name" data-tags="Material"><span class="iconfont-archer">&#xe606;</span>Material</span>
+    
+        <span class="sidebar-tag-name" data-tags="角色"><span class="iconfont-archer">&#xe606;</span>角色</span>
+    
+    </div>
+    <div class="iconfont-archer sidebar-tags-empty">&#xe678;</div>
+    <div class="tag-load-fail" style="display: none; color: #ccc; font-size: 0.6rem;">
+    缺失模块。<br/>
+    1、请确保node版本大于6.2<br/>
+    2、在博客根目录（注意不是archer根目录）执行以下命令：<br/>
+    <span style="color: #f75357; font-size: 1rem; line-height: 2rem;">npm i hexo-generator-json-content --save</span><br/>
+    3、在根目录_config.yml里添加配置：
+    <pre style="color: #787878; font-size: 0.6rem;">
+jsonContent:
+  meta: false
+  pages: false
+  posts:
+    title: true
+    date: true
+    path: true
+    text: false
+    raw: false
+    content: false
+    slug: false
+    updated: false
+    comments: false
+    link: false
+    permalink: false
+    excerpt: false
+    categories: true
+    tags: true</pre>
+    </div> 
+    <div class="sidebar-tags-list"></div>
+</div>
+        <div class="sidebar-panel-categories">
+    <div class="sidebar-categories-name">
+    
+        <span class="sidebar-category-name" data-categories="Unity"><span class="iconfont-archer">&#xe60a;</span>Unity</span>
+    
+        <span class="sidebar-category-name" data-categories="原画"><span class="iconfont-archer">&#xe60a;</span>原画</span>
+    
+        <span class="sidebar-category-name" data-categories="Substance-Designer"><span class="iconfont-archer">&#xe60a;</span>Substance-Designer</span>
+    
+    </div>
+    <div class="iconfont-archer sidebar-categories-empty">&#xe678;</div>
+    <div class="sidebar-categories-list"></div>
+</div>
+    </div>
+</div> 
+    <script>
+    var siteMeta = {
+        root: "/",
+        author: "luqc"
+    }
+</script>
+    <!-- CDN failover -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
+    <script type="text/javascript">
+        if (typeof window.$ === 'undefined')
+        {
+            console.warn('jquery load from jsdelivr failed, will load local script')
+            document.write('<script src="/lib/jquery.min.js">\x3C/script>')
+        }
+    </script>
+    <script src="/scripts/main.js"></script>
+    <!-- algolia -->
+    
+    <!-- busuanzi  -->
+    
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    
+    <!-- CNZZ  -->
+    
+    </div>
+    <!-- async load share.js -->
+    
+        <script src="/scripts/share.js" async></script>    
+     
+    </body>
+</html>
+
+
