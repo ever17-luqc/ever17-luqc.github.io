@@ -1,0 +1,1018 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <!-- title -->
+
+
+
+
+<!-- keywords -->
+
+
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" >
+    <meta name="author" content="luqc">
+    <meta name="renderer" content="webkit">
+    <meta name="copyright" content="luqc">
+    
+    <meta name="keywords" content="hexo,hexo-theme,hexo-blog">
+    
+    <meta name="description" content="">
+    <meta name="description" content="前言  须知写在最前：本文是基础篇，只涉及基础的日式卡通渲染，后续做了学了其他的内容会逐渐写点有特色的进阶卡通渲染。后面应该还会写一个卡渲后处理部分的内容。   图形学中有一个非真实感渲染（NPR），卡通渲染作为其中的一个分支，由于国内二刺猿手游的盛行相较其他内容简直如鱼得水，不过也由于本身并不基于物理，没那么多“奇形怪状”的公式，相较PBR渲染更加考验美术把控。由于二刺猿文化的兴起，为了拿走死宅">
+<meta property="og:type" content="article">
+<meta property="og:title" content="快速入门日式动漫渲染【基础Shading篇】">
+<meta property="og:url" content="https://ever17-luqc.github.io/ToonShading-1/index.html">
+<meta property="og:site_name" content="ever17Blog">
+<meta property="og:description" content="前言  须知写在最前：本文是基础篇，只涉及基础的日式卡通渲染，后续做了学了其他的内容会逐渐写点有特色的进阶卡通渲染。后面应该还会写一个卡渲后处理部分的内容。   图形学中有一个非真实感渲染（NPR），卡通渲染作为其中的一个分支，由于国内二刺猿手游的盛行相较其他内容简直如鱼得水，不过也由于本身并不基于物理，没那么多“奇形怪状”的公式，相较PBR渲染更加考验美术把控。由于二刺猿文化的兴起，为了拿走死宅">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ever17-luqc.github.io/ToonShading-1/genshin.jpg">
+<meta property="og:image" content="https://ever17-luqc.github.io/ToonShading-1/2.png">
+<meta property="og:image" content="https://ever17-luqc.github.io/ToonShading-1/GGX.jpg">
+<meta property="og:image" content="https://ever17-luqc.github.io/ToonShading-1/VS.jpg">
+<meta property="og:image" content="https://ever17-luqc.github.io/ToonShading-1/bp.jpg">
+<meta property="og:image" content="https://ever17-luqc.github.io/ToonShading-1/AS1.jpg">
+<meta property="og:image" content="https://ever17-luqc.github.io/ToonShading-1/ow.jpg">
+<meta property="og:image" content="https://ever17-luqc.github.io/ToonShading-1/M1.jpg">
+<meta property="og:image" content="https://ever17-luqc.github.io/ToonShading-1/nomx-0526.jpg">
+<meta property="og:image" content="https://ever17-luqc.github.io/ToonShading-1/roma-gewska-tree.jpg">
+<meta property="og:image" content="https://ever17-luqc.github.io/ToonShading-1/t0.png">
+<meta property="og:image" content="https://ever17-luqc.github.io/ToonShading-1/t1.png">
+<meta property="og:image" content="https://ever17-luqc.github.io/ToonShading-1/t2.png">
+<meta property="og:image" content="https://ever17-luqc.github.io/ToonShading-1/t3.png">
+<meta property="og:image" content="https://ever17-luqc.github.io/ToonShading-1/ramp.jpg">
+<meta property="og:image" content="https://ever17-luqc.github.io/ToonShading-1/ramp2.png">
+<meta property="og:image" content="https://ever17-luqc.github.io/ToonShading-1/ramp3.jpg">
+<meta property="og:image" content="https://ever17-luqc.github.io/ToonShading-1/ramp4.png">
+<meta property="og:image" content="https://ever17-luqc.github.io/ToonShading-1/arc.png">
+<meta property="og:image" content="https://ever17-luqc.github.io/ToonShading-1/spec.jpg">
+<meta property="og:image" content="https://ever17-luqc.github.io/ToonShading-1/rim.png">
+<meta property="og:image" content="https://ever17-luqc.github.io/ToonShading-1/outline.png">
+<meta property="og:image" content="https://ever17-luqc.github.io/ToonShading-1/RF.png">
+<meta property="article:published_time" content="2021-07-12T02:04:45.000Z">
+<meta property="article:modified_time" content="2021-07-12T13:28:26.330Z">
+<meta property="article:author" content="luqc">
+<meta property="article:tag" content="Unity">
+<meta property="article:tag" content="Urp">
+<meta property="article:tag" content="Shader">
+<meta property="article:tag" content="NPR">
+<meta property="article:tag" content="ToonShading">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ever17-luqc.github.io/ToonShading-1/genshin.jpg">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    
+    <title>快速入门日式动漫渲染【基础Shading篇】 · Ever17&#39;s Studio</title>
+    <style type="text/css">
+    @font-face {
+        font-family: 'Oswald-Regular';
+        src: url("/font/Oswald-Regular.ttf");
+    }
+
+    body {
+        margin: 0;
+    }
+
+    header,
+    footer,
+    .back-top,
+    .sidebar,
+    .container,
+    .site-intro-meta,
+    .toc-wrapper {
+        display: none;
+    }
+
+    .site-intro {
+        position: relative;
+        z-index: 3;
+        width: 100%;
+        /* height: 50vh; */
+        overflow: hidden;
+    }
+
+    .site-intro-placeholder {
+        position: absolute;
+        z-index: -2;
+        top: 0;
+        left: 0;
+        width: calc(100% + 300px);
+        height: 100%;
+        background: repeating-linear-gradient(-45deg, #444 0, #444 80px, #333 80px, #333 160px);
+        background-position: center center;
+        transform: translate3d(-226px, 0, 0);
+        animation: gradient-move 2.5s ease-out 0s infinite;
+    }
+
+    @keyframes gradient-move {
+        0% {
+            transform: translate3d(-226px, 0, 0);
+        }
+        100% {
+            transform: translate3d(0, 0, 0);
+        }
+    }
+
+</style>
+
+    <link rel="preload" href= "/css/style.css?v=20210204" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+    <link rel="stylesheet" href= "/css/mobile.css?v=20210204" media="(max-width: 980px)">
+    
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+    
+    <!-- /*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
+/* This file is meant as a standalone workflow for
+- testing support for link[rel=preload]
+- enabling async CSS loading in browsers that do not support rel=preload
+- applying rel preload css once loaded, whether supported or not.
+*/ -->
+<script>
+(function( w ){
+	"use strict";
+	// rel=preload support test
+	if( !w.loadCSS ){
+		w.loadCSS = function(){};
+	}
+	// define on the loadCSS obj
+	var rp = loadCSS.relpreload = {};
+	// rel=preload feature support test
+	// runs once and returns a function for compat purposes
+	rp.support = (function(){
+		var ret;
+		try {
+			ret = w.document.createElement( "link" ).relList.supports( "preload" );
+		} catch (e) {
+			ret = false;
+		}
+		return function(){
+			return ret;
+		};
+	})();
+
+	// if preload isn't supported, get an asynchronous load by using a non-matching media attribute
+	// then change that media back to its intended value on load
+	rp.bindMediaToggle = function( link ){
+		// remember existing media attr for ultimate state, or default to 'all'
+		var finalMedia = link.media || "all";
+
+		function enableStylesheet(){
+			link.media = finalMedia;
+		}
+
+		// bind load handlers to enable media
+		if( link.addEventListener ){
+			link.addEventListener( "load", enableStylesheet );
+		} else if( link.attachEvent ){
+			link.attachEvent( "onload", enableStylesheet );
+		}
+
+		// Set rel and non-applicable media type to start an async request
+		// note: timeout allows this to happen async to let rendering continue in IE
+		setTimeout(function(){
+			link.rel = "stylesheet";
+			link.media = "only x";
+		});
+		// also enable media after 3 seconds,
+		// which will catch very old browsers (android 2.x, old firefox) that don't support onload on link
+		setTimeout( enableStylesheet, 3000 );
+	};
+
+	// loop through link elements in DOM
+	rp.poly = function(){
+		// double check this to prevent external calls from running
+		if( rp.support() ){
+			return;
+		}
+		var links = w.document.getElementsByTagName( "link" );
+		for( var i = 0; i < links.length; i++ ){
+			var link = links[ i ];
+			// qualify links to those with rel=preload and as=style attrs
+			if( link.rel === "preload" && link.getAttribute( "as" ) === "style" && !link.getAttribute( "data-loadcss" ) ){
+				// prevent rerunning on link
+				link.setAttribute( "data-loadcss", true );
+				// bind listeners to toggle media back
+				rp.bindMediaToggle( link );
+			}
+		}
+	};
+
+	// if unsupported, run the polyfill
+	if( !rp.support() ){
+		// run once at least
+		rp.poly();
+
+		// rerun poly on an interval until onload
+		var run = w.setInterval( rp.poly, 500 );
+		if( w.addEventListener ){
+			w.addEventListener( "load", function(){
+				rp.poly();
+				w.clearInterval( run );
+			} );
+		} else if( w.attachEvent ){
+			w.attachEvent( "onload", function(){
+				rp.poly();
+				w.clearInterval( run );
+			} );
+		}
+	}
+
+
+	// commonjs
+	if( typeof exports !== "undefined" ){
+		exports.loadCSS = loadCSS;
+	}
+	else {
+		w.loadCSS = loadCSS;
+	}
+}( typeof global !== "undefined" ? global : this ) );
+</script>
+
+    <link rel="icon" href= "/assets/favicon2.ico" />
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/webfontloader@1.6.28/webfontloader.min.js" as="script" />
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js" as="script" />
+    <link rel="preload" href="/scripts/main.js?v=20210204" as="script" />
+    <link rel="preload" as="font" href="/font/Oswald-Regular.ttf" crossorigin>
+    <link rel="preload" as="font" href="https://at.alicdn.com/t/font_327081_1dta1rlogw17zaor.woff" crossorigin>
+    <script src="https://cdn.bootcdn.net/ajax/libs/font-awesome/5.15.3/js/all.min.js"  data-auto-replace-svg="nest" ></script>
+    
+    <!-- fancybox -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" defer></script>
+    <!-- 百度统计  -->
+    
+    <!-- 谷歌统计  -->
+    
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+    
+        <body class="post-body">
+    
+    
+<header class="header">
+
+    <div class="read-progress"></div>
+    <div class="header-sidebar-menu">&#xe775;</div>
+    <!-- post页的toggle banner  -->
+    
+    <div class="banner">
+            <div class="blog-title">
+                <a href="/" >Ever17&#39;s Studio.</a>
+            </div>
+            <div class="post-title">
+                <a href="#" class="post-name">快速入门日式动漫渲染【基础Shading篇】</a>
+            </div>
+    </div>
+    
+    <a class="home-link" href=/>Ever17's Studio.</a>
+</header>
+    <div class="wrapper">
+        <div class="site-intro" style="
+
+
+
+
+
+
+
+height:50vh;
+">
+    
+    <!-- 主页  -->
+    
+    
+    <!-- 404页  -->
+            
+    <div class="site-intro-placeholder"></div>
+    <div class="site-intro-img" style="background-image: url(/intro/post-bg.jpg)"></div>
+    <div class="site-intro-meta">
+        <!-- 标题  -->
+        <h1 class="intro-title">
+            <!-- 主页  -->
+            
+            快速入门日式动漫渲染【基础Shading篇】
+            <!-- 404 -->
+            
+        </h1>
+        <!-- 副标题 -->
+        <p class="intro-subtitle">
+            <!-- 主页副标题  -->
+            
+            
+            <!-- 404 -->
+            
+        </p>
+        <!-- 文章页meta -->
+        
+            <div class="post-intros">
+                <!-- 文章页标签  -->
+                
+                    <div class= post-intro-tags >
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags = "Unity">Unity</a>
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags = "Urp">Urp</a>
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags = "Shader">Shader</a>
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags = "NPR">NPR</a>
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags = "ToonShading">ToonShading</a>
+    
+</div>
+                
+                
+                    <div class="post-intro-read">
+                        <span>字数统计: <span class="post-count word-count">8.4k</span>阅读时长: <span class="post-count reading-time">40 min</span></span>
+                    </div>
+                
+                <div class="post-intro-meta">
+                    <span class="post-intro-calander iconfont-archer">&#xe676;</span>
+                    <span class="post-intro-time">2021/07/12</span>
+                    
+                    <span id="busuanzi_container_page_pv" class="busuanzi-pv">
+                        <span class="iconfont-archer">&#xe602;</span>
+                        <span id="busuanzi_value_page_pv"></span>
+                    </span>
+                    
+                    <span class="shareWrapper">
+                        <span class="iconfont-archer shareIcon">&#xe71d;</span>
+                        <span class="shareText">Share</span>
+                        <ul class="shareList">
+                            <li class="iconfont-archer share-qr" data-type="qr">&#xe75b;
+                                <div class="share-qrcode"></div>
+                            </li>
+                            <li class="iconfont-archer" data-type="weibo">&#xe619;</li>
+                            <li class="iconfont-archer" data-type="qzone">&#xe62e;</li>
+                            <li class="iconfont-archer" data-type="twitter">&#xe634;</li>
+                            <li class="iconfont-archer" data-type="facebook">&#xe67a;</li>
+                        </ul>
+                    </span>
+                </div>
+            </div>
+        
+    </div>
+</div>
+        <script>
+ 
+  // get user agent
+  var browser = {
+    versions: function () {
+      var u = window.navigator.userAgent;
+      return {
+        userAgent: u,
+        trident: u.indexOf('Trident') > -1, //IE内核
+        presto: u.indexOf('Presto') > -1, //opera内核
+        webKit: u.indexOf('AppleWebKit') > -1, //苹果、谷歌内核
+        gecko: u.indexOf('Gecko') > -1 && u.indexOf('KHTML') == -1, //火狐内核
+        mobile: !!u.match(/AppleWebKit.*Mobile.*/), //是否为移动终端
+        ios: !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/), //ios终端
+        android: u.indexOf('Android') > -1 || u.indexOf('Linux') > -1, //android终端或者uc浏览器
+        iPhone: u.indexOf('iPhone') > -1 || u.indexOf('Mac') > -1, //是否为iPhone或者安卓QQ浏览器
+        iPad: u.indexOf('iPad') > -1, //是否为iPad
+        webApp: u.indexOf('Safari') == -1, //是否为web应用程序，没有头部与底部
+        weixin: u.indexOf('MicroMessenger') == -1, //是否为微信浏览器
+        uc: u.indexOf('UCBrowser') > -1 //是否为android下的UC浏览器
+      };
+    }()
+  }
+  console.log("userAgent:" + browser.versions.userAgent);
+
+  // callback
+  function fontLoaded() {
+    console.log('font loaded');
+    if (document.getElementsByClassName('site-intro-meta')) {
+      document.getElementsByClassName('intro-title')[0].classList.add('intro-fade-in');
+      document.getElementsByClassName('intro-subtitle')[0].classList.add('intro-fade-in');
+      var postIntros = document.getElementsByClassName('post-intros')[0]
+      if (postIntros) {
+        postIntros.classList.add('post-fade-in');
+      }
+    }
+  }
+
+  // UC不支持跨域，所以直接显示
+  function asyncCb(){
+    if (browser.versions.uc) {
+      console.log("UCBrowser");
+      fontLoaded();
+    } else {
+      WebFont.load({
+        custom: {
+          families: ['Oswald-Regular']
+        },
+        loading: function () {  //所有字体开始加载
+          // console.log('loading');
+        },
+        active: function () {  //所有字体已渲染
+          fontLoaded();
+        },
+        inactive: function () { //字体预加载失败，无效字体或浏览器不支持加载
+          console.log('inactive: timeout');
+          fontLoaded();
+        },
+        timeout: 5000 // Set the timeout to two seconds
+      });
+    }
+  }
+
+  function asyncErr(){
+    console.warn('script load from CDN failed, will load local script')
+  }
+
+  // load webfont-loader async, and add callback function
+  function async(u, cb, err) {
+    var d = document, t = 'script',
+      o = d.createElement(t),
+      s = d.getElementsByTagName(t)[0];
+    o.src = u;
+    if (cb) { o.addEventListener('load', function (e) { cb(null, e); }, false); }
+    if (err) { o.addEventListener('error', function (e) { err(null, e); }, false); }
+    s.parentNode.insertBefore(o, s);
+  }
+
+  var asyncLoadWithFallBack = function(arr, success, reject) {
+      var currReject = function(){
+        reject()
+        arr.shift()
+        if(arr.length)
+          async(arr[0], success, currReject)
+        }
+
+      async(arr[0], success, currReject)
+  }
+
+  asyncLoadWithFallBack([
+    "https://cdn.jsdelivr.net/npm/webfontloader@1.6.28/webfontloader.min.js", 
+    "https://cdn.bootcss.com/webfont/1.6.28/webfontloader.js",
+    "/lib/webfontloader.min.js"
+  ], asyncCb, asyncErr)
+</script>        
+        <img class="loading" src="/assets/loading.svg" style="display: block; margin: 6rem auto 0 auto; width: 6rem; height: 6rem;" />
+        <div class="container container-unloaded">
+            <main class="main post-page">
+    <article class="article-entry">
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>  须知写在最前：本文是基础篇，只涉及基础的日式卡通渲染，后续做了学了其他的内容会逐渐写点有特色的进阶卡通渲染。后面应该还会写一个卡渲后处理部分的内容。</p>
+<p>  图形学中有一个<strong>非真实感渲染</strong>（NPR），卡通渲染作为其中的一个分支，由于国内二刺猿手游的盛行相较其他内容简直如鱼得水，不过也由于本身并不基于物理，没那么多“奇形怪状”的公式，相较PBR渲染更加考验美术把控。由于二刺猿文化的兴起，为了拿走死宅钱包里的存货，国内二刺猿手游风行了一段时间了，各路厂商或多或少都整了点二刺猿方向的尝试。国内比较有代表性的米哈游的崩3或者原神</p>
+<img src="/ToonShading-1/genshin.jpg" alt="genshin" style="zoom:80%;">
+
+<p>库洛的战双</p>
+<img src="/ToonShading-1/2.png" alt="2" style="zoom:80%;">
+
+<p>​    </p>
+<p>​    日产的作品，最有代表性的就是罪恶装备系列了（算是近年来的卡通渲染的祖师爷级别的了，比如崩3在基础的着色上就沿用了罪恶装备的<strong>ilm</strong>贴图做法，后续相关的会讲到）</p>
+   <img src="/ToonShading-1/GGX.jpg" alt="GGX" style="zoom:80%;">
+
+<p>同样比较知名的日厂游戏还有Cy的碧蓝幻想</p>
+<img src="/ToonShading-1/VS.jpg" alt="VS" style="zoom:80%;">
+
+<p>之前还看到有人分享万代南梦宫的蓝色协议的渲染：</p>
+<img src="/ToonShading-1/bp.jpg" alt="bp" style="zoom:80%;">
+
+
+
+<pre><code> **总的来说各个厂商都有自己的风格特色，但是从原理上大同小异，只不过都有自己的做法上的改进或者说针对项目特点做特定的修改**。
+</code></pre>
+<p>​    这篇文章将会简单说说关于日式卡通渲染的那些事情以及背后的原理。</p>
+<h1 id="入门级卡渲从这里开始"><a href="#入门级卡渲从这里开始" class="headerlink" title="入门级卡渲从这里开始"></a>入门级卡渲从这里开始</h1><h2 id="明暗着色基础"><a href="#明暗着色基础" class="headerlink" title="明暗着色基础"></a>明暗着色基础</h2><h3 id="关于卡渲以及相关的内容我自己的理解"><a href="#关于卡渲以及相关的内容我自己的理解" class="headerlink" title="关于卡渲以及相关的内容我自己的理解"></a>关于卡渲以及相关的内容我自己的理解</h3><p>  在讲卡渲的明暗着色之前，必须先讲讲最基础的东西：Animation Style或者说是Toon和Physically Based的本质区别。动漫也好插画立绘也好，这都算是基于创作者理解的世界的提炼总结，对特征的精简以及修改，最典型的就属美式卡通那类，对于器官的极度提炼夸张。如下图：</p>
+<img src="/ToonShading-1/AS1.jpg" alt="AS1" style="zoom:80%;">
+
+<p>这么讲其实也还是太过于笼统，因为不仅仅是形状上的精简和夸张修改，在细节密度上也有别于现实或者说Physically based。我可以举一个更加代表性的例子：</p>
+<img src="/ToonShading-1/ow.jpg" alt="ow" style="zoom: 150%;">
+
+<p>拿守望先锋来说，暴雪在制作时候是基于Physically Based Rendering（PBR）的，这点就能很好论证了我前面的观点，卡通渲染≠抛弃PBR的便捷性和准确性，他也可以是细节密度的减小。比如守望里的金属如上图的大锤给人非常规整的感觉，但是现实里的金属如果是有点年岁了的会呈现如下的结果：</p>
+<img src="/ToonShading-1/M1.jpg" alt="M1" style="zoom: 25%;">
+
+<p>守望先锋在PBR的基础上减少了粗糙度、法线、金属度的信息密度，形成了这种基于物理渲染的卡通提炼。</p>
+<p>​    也就是说卡通渲染和PBR虽然有着明确的边界，但是完全可以做到合理结合（虽然这篇文章将的更多偏向日式卡渲），战双就在高光中引入了PBR的高光项，让部分材质的金属感更加符合现实做到了不错的融合。本文不会涉及PBR的深入部分，因为本文重点是卡渲后续就带一下，后续有时间会开一个PBR的文章。</p>
+<p>​    但是如果纯PBR或者PBR为主的流程 （例如守望先锋），会让制作流程大大缩短，因为PBR的流程相关DCC一站到位，基本没过多需要修改的地方，对于3D美术也会非常的友好，而传统的卡渲只要有自己的定制化，必然需要一段时间的美术团队磨合（上年底毕业的时候公司在做的二刺猿项目当时就因为这点使用了衣服PBR皮肤卡渲的做法来大大削减开发成本和时间，当然也有风格上的因素需要写实一点的衣服，算是一举两得吧）。</p>
+<p>   讲完卡通渲染的基础，讲讲日式的卡渲的特点。如果是学过原画或者了解过相关内容的朋友应该了解，现在原画分成了两个大的种类：平涂和厚涂。平涂在日系二次元里可以理解为赛璐璐，也就是常见的描边+明显的明暗交界+相对于厚涂更加明快的颜色。区别于厚涂，日式卡通颜色选用会偏向于亮、高饱和，过度或者说是明暗交界线会更加硬朗极致点就是后面会说的cellshading，而明暗交界的软硬算是界定半厚涂风格的赛璐璐和纯赛璐璐的区别。</p>
+<p> ==<em><strong>半厚涂风格的赛璐璐：</strong></em>==<img src="/ToonShading-1/nomx-0526.jpg" alt="nomx-0526" style="zoom:80%;"></p>
+<p>[]: <a target="_blank" rel="noopener" href="https://www.artstation.com/artwork/xJVlrW">https://www.artstation.com/artwork/xJVlrW</a>    “图源我非常喜欢日本的大佬：Nomad.的artstation”</p>
+<p> ==<em><strong>纯赛璐璐：</strong></em>==</p>
+<img src="/ToonShading-1/roma-gewska-tree.jpg" alt="roma-gewska-tree" style="zoom: 33%;">
+
+<p>[]: <a target="_blank" rel="noopener" href="https://www.artstation.com/artwork/bKyNXE">https://www.artstation.com/artwork/bKyNXE</a>    “找不到合适的图了，这张画风偏美式一点，凑合看”</p>
+<p>​    这些风格将会影响我们在游戏引擎中的还原思路。详情从下文开始讲起</p>
+<h3 id="cell-shading：纯赛璐璐的开始"><a href="#cell-shading：纯赛璐璐的开始" class="headerlink" title="cell shading：纯赛璐璐的开始"></a>cell shading：纯赛璐璐的开始</h3><p>   关于Cell Shading ，为了得到卡渲里的强烈的明暗划分，我们需要去量化他的灰度，对他的灰阶进行处理，比如灰&lt;0.5为黑色而相反是白色。</p>
+<p>   做法很简单，基于NDotL（也就是常规的兰伯特光照用法线方向去点乘光线的方向）的 做一次Step得到强烈的明暗边界划分（如果是有羽化的边缘或者需要做假的皮肤透光后续会继续讲到）。</p>
+<figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">half Lambert=<span class="built_in">dot</span>(MainLightDir,normal);</span><br><span class="line">half4 mainTex=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex, i.uv);</span><br><span class="line"><span class="keyword">return</span> mainTex*(<span class="built_in">step</span>(<span class="number">0.5</span>,Lambert)*<span class="number">0.5</span>+<span class="number">0.5</span>);</span><br></pre></td></tr></table></figure>
+
+<p>这里*0.5+0.5就是沿用了半兰伯特的做法，让暗部不至于纯黑，让明暗着色更加向亮部迁移（实际使用并不一定需要是0.5，可以按照项目风格修改甚至是暴露参数给美术）。</p>
+<p>​                <strong>纯漫反射贴图：</strong></p>
+<img src="/ToonShading-1/t0.png" alt="t0" style="zoom: 67%;">
+
+<p>​        <strong>基础CellShading</strong>：</p>
+<img src="/ToonShading-1/t1.png" alt="t1" style="zoom:67%;">
+
+<p>这样就算是有了基础的极强明暗划分的着色，但是这个做法问题在于0.5作为划分阴影的阈值不够灵活，有时候我们需要37分成的明暗划分，当然，做法依然简单，就是step的参考值可以作为参数暴露在材质面上，或者给定一个风格上比较符合的值。</p>
+<h3 id="CellShading羽化明暗交界边缘的改进"><a href="#CellShading羽化明暗交界边缘的改进" class="headerlink" title="CellShading羽化明暗交界边缘的改进"></a>CellShading羽化明暗交界边缘的改进</h3><p>smoothstep函数可以参考<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/157758600">Shader实验室: smoothstep函数 - 知乎 (zhihu.com)</a>，用于0-1之间的函数曲线平滑过度.这里用IQ大佬的GraphToy做一张图对比一下step和smoothstep的区别</p>
+<img src="/ToonShading-1/t2.png" alt="t2" style="zoom:80%;">
+
+<p>可以看到step原本的硬过度变得柔和了起来，这主要基于smoothstep的两个参考值的位置，假如参考值AB都是一个值，那么smoothstep和step效果是完全一样的</p>
+<p><strong>smoothstep shading:</strong></p>
+<figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">half Lambert=<span class="built_in">dot</span>(MainLightDir,normal);</span><br><span class="line">            half HalfLambert=<span class="number">0.5</span>*Lambert+<span class="number">0.5</span>;</span><br><span class="line">            HalfLambert=<span class="built_in">min</span>(HalfLambert,ShadowAttenuation);</span><br><span class="line">            half SmoothstepLambert=<span class="built_in">smoothstep</span>(_SmoothEdge,_SmoothEdge+_SmoothLen,Lambert);</span><br><span class="line">            half HalfLambertSmooth=SmoothstepLambert*_LambertFactor+<span class="number">1</span>-_LambertFactor;</span><br><span class="line">            half HalfLambertWrap=saturate((HalfLambertSmooth+_HalfLambertWrap)/(<span class="number">1</span>+_HalfLambertWrap));</span><br></pre></td></tr></table></figure>
+
+<p>这里为了让参数更加可控，暴露了许多参数用于调节明暗边缘软硬、着色强度以及灰度偏移。</p>
+<img src="/ToonShading-1/t3.png" alt="t3" style="zoom:80%;">
+
+<p>这里最终的颜色做了一次插值，lerp(贴图，贴图*指定暗色，smoothstep结果)让暗部颜色有倾向而不是单纯的变黑。</p>
+<h3 id="rampMap引入"><a href="#rampMap引入" class="headerlink" title="rampMap引入"></a>rampMap引入</h3><img src="/ToonShading-1/ramp.jpg" alt="ramp" style="zoom:80%;">
+
+<p>valve在《军团要塞2》首先开始使用这个做法，我们在拿到光照强度结果后（无论是step的还是smoothstep的），本身只是灰度信息或者说就是强度信息，军团要塞的制作团队把这张只有X轴记录颜色信息的贴图引入了进来，称其为rampmap（如果有使用过SD的朋友可以完全理解为gradientmap）<img src="/ToonShading-1/ramp2.png" alt="ramp2" style="zoom:80%;"></p>
+<p>，估计各位看到这张图就猜到了些什么，我们算的NdotL本身就是对应的光照方向法线方向的光照强度，那么我们以NdotL（其实是NdotL*0.5+0.5，因为NdotL在【-1,1】区间，我们UV的x轴需要【0-1】）作为X轴坐标，去采样这张rampmap不就完成为了美术指定不同明暗的颜色变换吗。具体逻辑其实就是一个颜色映射技巧。如下图</p>
+<img src="/ToonShading-1/ramp3.jpg" alt="ramp3" style="zoom: 50%;">
+
+<figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#ifdef _RAMP</span></span><br><span class="line">               rampCol=SAMPLE_TEXTURE2D(_RampMap,sampler_RampMap,float2(HalfLambert,curvature)).rgb;  <span class="comment">//这里可以不考虑曲率只考虑X</span></span><br><span class="line">               rampCol=lerp(half3(<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>),rampCol,_RampMapFactor);</span><br><span class="line"></span><br><span class="line"><span class="meta">#endif</span></span><br></pre></td></tr></table></figure>
+
+<p>rampmap结果：</p>
+<img src="/ToonShading-1/ramp4.png" alt="ramp4" style="zoom:67%;">
+
+
+
+<p>分享一个我自己的rampmap制作小工具</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/ever17-luqc/Unity_ToonRampmapGen/blob/main/ToonRampMapGen.cs">Unity_ToonRampmapGen/ToonRampMapGen.cs at main · ever17-luqc/Unity_ToonRampmapGen (github.com)</a></p>
+<p>如果考虑曲率，那其实rampmap就和SSSLut一个原理了！SSSLut其实本身就是一个二维的rampmap，或者说他们本质都是一个Lut。</p>
+<h3 id="起夜级李姐-ilm贴图"><a href="#起夜级李姐-ilm贴图" class="headerlink" title="起夜级李姐-ilm贴图"></a>起夜级李姐-ilm贴图</h3><p>更加官方的内容可以参考2015年GDC上Arc System Works’ RED team的分享“GuiltyGearXrd’s Art Style : The X Factor Between 2D and 3D”<a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=yhGjCzxJV3E">GuiltyGearXrd’s Art Style : The X Factor Between 2D and 3D - YouTube</a>，干活太多，网上也有太多的分析解读，这里只简单谈谈ilm贴图部分。</p>
+<img src="/ToonShading-1/arc.png" alt="arc" style="zoom:50%;">
+
+<p>他们的基础shading部分依然是沿用了celshading，这点现在大多纯日式渲染都是这个路子。因为如果smoothstep没那味儿，不够二，因为传统的日本动画也好漫画也好一般不会去做阴影过度（节省成本和时间）。</p>
+<p>然后就是关键点，他们的ilm贴图，其中RB通道控制高光的强度和范围比较常规，G通道比较酷炫，整了一个固定阴影通道，配合顶点色形成一个阈值区域，如果漫反射强度小于这个阈值将变成固定阴影区域，这种做法好处在于，如果漫反射贴图上画阴影显然是错误的做法，相当于漫反射贴图=漫反射*暗部阴影，这样在计算玩光照强度后乘上漫反射颜色等于做了两次暗部计算，会导致结果完全出乎把控。</p>
+<p>这个G通道也可以理解为PBR的AO的漫反射版本，AO遮蔽的是环境光，而ilm的G通道为的是动漫里的固定阴影区。</p>
+<h2 id="高光部分"><a href="#高光部分" class="headerlink" title="高光部分"></a>高光部分</h2><p>​        高光的做法暂时还比较常规，NPR里的修改高光的形状之类的做法以前试验过，但是效果非常不可控，这在于流程化的制作中是非常不利的。</p>
+<pre><code>    现在常见的做法还是ilm贴图RG通道控制高光强弱范围也就是类似simplelit的那套做法，还有就是引入PBR的高光项，比如现在常用的GGX高光项
+</code></pre>
+<img src="/ToonShading-1/spec.jpg" alt="spec" style="zoom:80%;">
+
+<p>​     拿常规的blinn-phong高光结合ilm举一个例子</p>
+<figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">half3 viewDir= <span class="built_in">normalize</span>(_WorldSpaceCameraPos.xyz- i.posWS);</span><br><span class="line">                half3 halfVector=<span class="built_in">normalize</span>(MainLightDir+viewDir);</span><br><span class="line">                half NdotH=saturate(<span class="built_in">dot</span>(halfVector,normal));</span><br><span class="line">                </span><br><span class="line">            <span class="meta">#ifdef ILM_SPEC</span></span><br><span class="line">                </span><br><span class="line">                half Glossness=ilmTexResult.r;</span><br><span class="line">                half SpecMask =ilmTexResult.b;</span><br><span class="line">               </span><br><span class="line"></span><br><span class="line">                </span><br><span class="line">               </span><br><span class="line">                SpecTerm=<span class="built_in">smoothstep</span>(_SpecSmoothEdge,_SpecSmoothEdge+_SpecSmoothLen,<span class="built_in">pow</span>(NdotH,Glossness*_GlossStr)*SpecMask)*_SpecStr*_SpecCol;</span><br><span class="line">                </span><br><span class="line">                </span><br><span class="line">            <span class="meta">#endif</span></span><br><span class="line">            <span class="meta">#ifdef SIMPLE_SPEC</span></span><br><span class="line">               </span><br><span class="line">                SpecTerm=<span class="built_in">smoothstep</span>(_SpecSmoothEdge,_SpecSmoothEdge+_SpecSmoothLen,<span class="built_in">pow</span>(NdotH,_GlossStr))*_SpecStr*_SpecCol;</span><br><span class="line">               </span><br><span class="line">            <span class="meta">#endif</span></span><br></pre></td></tr></table></figure>
+
+<h2 id="边缘光部分"><a href="#边缘光部分" class="headerlink" title="边缘光部分"></a>边缘光部分</h2><p>现在比较常见的有基于深度图偏移的，也有常规的基于1-NdotV然后拿反向lambert遮罩的。</p>
+<figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//rim light======================</span></span><br><span class="line">                </span><br><span class="line">            <span class="comment">//rimLight部分可以也可以使用基于深度图偏移的边缘光，适合硬表面传统边缘光由于法线太过于平坦导致的范围过大</span></span><br><span class="line">            half NdotV=<span class="built_in">dot</span>(normal,viewDir);</span><br><span class="line">            half rimMask=<span class="number">1</span>-Lambert;</span><br><span class="line">            half rimFactor=saturate(<span class="built_in">pow</span>(<span class="number">1</span>-NdotV,_RimRange));</span><br><span class="line">            half rimArea=rimFactor&gt;_RimThreshold?rimFactor*rimMask*_RimStrength:<span class="number">0</span>;  </span><br><span class="line">            </span><br><span class="line">            half3 rimCol=rimArea*_RimColor;</span><br><span class="line">             <span class="comment">//return rimArea;</span></span><br><span class="line">            <span class="comment">//===============================</span></span><br></pre></td></tr></table></figure>
+
+
+
+<p>下图为了方便观察把边缘光拉到最亮：</p>
+<img src="/ToonShading-1/rim.png" alt="rim" style="zoom:80%;">
+
+<p>这种基于1-NdotV的边缘光最大的问题就是硬表面会由于法线过于一致导致亮面很大很难看，可以采用深度图偏移的方法。</p>
+<p>深度图偏移边缘光的做法会和基于深度的额发投影类似，后续会讲到基于深度的额发投影。</p>
+<h2 id="环境光部分"><a href="#环境光部分" class="headerlink" title="环境光部分"></a>环境光部分</h2><p>最常用的是IBL的那套做法，环境光漫反射部分可以用球谐光照来做，镜面反射部分基于粗糙度采用cubemap。具体做法细节会有许多差别，比如对应的系数由于我们没有粗糙度和金属度，我们可以用ilm的r.b通道去做代替。或者最简单粗暴的做法是除非金属度高去掉环境高光项，只保留球谐光照（常规的二次元内容比如动漫一般环境光也就是叠一个色，很少去做环境光的细节，强反射的除外，但是强反射市面上的大部分二次元游戏也大部分选择去手绘贴图或者干脆直接用matcap做）</p>
+<h2 id="描边部分"><a href="#描边部分" class="headerlink" title="描边部分"></a>描边部分</h2><p>​        描边部分有许多分支。</p>
+<p>​        最简单的就是画在贴图上的描边，这里GGX也用到了这个，但是GGX为了描边贴图去除锯齿UV都是展直横竖摆，对UV要求很高而且会因为这种UV导致贴图上不能有纹理否则纹理必然由于UV问题存在大量锯齿（因为为了凑这种UV导致UV拉伸非常严重）。</p>
+<p>然后就是常见的沿着法线方向挤出剔除前方。</p>
+<p>​        屏幕空间描边存在本身的问题，因为屏幕空间描边无法让同场景物体描边的粗细起伏不同，都是统一的粗细，而且由于本身是基于算子算梯度的，导致了低频部分描边困难，高频部分有时候又会存在描边过于散的问题，最大的问题也就是因为这种不可控导致了用的比较少。《无主之地》系列采用的就是这种屏幕空间描边。</p>
+<p>​        基于geometry shader的描边实现起来有比较大的难度，具体思路就是拿到轮廓边、边界边、折缝边，然后在geometryshader里把边转换成描边面。这种做法具有一定工程难度，本人暂时没自己实现过，有兴趣的可以参考灵刃大佬的这篇<a target="_blank" rel="noopener" href="https://www.cnblogs.com/lht666/p/11447199.html">Unity3D 卡通渲染 基于退化四边形的实时描边 - L-灵刃 - 博客园 (cnblogs.com)</a></p>
+<p>​        最烂的办法是类似边缘光的做法，只是把边缘光部分拉强，非常不推荐，效果简直无语。</p>
+<p>​        还有一些游戏做了一些自己的处理，比如二之国的基于顶点色在屏幕空间描边，其实原理和屏幕空间描边一致，只不过屏幕空间描的是屏幕的RT，这里他描的是自己的顶点色RT。</p>
+<p>​        以常见的挤出外描线为例（有些人为了让不同距离看到的描边粗细一致，会*w做反齐次变换，但是实测效果不理想就没写）：</p>
+<figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">float3 worldPos=TransformObjectToWorld(v.vertex);</span><br><span class="line">               o.uv = TRANSFORM_TEX(v.uv, _MainTex);</span><br><span class="line">               <span class="type">float</span> distanceFN=<span class="built_in">distance</span>(worldPos,_WorldSpaceCameraPos.xyz)&gt;_FadeDistance?<span class="number">0</span>:<span class="built_in">distance</span>(worldPos,_WorldSpaceCameraPos.xyz);</span><br><span class="line">               half Length=<span class="built_in">smoothstep</span>(_FarLen,_NearLen,distanceFN)*_OutlineLen;</span><br><span class="line">               float4 CameraDirClip=mul(UNITY_MATRIX_VP,float4(_WorldSpaceCameraPos,<span class="number">1</span>));</span><br><span class="line">              </span><br><span class="line">               o.vertex = TransformObjectToHClip(float4(v.vertex.xyz+v.normal*Length,<span class="number">1</span>));</span><br><span class="line">				o.vertex.z+=CameraDirClip.z*_Offset;</span><br></pre></td></tr></table></figure>
+
+<img src="/ToonShading-1/outline.png" alt="outline" style="zoom:80%;">
+
+<p>这里让裁剪空间的Z值沿着摄像机的Z偏移来消除某些转折处描边的断开。</p>
+<p>另外像类似于头发之类的由于必然会做硬边，导致顶点可能存在多个方向的法线，这样导致的挤出会裂开，解决方法可以是写插件把和合并的法线放到顶点切线数据里，但是如果游戏里用到了法线贴图那么由于切线空间放的不是切线了会出现问题。以及也有把计算的法线存到UV3的方法（静态物体烘lightmap需要用到UV2）。参考<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/130921684">硬边外描边断边问题 - 知乎 (zhihu.com)</a></p>
+<p>补充：描边部分可以做些好玩的效果，之前写过一篇还原风格化描边的文章：<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/368236402">在unity使用Shader制作一种风格化外描边 - 知乎 (zhihu.com)</a></p>
+<h2 id="插播：基于深度图的投影"><a href="#插播：基于深度图的投影" class="headerlink" title="插播：基于深度图的投影"></a>插播：基于深度图的投影</h2><p>原理非常简单，我们单独渲染一张头发的深度RT，只需要占用一个R通道，脸部材质中开启这个宏，偏移采样这张RT和当前深度对比，如果当前深度大于RT深度则判定为头发投影区域，你看，原理还不是shadowmap那套吗。</p>
+<p>RendererFeature</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br></pre></td><td class="code"><pre><span class="line">using UnityEngine;</span><br><span class="line">using UnityEngine.Rendering;</span><br><span class="line">using UnityEngine.Rendering.Universal;</span><br><span class="line">using System;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">public class ToonHairShadowRenderPassFeature : ScriptableRendererFeature</span><br><span class="line">&#123;</span><br><span class="line">    [Serializable]</span><br><span class="line">    public class ToonHairShadowSettings</span><br><span class="line">    &#123;</span><br><span class="line">        public LayerMask hairLayer;</span><br><span class="line"></span><br><span class="line">        public Material  material;</span><br><span class="line"></span><br><span class="line">        [Range(0, 5000)]</span><br><span class="line">        public int QueueMin=1000;</span><br><span class="line">        [Range(0, 5000)]</span><br><span class="line">        public int QueueMax=3000;</span><br><span class="line">        public RenderPassEvent renderPassEvent = RenderPassEvent.BeforeRenderingOpaques;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    &#125; </span><br><span class="line"></span><br><span class="line">    public ToonHairShadowSettings m_HairShadowSettings=new ToonHairShadowSettings();</span><br><span class="line">    </span><br><span class="line"></span><br><span class="line">    class CustomRenderPass : ScriptableRenderPass</span><br><span class="line">    &#123;   </span><br><span class="line"></span><br><span class="line">        public ShaderTagId shaderTagId_Hair = new ShaderTagId(&quot;UniversalForward&quot;);</span><br><span class="line">        ToonHairShadowSettings settings;</span><br><span class="line">        int renderTargetId;</span><br><span class="line">        FilteringSettings hair_FilteringSettings;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        public CustomRenderPass(ToonHairShadowSettings settings)</span><br><span class="line">        &#123;</span><br><span class="line">            this.settings = settings;</span><br><span class="line">            RenderQueueRange renderQueueRange = new RenderQueueRange(settings.QueueMin, settings.QueueMax);</span><br><span class="line">            hair_FilteringSettings = new FilteringSettings(renderQueueRange, settings.hairLayer);</span><br><span class="line">            this.renderPassEvent = settings.renderPassEvent;</span><br><span class="line">           </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line">        // This method is called before executing the render pass.</span><br><span class="line">        // It can be used to configure render targets and their clear state. Also to create temporary render target textures.</span><br><span class="line">        // When empty this render pass will render to the active camera render target.</span><br><span class="line">        // You should never call CommandBuffer.SetRenderTarget. Instead call &lt;c&gt;ConfigureTarget&lt;/c&gt; and &lt;c&gt;ConfigureClear&lt;/c&gt;.</span><br><span class="line">        // The render pipeline will ensure target setup and clearing happens in an performance manner.</span><br><span class="line">        public override void Configure(CommandBuffer cmd, RenderTextureDescriptor cameraTextureDescriptor)</span><br><span class="line">        &#123;</span><br><span class="line">            renderTargetId = Shader.PropertyToID(&quot;_HairShadowTexture&quot;);</span><br><span class="line">            cmd.GetTemporaryRT(renderTargetId, cameraTextureDescriptor);</span><br><span class="line">            ConfigureTarget(renderTargetId);</span><br><span class="line">            ConfigureClear(ClearFlag.All,Color.black);</span><br><span class="line">            </span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        </span><br><span class="line">        public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData)</span><br><span class="line">        &#123;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">            DrawingSettings drawHair = CreateDrawingSettings(shaderTagId_Hair,ref renderingData,renderingData.cameraData.defaultOpaqueSortFlags);</span><br><span class="line">            drawHair.overrideMaterial = settings.material;</span><br><span class="line">            drawHair.overrideMaterialPassIndex = 0;</span><br><span class="line">            context.DrawRenderers(renderingData.cullResults, ref drawHair, ref hair_FilteringSettings);</span><br><span class="line"></span><br><span class="line">            </span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        public override void FrameCleanup(CommandBuffer cmd)</span><br><span class="line">        &#123;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    CustomRenderPass m_ScriptablePass;</span><br><span class="line"></span><br><span class="line">    public override void Create()</span><br><span class="line">    &#123;</span><br><span class="line">        m_ScriptablePass = new CustomRenderPass(m_HairShadowSettings);</span><br><span class="line"></span><br><span class="line">       </span><br><span class="line">      </span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData)</span><br><span class="line">    &#123;</span><br><span class="line">        renderer.EnqueuePass(m_ScriptablePass);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>渲染RT所需要的shader</p>
+<figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br></pre></td><td class="code"><pre><span class="line">Shader &quot;Hidden/ForRendererFeatures/DrawHairShadow&quot;</span><br><span class="line">&#123;</span><br><span class="line"></span><br><span class="line">    SubShader &#123;</span><br><span class="line">        Tags &#123; &quot;RenderType&quot;=&quot;Opaque&quot; &quot;RenderPipeline&quot;=&quot;UniversalRenderPipeline&quot; &#125;</span><br><span class="line"></span><br><span class="line">        HLSLINCLUDE</span><br><span class="line">        <span class="meta">#include &quot;Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl&quot;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        ENDHLSL</span><br><span class="line"></span><br><span class="line">        </span><br><span class="line">        Pass &#123;</span><br><span class="line">            Name &quot;Draw Hair Pass&quot;</span><br><span class="line">            Tags &#123; &quot;LightMode&quot;=&quot;UniversalForward&quot; &#125;</span><br><span class="line"></span><br><span class="line">            HLSLPROGRAM</span><br><span class="line">            <span class="meta">#pragma vertex vert</span></span><br><span class="line">            <span class="meta">#pragma fragment frag</span></span><br><span class="line"></span><br><span class="line">            struct a2v &#123;</span><br><span class="line">                float4 positionOS   : POSITION;</span><br><span class="line">         </span><br><span class="line">            &#125;;</span><br><span class="line"></span><br><span class="line">            struct v2f &#123;</span><br><span class="line">                float4 positionCS  : SV_POSITION;</span><br><span class="line">            &#125;;</span><br><span class="line">              </span><br><span class="line"></span><br><span class="line">            v2f vert(a2v v) &#123;</span><br><span class="line">                v2f o;</span><br><span class="line"></span><br><span class="line">                o.positionCS = TransformObjectToHClip(v.positionOS.xyz);</span><br><span class="line"></span><br><span class="line">                <span class="keyword">return</span> o;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            half4 frag(v2f i) : SV_Target &#123;</span><br><span class="line">                half depth=i.positionCS.z/i.positionCS.w*<span class="number">0.5</span>+<span class="number">0.5</span>;</span><br><span class="line">                <span class="keyword">return</span> half4(depth,<span class="number">0</span>,<span class="number">0</span>,<span class="number">1</span>);</span><br><span class="line">            &#125;</span><br><span class="line">            ENDHLSL</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">            </span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>效果：</p>
+<img src="/ToonShading-1/RF.png" alt="RF" style="zoom:150%;">
+
+<p>==这里无视脖子那里的投影问题，因为这个模型脖子和脸是坐在一起用的一个材质球！！淦==</p>
+<p>shader：</p>
+<figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#ifdef _SPSHADOWMODE_RENDERERFEATURE</span></span><br><span class="line">             </span><br><span class="line">                half hairShadowTex=SAMPLE_TEXTURE2D(_HairShadowTexture,sampler_HairShadowTexture,i.shadowcoord.xy/i.shadowcoord.w+_RFShadowOffset*TransformWorldToViewDir(MainLightDir)*<span class="number">1</span>/(<span class="number">3</span>*i.vertex.w));</span><br><span class="line">                 ShadowAttenuation=(hairShadowTex-(i.vertex.z/i.vertex.w*<span class="number">0.5</span>+<span class="number">0.5</span>))&gt;<span class="number">0</span>?<span class="number">0</span>:<span class="number">1</span>;</span><br><span class="line">                ShadowAttenuation=lerp(<span class="number">1</span>,ShadowAttenuation,_SPShadowStr);</span><br><span class="line">                <span class="comment">//return ShadowAttenuation;</span></span><br><span class="line">              <span class="meta">#endif</span></span><br></pre></td></tr></table></figure>
+
+<figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">half Lambert=<span class="built_in">min</span>(<span class="built_in">dot</span>(MainLightDir,normal),ShadowAttenuation);</span><br></pre></td></tr></table></figure>
+
+<p>简单说一下这里为什么shadowattenuation放在lambert里，而不是最后乘进去。这样是方便结合rampmap否则阴影无法融入我们的卡渲，代价是投影颜色无法做单独指定。</p>
+<h2 id="基础部分shader内容（部分功能没去测试，可能存在BUG）"><a href="#基础部分shader内容（部分功能没去测试，可能存在BUG）" class="headerlink" title="基础部分shader内容（部分功能没去测试，可能存在BUG）"></a>基础部分shader内容（部分功能没去测试，可能存在BUG）</h2><figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br><span class="line">263</span><br><span class="line">264</span><br><span class="line">265</span><br><span class="line">266</span><br><span class="line">267</span><br><span class="line">268</span><br><span class="line">269</span><br><span class="line">270</span><br><span class="line">271</span><br><span class="line">272</span><br><span class="line">273</span><br><span class="line">274</span><br><span class="line">275</span><br><span class="line">276</span><br><span class="line">277</span><br><span class="line">278</span><br><span class="line">279</span><br><span class="line">280</span><br><span class="line">281</span><br><span class="line">282</span><br><span class="line">283</span><br><span class="line">284</span><br><span class="line">285</span><br><span class="line">286</span><br><span class="line">287</span><br><span class="line">288</span><br><span class="line">289</span><br><span class="line">290</span><br><span class="line">291</span><br><span class="line">292</span><br><span class="line">293</span><br><span class="line">294</span><br><span class="line">295</span><br><span class="line">296</span><br><span class="line">297</span><br><span class="line">298</span><br><span class="line">299</span><br><span class="line">300</span><br><span class="line">301</span><br><span class="line">302</span><br><span class="line">303</span><br><span class="line">304</span><br><span class="line">305</span><br><span class="line">306</span><br><span class="line">307</span><br><span class="line">308</span><br><span class="line">309</span><br><span class="line">310</span><br><span class="line">311</span><br><span class="line">312</span><br><span class="line">313</span><br><span class="line">314</span><br><span class="line">315</span><br><span class="line">316</span><br><span class="line">317</span><br><span class="line">318</span><br><span class="line">319</span><br><span class="line">320</span><br><span class="line">321</span><br><span class="line">322</span><br><span class="line">323</span><br><span class="line">324</span><br><span class="line">325</span><br><span class="line">326</span><br><span class="line">327</span><br><span class="line">328</span><br><span class="line">329</span><br><span class="line">330</span><br><span class="line">331</span><br><span class="line">332</span><br><span class="line">333</span><br><span class="line">334</span><br><span class="line">335</span><br><span class="line">336</span><br><span class="line">337</span><br><span class="line">338</span><br><span class="line">339</span><br><span class="line">340</span><br><span class="line">341</span><br><span class="line">342</span><br><span class="line">343</span><br><span class="line">344</span><br><span class="line">345</span><br><span class="line">346</span><br><span class="line">347</span><br><span class="line">348</span><br><span class="line">349</span><br><span class="line">350</span><br><span class="line">351</span><br><span class="line">352</span><br><span class="line">353</span><br><span class="line">354</span><br><span class="line">355</span><br><span class="line">356</span><br><span class="line">357</span><br><span class="line">358</span><br><span class="line">359</span><br><span class="line">360</span><br><span class="line">361</span><br><span class="line">362</span><br><span class="line">363</span><br><span class="line">364</span><br><span class="line">365</span><br><span class="line">366</span><br><span class="line">367</span><br><span class="line">368</span><br><span class="line">369</span><br><span class="line">370</span><br><span class="line">371</span><br><span class="line">372</span><br><span class="line">373</span><br><span class="line">374</span><br><span class="line">375</span><br><span class="line">376</span><br><span class="line">377</span><br><span class="line">378</span><br><span class="line">379</span><br><span class="line">380</span><br><span class="line">381</span><br><span class="line">382</span><br><span class="line">383</span><br><span class="line">384</span><br><span class="line">385</span><br><span class="line">386</span><br><span class="line">387</span><br><span class="line">388</span><br><span class="line">389</span><br><span class="line">390</span><br><span class="line">391</span><br><span class="line">392</span><br><span class="line">393</span><br><span class="line">394</span><br><span class="line">395</span><br><span class="line">396</span><br><span class="line">397</span><br><span class="line">398</span><br><span class="line">399</span><br><span class="line">400</span><br><span class="line">401</span><br><span class="line">402</span><br><span class="line">403</span><br><span class="line">404</span><br><span class="line">405</span><br><span class="line">406</span><br><span class="line">407</span><br><span class="line">408</span><br><span class="line">409</span><br><span class="line">410</span><br><span class="line">411</span><br><span class="line">412</span><br><span class="line">413</span><br><span class="line">414</span><br><span class="line">415</span><br><span class="line">416</span><br><span class="line">417</span><br><span class="line">418</span><br><span class="line">419</span><br><span class="line">420</span><br><span class="line">421</span><br><span class="line">422</span><br><span class="line">423</span><br><span class="line">424</span><br><span class="line">425</span><br><span class="line">426</span><br><span class="line">427</span><br><span class="line">428</span><br><span class="line">429</span><br><span class="line">430</span><br><span class="line">431</span><br><span class="line">432</span><br><span class="line">433</span><br><span class="line">434</span><br><span class="line">435</span><br><span class="line">436</span><br><span class="line">437</span><br><span class="line">438</span><br><span class="line">439</span><br><span class="line">440</span><br><span class="line">441</span><br><span class="line">442</span><br><span class="line">443</span><br><span class="line">444</span><br><span class="line">445</span><br><span class="line">446</span><br><span class="line">447</span><br><span class="line">448</span><br><span class="line">449</span><br><span class="line">450</span><br><span class="line">451</span><br><span class="line">452</span><br><span class="line">453</span><br><span class="line">454</span><br><span class="line">455</span><br><span class="line">456</span><br><span class="line">457</span><br><span class="line">458</span><br><span class="line">459</span><br><span class="line">460</span><br><span class="line">461</span><br><span class="line">462</span><br><span class="line">463</span><br><span class="line">464</span><br><span class="line">465</span><br><span class="line">466</span><br><span class="line">467</span><br><span class="line">468</span><br><span class="line">469</span><br><span class="line">470</span><br><span class="line">471</span><br><span class="line">472</span><br><span class="line">473</span><br><span class="line">474</span><br><span class="line">475</span><br><span class="line">476</span><br><span class="line">477</span><br><span class="line">478</span><br><span class="line">479</span><br><span class="line">480</span><br><span class="line">481</span><br><span class="line">482</span><br><span class="line">483</span><br><span class="line">484</span><br><span class="line">485</span><br><span class="line">486</span><br><span class="line">487</span><br><span class="line">488</span><br><span class="line">489</span><br><span class="line">490</span><br><span class="line">491</span><br><span class="line">492</span><br><span class="line">493</span><br><span class="line">494</span><br><span class="line">495</span><br><span class="line">496</span><br><span class="line">497</span><br><span class="line">498</span><br><span class="line">499</span><br><span class="line">500</span><br><span class="line">501</span><br><span class="line">502</span><br><span class="line">503</span><br><span class="line">504</span><br><span class="line">505</span><br><span class="line">506</span><br><span class="line">507</span><br><span class="line">508</span><br><span class="line">509</span><br><span class="line">510</span><br><span class="line">511</span><br><span class="line">512</span><br><span class="line">513</span><br><span class="line">514</span><br><span class="line">515</span><br><span class="line">516</span><br><span class="line">517</span><br><span class="line">518</span><br><span class="line">519</span><br><span class="line">520</span><br><span class="line">521</span><br><span class="line">522</span><br><span class="line">523</span><br><span class="line">524</span><br><span class="line">525</span><br><span class="line">526</span><br><span class="line">527</span><br><span class="line">528</span><br><span class="line">529</span><br><span class="line">530</span><br><span class="line">531</span><br><span class="line">532</span><br><span class="line">533</span><br><span class="line">534</span><br><span class="line">535</span><br><span class="line">536</span><br><span class="line">537</span><br><span class="line">538</span><br><span class="line">539</span><br><span class="line">540</span><br><span class="line">541</span><br><span class="line">542</span><br><span class="line">543</span><br><span class="line">544</span><br><span class="line">545</span><br><span class="line">546</span><br><span class="line">547</span><br><span class="line">548</span><br><span class="line">549</span><br><span class="line">550</span><br><span class="line">551</span><br><span class="line">552</span><br><span class="line">553</span><br><span class="line">554</span><br><span class="line">555</span><br><span class="line">556</span><br><span class="line">557</span><br><span class="line">558</span><br><span class="line">559</span><br><span class="line">560</span><br><span class="line">561</span><br><span class="line">562</span><br><span class="line">563</span><br><span class="line">564</span><br><span class="line">565</span><br><span class="line">566</span><br><span class="line">567</span><br><span class="line">568</span><br><span class="line">569</span><br><span class="line">570</span><br><span class="line">571</span><br><span class="line">572</span><br><span class="line">573</span><br><span class="line">574</span><br><span class="line">575</span><br><span class="line">576</span><br><span class="line">577</span><br><span class="line">578</span><br><span class="line">579</span><br><span class="line">580</span><br><span class="line">581</span><br><span class="line">582</span><br><span class="line">583</span><br><span class="line">584</span><br><span class="line">585</span><br><span class="line">586</span><br><span class="line">587</span><br><span class="line">588</span><br><span class="line">589</span><br><span class="line">590</span><br><span class="line">591</span><br><span class="line">592</span><br><span class="line">593</span><br><span class="line">594</span><br><span class="line">595</span><br><span class="line">596</span><br><span class="line">597</span><br><span class="line">598</span><br><span class="line">599</span><br><span class="line">600</span><br><span class="line">601</span><br><span class="line">602</span><br><span class="line">603</span><br><span class="line">604</span><br><span class="line">605</span><br><span class="line">606</span><br><span class="line">607</span><br><span class="line">608</span><br><span class="line">609</span><br><span class="line">610</span><br><span class="line">611</span><br><span class="line">612</span><br><span class="line">613</span><br><span class="line">614</span><br><span class="line">615</span><br><span class="line">616</span><br><span class="line">617</span><br><span class="line">618</span><br><span class="line">619</span><br><span class="line">620</span><br><span class="line">621</span><br><span class="line">622</span><br><span class="line">623</span><br><span class="line">624</span><br><span class="line">625</span><br><span class="line">626</span><br><span class="line">627</span><br><span class="line">628</span><br><span class="line">629</span><br><span class="line">630</span><br><span class="line">631</span><br><span class="line">632</span><br><span class="line">633</span><br><span class="line">634</span><br><span class="line">635</span><br><span class="line">636</span><br><span class="line">637</span><br><span class="line">638</span><br><span class="line">639</span><br><span class="line">640</span><br><span class="line">641</span><br><span class="line">642</span><br><span class="line">643</span><br><span class="line">644</span><br><span class="line">645</span><br><span class="line">646</span><br><span class="line">647</span><br><span class="line">648</span><br><span class="line">649</span><br><span class="line">650</span><br><span class="line">651</span><br><span class="line">652</span><br><span class="line">653</span><br><span class="line">654</span><br><span class="line">655</span><br><span class="line">656</span><br><span class="line">657</span><br><span class="line">658</span><br><span class="line">659</span><br><span class="line">660</span><br><span class="line">661</span><br><span class="line">662</span><br><span class="line">663</span><br><span class="line">664</span><br><span class="line">665</span><br><span class="line">666</span><br><span class="line">667</span><br><span class="line">668</span><br><span class="line">669</span><br><span class="line">670</span><br><span class="line">671</span><br><span class="line">672</span><br><span class="line">673</span><br><span class="line">674</span><br><span class="line">675</span><br></pre></td><td class="code"><pre><span class="line">Shader &quot;ToonCharacter/ToonLit&quot;</span><br><span class="line">&#123;</span><br><span class="line">    Properties</span><br><span class="line">    &#123;   [Foldout]_Debug(&quot;Debug&quot;,Float)=<span class="number">0</span></span><br><span class="line">        [<span class="keyword">if</span>(_Debug)][Enum(Final,<span class="number">0</span>,MainTex,<span class="number">1</span>)]_Debug1(&quot;Tex&quot;,Float)=<span class="number">0</span></span><br><span class="line">        [Header(Core Propties Inspector)]</span><br><span class="line">        [Space(<span class="number">20</span>)]</span><br><span class="line">        [Enum(UnityEngine.Rendering.CullMode)]_CullMode(&quot;Cull Mode&quot;,Float)=<span class="number">0</span></span><br><span class="line">        [Enum(UnityEngine.Rendering.BlendMode)] _SrcBlend (&quot;Src Blend Mode&quot;, Float) = <span class="number">1</span></span><br><span class="line">		[Enum(UnityEngine.Rendering.BlendMode)] _DstBlend (&quot;Dst Blend Mode&quot;, Float) = <span class="number">1</span></span><br><span class="line">        [Enum(Normal, <span class="number">4</span>, Eyebrow, <span class="number">5</span>,Always,<span class="number">8</span>)] _ZTest (&quot;ZTest&quot;, Float) = <span class="number">4</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        </span><br><span class="line"></span><br><span class="line">        [Space(<span class="number">5</span>)][Line]</span><br><span class="line">        [SingleLine]_MainTex (&quot;★ Main Texture&quot;, <span class="number">2</span>D) = &quot;white&quot; &#123;&#125;</span><br><span class="line">        [Toggle(ALPHA_CLIP)]_UseAlphaClip(&quot;Use Alpha Clip&quot;,Float)=<span class="number">0</span></span><br><span class="line">        [HideSwitch(_UseAlphaClip)]_ClipValue(&quot;Clip Value&quot;,Range(<span class="number">0</span>,<span class="number">1</span>))=<span class="number">0</span></span><br><span class="line">        </span><br><span class="line">        [SingleLine][IfDef(_EMISSIVE)]_EmissionTex(&quot;● EmissionTex&quot;,<span class="number">2</span>D)=&quot;white&quot;&#123;&#125;</span><br><span class="line">        [HDR]_EmissiveCol(&quot;Emissive Color&quot;,Color)=(<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>)</span><br><span class="line">        [Toggle(HIGHQUALITY_NORMAL)]_HighQualityNorm(&quot;Use High Quality Default Normal&quot;,Float)=<span class="number">0</span></span><br><span class="line">        [SingleLine][IfDef(_NORMAL)][Line][indentLevelPP1]_NormalMap(&quot;● Normal Map&quot;,<span class="number">2</span>D)=&quot;bump&quot;&#123;&#125;</span><br><span class="line">        [SingleLine][IfDef(_CURVATURE)]_Curvature(&quot;● Curvature Baked&quot;,<span class="number">2</span>D)=&quot;white&quot;&#123;&#125;       </span><br><span class="line"></span><br><span class="line">        [indentLevelPP1][SingleLine][Line][IfDef(_ILMTEXTURE)]_IlmTexture(&quot;◘  ilm Map(R:SpecGloss G:Shadow Threshold B:SpecMask&quot;,<span class="number">2</span>D)=&quot;white&quot;&#123;&#125;</span><br><span class="line">        </span><br><span class="line">        </span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        <span class="comment">//=====================                 </span></span><br><span class="line">        [indentLevelSS1][Header(Diffuse Lighting Function Inspector)]</span><br><span class="line">        </span><br><span class="line">        [Space(<span class="number">10</span>)]</span><br><span class="line">        <span class="comment">//[KeywordEnum(Smoothstep,N,NN)] [Line]_ShadingMode (&quot;Diffuse Shading Mode&quot;, Float) = 0</span></span><br><span class="line">        [indentLevelPP1][SingleLine][IfDef(_RAMP)]_RampMap(&quot;● Ramp Map&quot;,<span class="number">2</span>D)=&quot;white&quot;&#123;&#125;   </span><br><span class="line">        _RampMapFactor(&quot;Ramp Map Factor&quot;,Range(<span class="number">0</span>,<span class="number">1</span>))=<span class="number">1</span>   </span><br><span class="line">        </span><br><span class="line">        </span><br><span class="line">        _ShadowColor(&quot;● Shadow Color(controlled by ilm.g)&quot;,Color)=(<span class="number">0.5</span>,<span class="number">0.5</span>,<span class="number">0.5</span>)</span><br><span class="line">        </span><br><span class="line">        [indentLevelPP1][Foldout]_SmoothStepFoldout(&quot;Diffuse Smoothstep WorkFlow &quot;,Float)=<span class="number">0</span> </span><br><span class="line">        [<span class="keyword">if</span>(_SmoothStepFoldout)]_LambertFactor(&quot;Lambert Percent&quot;,Range(<span class="number">0</span>,<span class="number">1</span>))=<span class="number">0.5</span></span><br><span class="line">        [<span class="keyword">if</span>(_SmoothStepFoldout)]_DiffuseCol(&quot;Diffuse Color&quot;,Color)=(<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>)</span><br><span class="line">        [<span class="keyword">if</span>(_SmoothStepFoldout)]_SmoothEdge(&quot;Smooth Edge&quot;,Range(<span class="number">0</span>,<span class="number">1</span>))=<span class="number">0</span></span><br><span class="line">        [<span class="keyword">if</span>(_SmoothStepFoldout)]_SmoothLen(&quot;Smooth Length&quot;,Range(<span class="number">0</span>,<span class="number">1</span>))=<span class="number">0.2</span></span><br><span class="line">        [<span class="keyword">if</span>(_SmoothStepFoldout)]_HalfLambertWrap(&quot;Half Lambert Wrap &quot;,Range(<span class="number">-1</span>,<span class="number">1</span>))=<span class="number">0</span></span><br><span class="line">        [<span class="keyword">if</span>(_SmoothStepFoldout)][Toggle]_IsVertexColorControlDiff(&quot;Is VertexColorG Control Diffuse Result&quot;,Float)=<span class="number">0</span></span><br><span class="line">        [<span class="keyword">if</span>(_SmoothStepFoldout)]_DiffuseAffact(&quot;Diffuse Affact &quot;,Range(<span class="number">0</span>,<span class="number">1</span>))=<span class="number">1</span></span><br><span class="line"></span><br><span class="line">        [indentLevelSS2][Header(Specular Lighting Function Inspector)]</span><br><span class="line">        [Space(<span class="number">10</span>)]</span><br><span class="line">        </span><br><span class="line">        [Line][Toggle(SPEC_ON)]_UseSpec(&quot;Enable Specular Highlight&quot;,Float)=<span class="number">0</span></span><br><span class="line">        [HideSwitch(_UseSpec)]_SpecCol(&quot;Specular Color&quot;,Color)=(<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>)</span><br><span class="line">        [HideSwitch(_UseSpec)]_GlossStr(&quot;Glossness Strength&quot;,Float)=<span class="number">20</span></span><br><span class="line">        [HideSwitch(_UseSpec)]_SpecStr(&quot;Specular Strength&quot;,Range(<span class="number">0</span>,<span class="number">2</span>))=<span class="number">1</span></span><br><span class="line">        [HideSwitch(_UseSpec)]_SpecSmoothEdge(&quot; Specular SmoothEdge&quot;,Range(<span class="number">0</span>,<span class="number">1</span>))=<span class="number">0</span></span><br><span class="line">        [HideSwitch(_UseSpec)]_SpecSmoothLen(&quot; Specular SmoothLength&quot;,Range(<span class="number">0</span>,<span class="number">1</span>))=<span class="number">1</span></span><br><span class="line">        <span class="comment">// [HideSwitch(_UseSpec)]_Spec2Col(&quot;InvFresnel Specular Color&quot;,Color)=(1,1,1)</span></span><br><span class="line">        <span class="comment">// [HideSwitch(_UseSpec)]_Spec2Range(&quot;InvFresnel Specular Range&quot;,Float)=20</span></span><br><span class="line">        <span class="comment">// [HideSwitch(_UseSpec)]_Spec2Str(&quot;InvFresnel Specular Strength&quot;,Range(0,1))=1</span></span><br><span class="line">        <span class="comment">// [HideSwitch(_UseSpec)]_Spec2SmoothEdge(&quot;InvFresnel Specular SmoothEdge&quot;,Range(0,1))=0</span></span><br><span class="line">        <span class="comment">// [HideSwitch(_UseSpec)]_Spec2SmoothLen(&quot;InvFresnel Specular SmoothLength&quot;,Range(0,1))=0.2</span></span><br><span class="line">        </span><br><span class="line">        [Header(Additional Rendering Inspector)]</span><br><span class="line">        [Space(<span class="number">10</span>)]</span><br><span class="line">        [Line]</span><br><span class="line">        [Foldout]_ShadowFoldout(&quot; Shadow&quot;,Float)=<span class="number">1</span></span><br><span class="line">        [<span class="keyword">if</span>(_ShadowFoldout)][KeywordEnum(None,Normal,RendererFeature)]_SpShadowMode(&quot; Shadow Mode&quot;,Float)=<span class="number">0</span></span><br><span class="line">        [<span class="keyword">if</span>(_ShadowFoldout)]_SPShadowStr(&quot;Shadow Strength(If use shadow proj)&quot;,Range(<span class="number">0</span>,<span class="number">1</span>))=<span class="number">0.7</span></span><br><span class="line">        <span class="comment">//[if(_ShadowFoldout)]_SPShadowColor(&quot;Proj Shadow Color&quot;,Color)=(0,0,0)</span></span><br><span class="line">        [<span class="keyword">if</span>(_ShadowFoldout)][Foldout]_RendererFeatureShadowFoldout(&quot;RendererFeature Shadow Settings&quot;,Float)=<span class="number">0</span></span><br><span class="line">        [<span class="keyword">if</span>(_ShadowFoldout)][<span class="keyword">if</span>(_RendererFeatureShadowFoldout)]_RFShadowOffset(&quot;RendererFeature Shadow Offset&quot;,Float)=(<span class="number">0</span>,<span class="number">-0.02</span>,<span class="number">0</span>,<span class="number">0</span>)</span><br><span class="line">        </span><br><span class="line">        </span><br><span class="line">        [Header(Rim Inspector)]</span><br><span class="line">        [Space(<span class="number">10</span>)]</span><br><span class="line">        [Line]</span><br><span class="line">        <span class="comment">//_RimOffsetX(&quot;Rim Offset&quot;,Range(0,0.1))=0</span></span><br><span class="line">        <span class="comment">//_RimOffsetY(&quot;Rim Offset&quot;,Range(0,0.1))=0</span></span><br><span class="line">        _RimThreshold(&quot;Rim Threshold&quot;,Range(<span class="number">0</span>,<span class="number">1</span>))=<span class="number">0.1</span></span><br><span class="line">        _RimStrength(&quot;Rim Strength&quot;,Range(<span class="number">0</span>,<span class="number">1</span>))=<span class="number">1</span></span><br><span class="line">        _RimColor(&quot;Rim Color&quot;,color)=(<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>)</span><br><span class="line">        _RimRange(&quot;Rim Range&quot;,Range(<span class="number">5</span>,<span class="number">100</span>))=<span class="number">10</span></span><br><span class="line">        </span><br><span class="line"></span><br><span class="line">        <span class="comment">//=======================================================================</span></span><br><span class="line">        [Line]</span><br><span class="line">        [Header(Environment Inspector)]</span><br><span class="line">        [Space(<span class="number">10</span>)]</span><br><span class="line">        [Toggle(HIGH_QUALITY_SH)]_HiQualitySh(&quot;High Quality SH&quot;,Float)=<span class="number">1</span></span><br><span class="line">        <span class="comment">//=======================================================================</span></span><br><span class="line">         [Line]</span><br><span class="line">         [Header(Outline Inspector)]</span><br><span class="line">         [Space(<span class="number">10</span>)]</span><br><span class="line">         [Pass(SRPDefaultUnlit)][Toggle]_EnableOutlinePass(&quot;Enable Outline Pass&quot;,Float)=<span class="number">1</span></span><br><span class="line">         [HDR]_LineCol(&quot;Outline Color&quot;,Color)=(<span class="number">0.5</span>,<span class="number">0.5</span>,<span class="number">0.5</span>)</span><br><span class="line">         _OutlineLen(&quot;Outline Length&quot;,Float)=<span class="number">0.005</span></span><br><span class="line">         _FarLen(&quot;Far Length&quot;,Float)=<span class="number">0</span></span><br><span class="line">         _NearLen(&quot;Near Length&quot;,Float)=<span class="number">1</span></span><br><span class="line">         _WithMainTexColor(&quot;With MainTex Color&quot;,Range(<span class="number">0</span>,<span class="number">1</span>))=<span class="number">1</span></span><br><span class="line">         _WithLightColor(&quot;WithLightColor&quot;,Range(<span class="number">0</span>,<span class="number">1</span>))=<span class="number">1</span></span><br><span class="line">         _FadeDistance(&quot;Fade Distance&quot;,Float)=<span class="number">5</span></span><br><span class="line">         _Offset(&quot;Z Offset&quot;,Float)=<span class="number">0</span></span><br><span class="line">         [Toggle(SP_OUTLINE)]_SpOutlineToggle(&quot;UseSpOutline ?&quot;,Float)=<span class="number">0</span></span><br><span class="line">         [HideSwitch(_SpOutlineToggle)]_SPOutlineFreq(&quot;SPoutline Frequency(XY),RotateSpeed(Z)&quot;,Vector)=(<span class="number">0</span>,<span class="number">10</span>,<span class="number">0</span>,<span class="number">0</span>)</span><br><span class="line">         </span><br><span class="line">         </span><br><span class="line"></span><br><span class="line">        </span><br><span class="line">    &#125;</span><br><span class="line">    SubShader</span><br><span class="line">    &#123;   </span><br><span class="line"></span><br><span class="line">        Tags&#123; &quot;RenderPipeline&quot; = &quot;UniversalPipeline&quot; &#125;</span><br><span class="line"></span><br><span class="line">        LOD <span class="number">100</span></span><br><span class="line">        <span class="comment">/////////////////////////////////////////////////////</span></span><br><span class="line">        <span class="comment">//                                                 //</span></span><br><span class="line">        <span class="comment">//            UniversalToonInclude                 //</span></span><br><span class="line">        <span class="comment">//                                                 //</span></span><br><span class="line">        <span class="comment">//                                                 //</span></span><br><span class="line">        <span class="comment">/////////////////////////////////////////////////////</span></span><br><span class="line">        HLSLINCLUDE</span><br><span class="line">            <span class="meta">#include &quot;Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl&quot;</span></span><br><span class="line"></span><br><span class="line">            <span class="comment">//#pragma shader_feature _RECEIVE_SHADOWS_OFF</span></span><br><span class="line">            <span class="meta">#pragma shader_feature ALPHA_CLIP</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">          CBUFFER_START(UnityPerMaterial)</span><br><span class="line">            <span class="comment">//Debug</span></span><br><span class="line">            <span class="type">float</span> _Debug1;</span><br><span class="line">            <span class="comment">//</span></span><br><span class="line">            half _SmoothLen;</span><br><span class="line">            half _SmoothEdge;</span><br><span class="line">            half _RampMapFactor;</span><br><span class="line">            half _HalfLambertWrap;</span><br><span class="line">            half3 _DiffuseCol;</span><br><span class="line">            half3 _ShadowColor;</span><br><span class="line">            half _IsVertexColorControlDiff;</span><br><span class="line">            half _LambertFactor;</span><br><span class="line">            half _DiffuseAffact;</span><br><span class="line">            <span class="type">float</span> _GlossStr;</span><br><span class="line">            half _SpecStr;</span><br><span class="line">            half _SpecSmoothEdge;</span><br><span class="line">            half _SpecSmoothLen;</span><br><span class="line">            <span class="comment">// half _Spec2Range;</span></span><br><span class="line">            <span class="comment">// half _Spec2Str;</span></span><br><span class="line">            <span class="comment">// half _Spec2SmoothEdge;</span></span><br><span class="line">            <span class="comment">// half _Spec2SmoothLen;</span></span><br><span class="line">            half3 _SpecCol;</span><br><span class="line">            <span class="comment">//half3 _Spec2Col;</span></span><br><span class="line">            half _SPShadowStr;</span><br><span class="line">           <span class="comment">// half3 _SPShadowColor;</span></span><br><span class="line">            half2 _RFShadowOffset;</span><br><span class="line">           <span class="comment">//half _RimOffsetX;</span></span><br><span class="line">           <span class="comment">// half _RimOffsetY;</span></span><br><span class="line">            half _RimThreshold;</span><br><span class="line">            half _RimStrength;</span><br><span class="line">            half3 _RimColor;</span><br><span class="line">            half _RimRange;</span><br><span class="line">            </span><br><span class="line">            half3 _EmissiveCol;</span><br><span class="line"></span><br><span class="line">            half _ClipValue;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">            <span class="comment">//outline</span></span><br><span class="line">            half _OutlineLen;</span><br><span class="line">            float4 _MainTex_ST;</span><br><span class="line">            half _NearLen;</span><br><span class="line">            half _FarLen;</span><br><span class="line">            half _WithLightColor;</span><br><span class="line">            half _WithMainTexColor;</span><br><span class="line">            half3 _LineCol;</span><br><span class="line">            <span class="type">float</span> _FadeDistance;</span><br><span class="line">            </span><br><span class="line">            half _Offset;</span><br><span class="line">            float3 _SPOutlineFreq;</span><br><span class="line">            CBUFFER_END</span><br><span class="line">            </span><br><span class="line">            </span><br><span class="line">           </span><br><span class="line">           </span><br><span class="line">        </span><br><span class="line">        </span><br><span class="line"></span><br><span class="line">            </span><br><span class="line">            TEXTURE2D(_MainTex);SAMPLER(sampler_MainTex);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        ENDHLSL</span><br><span class="line"></span><br><span class="line">        Pass</span><br><span class="line">        &#123;</span><br><span class="line">            Name &quot;ForwardToonLit&quot;</span><br><span class="line">        </span><br><span class="line">            Tags &#123;&quot;LightMode&quot; =  &quot;UniversalForward&quot;&#125;</span><br><span class="line">            Cull[_CullMode]</span><br><span class="line">            Blend[_SrcBlend][_DstBlend]</span><br><span class="line">            ZTest [_ZTest]</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">            HLSLPROGRAM</span><br><span class="line">            <span class="meta">#pragma vertex ToonBodyVert</span></span><br><span class="line">            <span class="meta">#pragma fragment ToonBodyFrag</span></span><br><span class="line">        <span class="comment">//===================================================</span></span><br><span class="line">            <span class="comment">//#pragma shader_feature _SHADINGMODE_SMOOTHSTEP _SHADINGMODE_N _SHADINGMODE_NN</span></span><br><span class="line">            <span class="meta">#pragma shader_feature  HIGHQUALITY_NORMAL</span></span><br><span class="line">            <span class="meta">#pragma shader_feature  _NORMAL</span></span><br><span class="line">            <span class="meta">#pragma shader_feature  _RAMP</span></span><br><span class="line">            <span class="meta">#pragma shader_feature  _ILMTEXTURE</span></span><br><span class="line">            <span class="meta">#pragma shader_feature  _CURVATURE</span></span><br><span class="line">            <span class="meta">#pragma shader_feature  SPEC_ON</span></span><br><span class="line">            <span class="meta">#pragma shader_feature _SPSHADOWMODE_NONE _SPSHADOWMODE_NORMAL _SPSHADOWMODE_RENDERERFEATURE </span></span><br><span class="line">            <span class="meta">#pragma shader_feature HIGH_QUALITY_SH</span></span><br><span class="line">            <span class="meta">#pragma shader_feature _EMISSIVE</span></span><br><span class="line">           </span><br><span class="line">        <span class="comment">//====================================================</span></span><br><span class="line">            <span class="meta">#pragma multi_compile _ _MAIN_LIGHT_SHADOWS</span></span><br><span class="line">            <span class="meta">#pragma multi_compile _ _MAIN_LIGHT_SHADOWS_CASCADE</span></span><br><span class="line">            <span class="meta">#pragma multi_compile _ _SHADOWS_SOFT</span></span><br><span class="line"></span><br><span class="line">          </span><br><span class="line">         </span><br><span class="line"></span><br><span class="line">            <span class="comment">//#include &quot;Packages/com.unity.render-pipelines.universal/ShaderLibrary/Core.hlsl&quot;</span></span><br><span class="line">            <span class="meta">#include &quot;Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl&quot;</span></span><br><span class="line">            </span><br><span class="line"></span><br><span class="line">            <span class="comment">//////////////////////////////ToonLitForward.hlsl//////////////////////////////////</span></span><br><span class="line">           </span><br><span class="line">            <span class="comment">/////////////////////////////////////////////////////////////////////////////////</span></span><br><span class="line">        <span class="meta">#if defined(SPEC_ON)&amp;&amp;defined(_ILMTEXTURE)</span></span><br><span class="line">            <span class="meta">#define ILM_SPEC</span></span><br><span class="line">        <span class="meta">#endif</span></span><br><span class="line">        <span class="meta">#if defined(SPEC_ON)&amp;&amp; !defined(_ILMTEXTURE)</span></span><br><span class="line">            <span class="meta">#define SIMPLE_SPEC</span></span><br><span class="line">        <span class="meta">#endif</span></span><br><span class="line">        <span class="meta">#if defined(HIGH_QUALITY_SH)&amp;&amp;defined(HIGHQUALITY_NORMAL)</span></span><br><span class="line">            <span class="meta">#define SH_PIXEL</span></span><br><span class="line">        <span class="meta">#endif</span></span><br><span class="line">            struct ToonA2V</span><br><span class="line">            &#123;</span><br><span class="line">                float4 vertex : POSITION;</span><br><span class="line">                float2 uv     : TEXCOORD0;</span><br><span class="line">                float3 normal : NORMAL;</span><br><span class="line">                float4 tangent: TANGENT;</span><br><span class="line">                float4 color  : COLOR;</span><br><span class="line">            &#125;;</span><br><span class="line"></span><br><span class="line">            struct ToonV2F</span><br><span class="line">            &#123;</span><br><span class="line">                float2 uv           : TEXCOORD0;</span><br><span class="line">                </span><br><span class="line">                float4 vertex       : SV_POSITION;</span><br><span class="line">                float3 normalWS     : TEXCOORD1;</span><br><span class="line">                float3 tangentWS    : TEXCOORD2;</span><br><span class="line">                float3 bitangentWS  : TEXCOORD3;</span><br><span class="line">                float4 vertexCol    : TEXCOORD4;</span><br><span class="line">                float3 posWS        : TEXCOORD5;</span><br><span class="line">                float4 shadowcoord  : TEXCOORD6;</span><br><span class="line"></span><br><span class="line">                <span class="comment">//float4 screenPos    : TEXCOORD7;</span></span><br><span class="line">                float3 SH           : TEXCOORD8;</span><br><span class="line"></span><br><span class="line">                </span><br><span class="line">            </span><br><span class="line">              </span><br><span class="line">            &#125;;</span><br><span class="line"></span><br><span class="line">            TEXTURE2D( _NormalMap);      SAMPLER(sampler_NormalMap);</span><br><span class="line">            TEXTURE2D(_Curvature);       SAMPLER(sampler_Curvature);</span><br><span class="line">            TEXTURE2D(_RampMap);         SAMPLER(sampler_RampMap);</span><br><span class="line">            TEXTURE2D(_IlmTexture);      SAMPLER(sampler_IlmTexture);</span><br><span class="line">            TEXTURE2D(_EmissionTex);      SAMPLER(sampler_EmissionTex);</span><br><span class="line">            TEXTURE2D(_OcclusionRoughnessMetalic);  SAMPLER(sampler_OcclusionRoughnessMetalic);</span><br><span class="line">            </span><br><span class="line">            </span><br><span class="line">            TEXTURE2D(_CameraDepthTexture); SAMPLER(sampler_CameraDepthTexture);</span><br><span class="line">            TEXTURE2D(_HairShadowTexture); SAMPLER(sampler_HairShadowTexture);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">            <span class="comment">//////////////////////////////////////////////////////////////////</span></span><br><span class="line"></span><br><span class="line">            ToonV2F ToonBodyVert (ToonA2V v)</span><br><span class="line">            &#123;   </span><br><span class="line"></span><br><span class="line">                ToonV2F o;</span><br><span class="line">                o.vertex = TransformObjectToHClip(v.vertex);</span><br><span class="line">                o.uv = v.uv;</span><br><span class="line">            <span class="meta">#ifdef _NORMAL</span></span><br><span class="line">                half <span class="built_in">sign</span>=v.tangent.w*GetOddNegativeScale();</span><br><span class="line">                o.tangentWS=TransformObjectToWorldDir(v.tangent);</span><br><span class="line">                o.normalWS=TransformObjectToWorldNormal(v.normal);</span><br><span class="line">                o.bitangentWS=<span class="built_in">cross</span>(o.tangentWS,o.normalWS)*<span class="built_in">sign</span>;</span><br><span class="line">            <span class="meta">#else</span></span><br><span class="line">              <span class="meta">#ifndef HIGHQUALITY_NORMAL</span></span><br><span class="line">                o.normalWS=TransformObjectToWorldNormal(v.normal);</span><br><span class="line">              <span class="meta">#else</span></span><br><span class="line">                o.normalWS=v.normal;</span><br><span class="line">              <span class="meta">#endif</span></span><br><span class="line"></span><br><span class="line">            <span class="meta">#endif</span></span><br><span class="line">                o.vertexCol=v.color;</span><br><span class="line">                o.posWS=TransformObjectToWorld(v.vertex);</span><br><span class="line">                </span><br><span class="line">           </span><br><span class="line">            <span class="meta">#ifdef _SPSHADOWMODE_NORMAL</span></span><br><span class="line">                o.shadowcoord=TransformWorldToShadowCoord(o.posWS);</span><br><span class="line">            <span class="meta">#elif _SPSHADOWMODE_RENDERERFEATURE</span></span><br><span class="line">                o.shadowcoord=ComputeScreenPos(o.vertex);</span><br><span class="line">            <span class="meta">#else</span></span><br><span class="line">                o.shadowcoord=float4(<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>);</span><br><span class="line">            <span class="meta">#endif</span></span><br><span class="line">            </span><br><span class="line">               <span class="comment">// o.screenPos=ComputeScreenPos(o.vertex);</span></span><br><span class="line">            <span class="meta">#ifndef SH_PIXEL</span></span><br><span class="line">                o.SH=SHEvalLinearL2(o.normalWS,unity_SHBr,unity_SHBg,unity_SHBb,unity_SHC);</span><br><span class="line">            <span class="meta">#else </span></span><br><span class="line">                o.SH=half3(<span class="number">0</span>,<span class="number">0</span>,<span class="number">0</span>);</span><br><span class="line">            <span class="meta">#endif</span></span><br><span class="line">         </span><br><span class="line">                <span class="keyword">return</span> o;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            half4 ToonBodyFrag (ToonV2F i) : SV_Target</span><br><span class="line">            &#123;</span><br><span class="line">        <span class="comment">/////////////////////////////////////////////////////</span></span><br><span class="line">        <span class="comment">//                                                 //</span></span><br><span class="line">        <span class="comment">//            InitializeToon                       //</span></span><br><span class="line">        <span class="comment">//                                                 //</span></span><br><span class="line">        <span class="comment">/////////////////////////////////////////////////////</span></span><br><span class="line">            </span><br><span class="line">                Light MainLight=GetMainLight();</span><br><span class="line">                half3 MainLightDir=MainLight.direction;</span><br><span class="line">                half3 MainLightColor=MainLight.color.rgb;</span><br><span class="line">                half3 normal=<span class="number">0</span>;</span><br><span class="line">                half  curvature=<span class="number">0</span>;</span><br><span class="line">                half3 rampCol=<span class="number">1</span>;</span><br><span class="line">                half4 ilmTexResult=<span class="number">0</span>;</span><br><span class="line">                half3 ToonDiffuseTerm=<span class="number">0</span>;</span><br><span class="line">                half3 SpecTerm=<span class="number">0</span>;</span><br><span class="line">                half3  envCol=<span class="number">0</span>;</span><br><span class="line">                half ShadowAttenuation=<span class="number">1.0</span>;</span><br><span class="line">                half3 emissiveCol=<span class="number">0</span>;</span><br><span class="line">                half3 alphaValue=<span class="number">0</span>;</span><br><span class="line">                <span class="comment">//Shadow===============</span></span><br><span class="line">                </span><br><span class="line">            <span class="meta">#ifndef _SPSHADOWMODE_NORMAL</span></span><br><span class="line">              </span><br><span class="line">                </span><br><span class="line">               <span class="meta">#ifdef _SPSHADOWMODE_RENDERERFEATURE</span></span><br><span class="line">              </span><br><span class="line">                 half hairShadowTex=SAMPLE_TEXTURE2D(_HairShadowTexture,sampler_HairShadowTexture,i.shadowcoord.xy/i.shadowcoord.w+_RFShadowOffset*TransformWorldToViewDir(MainLightDir)*<span class="number">1</span>/(<span class="number">3</span>*i.vertex.w));</span><br><span class="line">                  ShadowAttenuation=(hairShadowTex-(i.vertex.z/i.vertex.w*<span class="number">0.5</span>+<span class="number">0.5</span>))&gt;<span class="number">0</span>?<span class="number">0</span>:<span class="number">1</span>;</span><br><span class="line">                 ShadowAttenuation=lerp(<span class="number">1</span>,ShadowAttenuation,_SPShadowStr);</span><br><span class="line">                 <span class="comment">//return ShadowAttenuation;</span></span><br><span class="line">               <span class="meta">#endif</span></span><br><span class="line">            <span class="meta">#else //</span></span><br><span class="line">                <span class="comment">//float4 shadowCoord=TransformWorldToShadowCoord(i.posWS);</span></span><br><span class="line">                float4 shadowCoord=i.shadowcoord;</span><br><span class="line">                 ShadowAttenuation=MainLightRealtimeShadow(shadowCoord);</span><br><span class="line">                ShadowAttenuation=lerp(<span class="number">1</span>,ShadowAttenuation,_SPShadowStr);</span><br><span class="line">                </span><br><span class="line">                </span><br><span class="line">                </span><br><span class="line">            <span class="meta">#endif</span></span><br><span class="line">            <span class="comment">//===========================</span></span><br><span class="line">           </span><br><span class="line">                </span><br><span class="line">            <span class="meta">#ifdef _NORMAL</span></span><br><span class="line">               half3 normalUnpack=UnpackNormal(SAMPLE_TEXTURE2D(_NormalMap,sampler_NormalMap,i.uv));</span><br><span class="line">               half3x3 TBN=half3x3(i.tangentWS,i.bitangentWS,i.normalWS);</span><br><span class="line">               normal=mul(normalUnpack,TBN);</span><br><span class="line"></span><br><span class="line">            <span class="meta">#else</span></span><br><span class="line">                <span class="meta">#ifndef HIGHQUALITY_NORMAL</span></span><br><span class="line">                    normal=i.normalWS;</span><br><span class="line">                <span class="meta">#else</span></span><br><span class="line">                    normal=TransformObjectToWorldNormal(i.normalWS);</span><br><span class="line">                <span class="meta">#endif</span></span><br><span class="line">            <span class="meta">#endif </span></span><br><span class="line"></span><br><span class="line">            <span class="meta">#ifdef _ILMTEXTURE</span></span><br><span class="line">                ilmTexResult=SAMPLE_TEXTURE2D(_IlmTexture,sampler_IlmTexture,i.uv);</span><br><span class="line">            <span class="meta">#endif</span></span><br><span class="line">            <span class="comment">//==================================================================================  </span></span><br><span class="line">            <span class="comment">//Diffuse Part </span></span><br><span class="line">            <span class="comment">//==================================================================================  </span></span><br><span class="line">                </span><br><span class="line">                half shadowTreshold=ilmTexResult.g;</span><br><span class="line">            </span><br><span class="line">                half Lambert=<span class="built_in">min</span>(<span class="built_in">dot</span>(MainLightDir,normal),ShadowAttenuation);</span><br><span class="line">                half HalfLambert=<span class="number">0.5</span>*Lambert+<span class="number">0.5</span>;</span><br><span class="line">                </span><br><span class="line">                </span><br><span class="line">                half SmoothstepLambert=<span class="built_in">smoothstep</span>(_SmoothEdge,_SmoothEdge+_SmoothLen,Lambert);</span><br><span class="line">                half HalfLambertSmooth=SmoothstepLambert*_LambertFactor+<span class="number">1</span>-_LambertFactor;</span><br><span class="line">                half HalfLambertWrap=saturate((HalfLambertSmooth+_HalfLambertWrap)/(<span class="number">1</span>+_HalfLambertWrap));</span><br><span class="line">              <span class="comment">//return Lambert;</span></span><br><span class="line">            <span class="meta">#ifdef _CURVATURE</span></span><br><span class="line">                curvature=SAMPLE_TEXTURE2D(_Curvature,sampler_Curvature,i.uv).r;</span><br><span class="line">            <span class="meta">#endif </span></span><br><span class="line"></span><br><span class="line">            </span><br><span class="line">            <span class="meta">#ifdef _RAMP</span></span><br><span class="line">                rampCol=SAMPLE_TEXTURE2D(_RampMap,sampler_RampMap,float2(HalfLambert,curvature)).rgb;</span><br><span class="line">                rampCol=lerp(half3(<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>),rampCol,_RampMapFactor);</span><br><span class="line"></span><br><span class="line">            <span class="meta">#endif</span></span><br><span class="line">            <span class="meta">#ifdef _ILMTEXTURE</span></span><br><span class="line">                ToonDiffuseTerm=HalfLambert&lt;shadowTreshold?_ShadowColor:rampCol*lerp(_DiffuseCol,half3(<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>),HalfLambertWrap);</span><br><span class="line">            <span class="meta">#else</span></span><br><span class="line">                ToonDiffuseTerm=rampCol*lerp(_DiffuseCol,half3(<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>),HalfLambertWrap);</span><br><span class="line">            <span class="meta">#endif</span></span><br><span class="line">                <span class="comment">////VertexColor Effect////</span></span><br><span class="line">                half3 ToonDiffuseTermByVertexCol=lerp(ToonDiffuseTerm,<span class="number">1</span>,i.vertexCol.r);</span><br><span class="line">                ToonDiffuseTerm=lerp(ToonDiffuseTerm,ToonDiffuseTermByVertexCol,_IsVertexColorControlDiff);</span><br><span class="line">                ToonDiffuseTerm=lerp(<span class="number">1</span>,ToonDiffuseTerm,_DiffuseAffact);</span><br><span class="line">                 </span><br><span class="line">                half4 mainTexValue=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex, i.uv);</span><br><span class="line">                half3 DiffCol=mainTexValue.rgb*ToonDiffuseTerm;</span><br><span class="line">        </span><br><span class="line"></span><br><span class="line">                 alphaValue=mainTexValue.a;</span><br><span class="line">            <span class="comment">//==================================================================================  </span></span><br><span class="line">            <span class="comment">//Spec Part </span></span><br><span class="line">            <span class="comment">//==================================================================================  </span></span><br><span class="line">                </span><br><span class="line">                half3 viewDir= <span class="built_in">normalize</span>(_WorldSpaceCameraPos.xyz- i.posWS);</span><br><span class="line">                half3 halfVector=<span class="built_in">normalize</span>(MainLightDir+viewDir);</span><br><span class="line">                half NdotH=saturate(<span class="built_in">dot</span>(halfVector,normal));</span><br><span class="line">                </span><br><span class="line">            <span class="meta">#ifdef ILM_SPEC</span></span><br><span class="line">                </span><br><span class="line">                half Glossness=ilmTexResult.r;</span><br><span class="line">                half SpecMask =ilmTexResult.b;</span><br><span class="line">               </span><br><span class="line"></span><br><span class="line">                </span><br><span class="line">               </span><br><span class="line">                SpecTerm=<span class="built_in">smoothstep</span>(_SpecSmoothEdge,_SpecSmoothEdge+_SpecSmoothLen,<span class="built_in">pow</span>(NdotH,Glossness*_GlossStr)*SpecMask)*_SpecStr*_SpecCol;</span><br><span class="line">                </span><br><span class="line">                </span><br><span class="line">            <span class="meta">#endif</span></span><br><span class="line">            <span class="meta">#ifdef SIMPLE_SPEC</span></span><br><span class="line">               </span><br><span class="line">                SpecTerm=<span class="built_in">smoothstep</span>(_SpecSmoothEdge,_SpecSmoothEdge+_SpecSmoothLen,<span class="built_in">pow</span>(NdotH,_GlossStr))*_SpecStr*_SpecCol;</span><br><span class="line">               </span><br><span class="line">            <span class="meta">#endif</span></span><br><span class="line"></span><br><span class="line">            <span class="comment">//rim light======================</span></span><br><span class="line">                </span><br><span class="line">            <span class="comment">//rimLight部分可以也可以使用基于深度图偏移的边缘光，适合硬表面传统边缘光由于法线太过于平坦导致的范围过大</span></span><br><span class="line">            half NdotV=<span class="built_in">dot</span>(normal,viewDir);</span><br><span class="line">            half rimMask=<span class="number">1</span>-Lambert;</span><br><span class="line">            half rimFactor=saturate(<span class="built_in">pow</span>(<span class="number">1</span>-NdotV,_RimRange));</span><br><span class="line">            half rimArea=rimFactor&gt;_RimThreshold?rimFactor*rimMask*_RimStrength:<span class="number">0</span>;  </span><br><span class="line">            </span><br><span class="line">            half3 rimCol=rimArea*_RimColor;</span><br><span class="line">             <span class="comment">//return rimArea;</span></span><br><span class="line">            <span class="comment">//===============================</span></span><br><span class="line">            </span><br><span class="line"></span><br><span class="line">            <span class="comment">//Emissive</span></span><br><span class="line">            <span class="meta">#ifdef _EMISSIVE </span></span><br><span class="line">              </span><br><span class="line">              emissiveCol=SAMPLE_TEXTURE2D(_EmissionTex,sampler_EmissionTex,i.uv).rgb*_EmissiveCol;</span><br><span class="line">            <span class="meta">#endif</span></span><br><span class="line"></span><br><span class="line">            <span class="comment">//Environment</span></span><br><span class="line">            </span><br><span class="line">            <span class="meta">#ifndef SH_PIXEL</span></span><br><span class="line">              envCol=i.SH+SHEvalLinearL0L1(normal,unity_SHAr,unity_SHAg,unity_SHAb);</span><br><span class="line">            <span class="meta">#else</span></span><br><span class="line">              envCol=SampleSH(normal);</span><br><span class="line">              </span><br><span class="line">            <span class="meta">#endif</span></span><br><span class="line">            </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">         </span><br><span class="line"></span><br><span class="line">            <span class="comment">//============================================================================================</span></span><br><span class="line">             </span><br><span class="line">                 half4 finalColor= half4((DiffCol+SpecTerm)+rimCol+envCol+emissiveCol,<span class="number">1</span>);</span><br><span class="line">               </span><br><span class="line">              </span><br><span class="line">                </span><br><span class="line"></span><br><span class="line">                </span><br><span class="line"> <span class="keyword">if</span>(_Debug1==<span class="number">1</span>)&#123;</span><br><span class="line"> <span class="keyword">return</span> SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">         </span><br><span class="line"> &#125;</span><br><span class="line"></span><br><span class="line">             <span class="meta">#ifdef ALPHA_CLIP</span></span><br><span class="line">                clip(alphaValue-_ClipValue<span class="number">-0.01</span>);</span><br><span class="line">             <span class="meta">#endif</span></span><br><span class="line">                <span class="keyword">return</span> finalColor;</span><br><span class="line">            &#125;</span><br><span class="line">            ENDHLSL</span><br><span class="line">        &#125;</span><br><span class="line">    </span><br><span class="line">     <span class="comment">//Outline  Pass-----------------------------------------------------------------------------------------------------------------------</span></span><br><span class="line">        Pass</span><br><span class="line">        &#123;</span><br><span class="line">             Name &quot;Outline&quot;</span><br><span class="line">            Tags&#123;&quot;LightMode&quot; = &quot;SRPDefaultUnlit&quot;&#125;</span><br><span class="line">            Cull front</span><br><span class="line">            HLSLPROGRAM</span><br><span class="line">            <span class="comment">//===================================================================================</span></span><br><span class="line">            <span class="meta">#pragma vertex vert</span></span><br><span class="line">            <span class="meta">#pragma fragment frag</span></span><br><span class="line">            <span class="meta">#pragma shader_feature SP_OUTLINE</span></span><br><span class="line">            <span class="meta">#include &quot;Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl&quot;</span></span><br><span class="line">            </span><br><span class="line">            <span class="comment">//===================================================================================</span></span><br><span class="line">             </span><br><span class="line">             <span class="meta">#define  TwoPI_Def 6.28</span></span><br><span class="line"></span><br><span class="line">            float2 Calculate_Rotate(float2 UV,float2 Center,<span class="type">float</span> Rotation)</span><br><span class="line">            &#123;</span><br><span class="line">                UV-=Center;</span><br><span class="line">                <span class="type">float</span> theta=Rotation;</span><br><span class="line">                float2x2 RotateMatrix=float2x2(<span class="built_in">cos</span>(theta),-<span class="built_in">sin</span>(theta),</span><br><span class="line">                                       <span class="built_in">sin</span>(theta),<span class="built_in">cos</span>(theta));</span><br><span class="line">                                       </span><br><span class="line">                UV=mul(RotateMatrix,UV);</span><br><span class="line">                UV+=Center;</span><br><span class="line">                <span class="keyword">return</span> UV;</span><br><span class="line">            &#125;</span><br><span class="line">            float2 Calculate_UVPolarCoordinates(float2 UV,float2 center)</span><br><span class="line">            &#123;   </span><br><span class="line">                UV-=center;</span><br><span class="line">                <span class="type">float</span> r=<span class="built_in">length</span>(UV)*<span class="number">2</span>;</span><br><span class="line">                <span class="type">float</span> theta=atan2(UV.x,UV.y)/TwoPI_Def;</span><br><span class="line">                UV=float2(r,theta);</span><br><span class="line">                <span class="keyword">return</span> UV;</span><br><span class="line">            &#125;</span><br><span class="line">            <span class="type">float</span>  Calculate_CheckBoard(float2 UV_Polar,float2 Frequency)</span><br><span class="line">            &#123;</span><br><span class="line">                float2 UV=(UV_Polar+<span class="number">0.5</span>)*Frequency;</span><br><span class="line">                float4 dUV=float4(ddx(UV),ddy(UV));</span><br><span class="line">                float2 dUV_Len=<span class="built_in">sqrt</span>(float2(<span class="built_in">dot</span>(dUV.xz,dUV.xz),<span class="built_in">dot</span>(dUV.yw,dUV.yw)));</span><br><span class="line">                float2 point_SubMid=<span class="number">4</span>*<span class="built_in">abs</span>(frac(UV+<span class="number">0.25</span>)<span class="number">-0.5</span>)<span class="number">-1</span>;</span><br><span class="line">                float2 scale=<span class="number">0.35</span>/dUV_Len.xy;</span><br><span class="line">                <span class="type">float</span> freqLimiter=<span class="built_in">sqrt</span>(<span class="built_in">clamp</span>(<span class="number">1.1</span>f-<span class="built_in">max</span>(dUV_Len.x,dUV_Len.y),<span class="number">0.0</span>,<span class="number">1.0</span>));</span><br><span class="line">                float2 vector_alpha=<span class="built_in">clamp</span>(point_SubMid*scale.xy,<span class="number">-1.0</span>,<span class="number">1.0</span>);</span><br><span class="line">                <span class="type">float</span> alpha=saturate(<span class="number">0.5</span>+<span class="number">0.5</span>*vector_alpha.x*vector_alpha.y*freqLimiter);</span><br><span class="line">                <span class="type">float</span> Factor=alpha;</span><br><span class="line"></span><br><span class="line">                <span class="comment">//float Factor=point_SubMid.x*point_SubMid.y/dUV_Len;</span></span><br><span class="line">                <span class="comment">//Factor=saturate(Factor);</span></span><br><span class="line">                <span class="keyword">return</span> Factor;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            <span class="comment">//===================================================================================</span></span><br><span class="line">            struct appdata</span><br><span class="line">            &#123;</span><br><span class="line">                float4 vertex : POSITION;</span><br><span class="line">                float2 uv : TEXCOORD0;</span><br><span class="line">                float3 normal:NORMAL;</span><br><span class="line">              </span><br><span class="line">                 </span><br><span class="line">                </span><br><span class="line">            &#125;;</span><br><span class="line"></span><br><span class="line">            struct v2f</span><br><span class="line">            &#123;</span><br><span class="line">                float2 uv : TEXCOORD0;</span><br><span class="line">               </span><br><span class="line">                float4 vertex : SV_POSITION;</span><br><span class="line">            <span class="meta">#ifdef SP_OUTLINE</span></span><br><span class="line">                </span><br><span class="line">                float4 ScreenPos:TEXCOORD1;</span><br><span class="line">                float4 MidPoint:TEXCOORD2;</span><br><span class="line">                </span><br><span class="line">            <span class="meta">#endif</span></span><br><span class="line">                </span><br><span class="line">                </span><br><span class="line">                </span><br><span class="line">                </span><br><span class="line">                </span><br><span class="line">               </span><br><span class="line">            &#125;;</span><br><span class="line">           <span class="comment">//===================================================================================</span></span><br><span class="line">           </span><br><span class="line">           </span><br><span class="line">           </span><br><span class="line">         </span><br><span class="line"></span><br><span class="line">        </span><br><span class="line">            v2f vert (appdata v)</span><br><span class="line">            &#123;</span><br><span class="line">                v2f o;</span><br><span class="line">               </span><br><span class="line">               </span><br><span class="line">                float3 worldPos=TransformObjectToWorld(v.vertex);</span><br><span class="line">                o.uv = TRANSFORM_TEX(v.uv, _MainTex);</span><br><span class="line">                <span class="type">float</span> distanceFN=<span class="built_in">distance</span>(worldPos,_WorldSpaceCameraPos.xyz)&gt;_FadeDistance?<span class="number">0</span>:<span class="built_in">distance</span>(worldPos,_WorldSpaceCameraPos.xyz);</span><br><span class="line">                half Length=<span class="built_in">smoothstep</span>(_FarLen,_NearLen,distanceFN)*_OutlineLen;</span><br><span class="line">                float4 CameraDirClip=mul(UNITY_MATRIX_VP,float4(_WorldSpaceCameraPos,<span class="number">1</span>));</span><br><span class="line">               </span><br><span class="line">                o.vertex = TransformObjectToHClip(float4(v.vertex.xyz+v.normal*Length,<span class="number">1</span>));</span><br><span class="line">                o.vertex.z+=CameraDirClip.z*_Offset;</span><br><span class="line">              </span><br><span class="line">            <span class="meta">#ifdef SP_OUTLINE</span></span><br><span class="line">                o.ScreenPos=ComputeScreenPos(o.vertex);</span><br><span class="line">                o.MidPoint=ComputeScreenPos(TransformWorldToHClip(unity_ObjectToWorld._14_24_34));</span><br><span class="line">            <span class="meta">#endif</span></span><br><span class="line">                </span><br><span class="line">              </span><br><span class="line">                <span class="keyword">return</span> o;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            half4 frag (v2f i) : SV_Target</span><br><span class="line">            &#123;   </span><br><span class="line">                half4 finColor=half4(_LineCol,<span class="number">1</span>);</span><br><span class="line">                Light MainLight=GetMainLight();</span><br><span class="line">                half3 mainlightCol=MainLight.color.rgb;</span><br><span class="line">                half4 mainTexCol=SAMPLE_TEXTURE2D(_MainTex,sampler_MainTex,i.uv);</span><br><span class="line">                finColor.rgb=lerp(finColor.rgb,finColor.rgb*mainTexCol.rgb,_WithMainTexColor);</span><br><span class="line">                finColor.rgb=lerp( finColor.rgb, finColor.rgb*mainlightCol,_WithLightColor);</span><br><span class="line">                </span><br><span class="line">            <span class="meta">#ifdef SP_OUTLINE</span></span><br><span class="line">                </span><br><span class="line">                 <span class="comment">//Polar Coordinates UV</span></span><br><span class="line">                </span><br><span class="line">                <span class="comment">//return half4(i.MidPoint.xy/i.MidPoint.w,0,1);</span></span><br><span class="line">                float2 UV_Polar=Calculate_Rotate(i.ScreenPos.xy/i.ScreenPos.w*float2(_ScreenParams.x/_ScreenParams.y,<span class="number">1</span>),i.MidPoint.xy/i.MidPoint.w*float2(_ScreenParams.x/_ScreenParams.y,<span class="number">1</span>),_Time.y*_SPOutlineFreq.z);</span><br><span class="line">                <span class="comment">//return half4(UV_Polar,0,1);</span></span><br><span class="line">                UV_Polar=Calculate_UVPolarCoordinates(UV_Polar.xy,i.MidPoint.xy/i.MidPoint.w*float2(_ScreenParams.x/_ScreenParams.y,<span class="number">1</span>));</span><br><span class="line">               <span class="comment">// return half4(Calculate_UVPolarCoordinates(i.ScreenPos.xy/i.ScreenPos.w,i.MidPoint.xy/i.MidPoint.w),0,1);</span></span><br><span class="line"></span><br><span class="line">                <span class="comment">//Check Box</span></span><br><span class="line">               </span><br><span class="line">                <span class="type">float</span> Factor=Calculate_CheckBoard(UV_Polar,_SPOutlineFreq.xy);</span><br><span class="line">               </span><br><span class="line">                </span><br><span class="line">                <span class="comment">//return half4(Factor,Factor,Factor,1);</span></span><br><span class="line">                clip(<span class="number">0.5</span>-Factor);</span><br><span class="line">                </span><br><span class="line">            <span class="meta">#endif    </span></span><br><span class="line"></span><br><span class="line">            </span><br><span class="line">             <span class="meta">#ifdef ALPHA_CLIP</span></span><br><span class="line">                clip(mainTexCol.a-_ClipValue<span class="number">-0.01</span>);</span><br><span class="line">             <span class="meta">#endif</span></span><br><span class="line">                <span class="keyword">return</span>  finColor;</span><br><span class="line">            &#125;</span><br><span class="line">            ENDHLSL</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">     <span class="comment">//depth only pass for depthTexture</span></span><br><span class="line">        UsePass &quot;Universal Render Pipeline/Lit/DepthOnly&quot;</span><br><span class="line">     <span class="comment">//ShadowCaster for shadowmap</span></span><br><span class="line">        UsePass &quot;Universal Render Pipeline/Lit/ShadowCaster&quot;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">   </span><br><span class="line">    CustomEditor &quot;UniversalShaderGUI&quot;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="插播-GUI相关"><a href="#插播-GUI相关" class="headerlink" title="插播 GUI相关"></a>插播 GUI相关</h2><p>我这里的UniversalShaderGUI是从雨松哥的通用GUI上面改的。</p>
+<p>非常安利雨松momo大佬的通用ShaderGUI，<a target="_blank" rel="noopener" href="https://www.xuanyusong.com/archives/4769">Unity3D研究院之材质Shader通用面板（一百二十一） | 雨松MOMO程序研究院 (xuanyusong.com)</a></p>
+<p>传统的用继承MaterialPropertyDrawer的通用GUI会有无法与原生标签嵌套混合的痛点，而且实际使用完全没什么问题。这波啊，这波是非常实用。</p>
+<p>分享一下我扩容一直再用的一版：支持label（用于配合Foldout做readme等等操作），支持缩进，支持分界线，支持pass开关，支持UTS风格的button和Foldout</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br><span class="line">193</span><br><span class="line">194</span><br><span class="line">195</span><br><span class="line">196</span><br><span class="line">197</span><br><span class="line">198</span><br><span class="line">199</span><br><span class="line">200</span><br><span class="line">201</span><br><span class="line">202</span><br><span class="line">203</span><br><span class="line">204</span><br><span class="line">205</span><br><span class="line">206</span><br><span class="line">207</span><br><span class="line">208</span><br><span class="line">209</span><br><span class="line">210</span><br><span class="line">211</span><br><span class="line">212</span><br><span class="line">213</span><br><span class="line">214</span><br><span class="line">215</span><br><span class="line">216</span><br><span class="line">217</span><br><span class="line">218</span><br><span class="line">219</span><br><span class="line">220</span><br><span class="line">221</span><br><span class="line">222</span><br><span class="line">223</span><br><span class="line">224</span><br><span class="line">225</span><br><span class="line">226</span><br><span class="line">227</span><br><span class="line">228</span><br><span class="line">229</span><br><span class="line">230</span><br><span class="line">231</span><br><span class="line">232</span><br><span class="line">233</span><br><span class="line">234</span><br><span class="line">235</span><br><span class="line">236</span><br><span class="line">237</span><br><span class="line">238</span><br><span class="line">239</span><br><span class="line">240</span><br><span class="line">241</span><br><span class="line">242</span><br><span class="line">243</span><br><span class="line">244</span><br><span class="line">245</span><br><span class="line">246</span><br><span class="line">247</span><br><span class="line">248</span><br><span class="line">249</span><br><span class="line">250</span><br><span class="line">251</span><br><span class="line">252</span><br><span class="line">253</span><br><span class="line">254</span><br><span class="line">255</span><br><span class="line">256</span><br><span class="line">257</span><br><span class="line">258</span><br><span class="line">259</span><br><span class="line">260</span><br><span class="line">261</span><br><span class="line">262</span><br><span class="line">263</span><br><span class="line">264</span><br><span class="line">265</span><br><span class="line">266</span><br><span class="line">267</span><br><span class="line">268</span><br><span class="line">269</span><br><span class="line">270</span><br><span class="line">271</span><br><span class="line">272</span><br><span class="line">273</span><br><span class="line">274</span><br><span class="line">275</span><br><span class="line">276</span><br><span class="line">277</span><br><span class="line">278</span><br><span class="line">279</span><br><span class="line">280</span><br><span class="line">281</span><br><span class="line">282</span><br><span class="line">283</span><br><span class="line">284</span><br><span class="line">285</span><br><span class="line">286</span><br><span class="line">287</span><br><span class="line">288</span><br><span class="line">289</span><br><span class="line">290</span><br><span class="line">291</span><br><span class="line">292</span><br><span class="line">293</span><br><span class="line">294</span><br><span class="line">295</span><br><span class="line">296</span><br><span class="line">297</span><br><span class="line">298</span><br><span class="line">299</span><br><span class="line">300</span><br><span class="line">301</span><br><span class="line">302</span><br><span class="line">303</span><br><span class="line">304</span><br><span class="line">305</span><br><span class="line">306</span><br><span class="line">307</span><br><span class="line">308</span><br><span class="line">309</span><br><span class="line">310</span><br><span class="line">311</span><br><span class="line">312</span><br><span class="line">313</span><br><span class="line">314</span><br><span class="line">315</span><br><span class="line">316</span><br><span class="line">317</span><br><span class="line">318</span><br><span class="line">319</span><br><span class="line">320</span><br><span class="line">321</span><br><span class="line">322</span><br><span class="line">323</span><br><span class="line">324</span><br><span class="line">325</span><br><span class="line">326</span><br><span class="line">327</span><br><span class="line">328</span><br><span class="line">329</span><br><span class="line">330</span><br><span class="line">331</span><br><span class="line">332</span><br><span class="line">333</span><br><span class="line">334</span><br><span class="line">335</span><br><span class="line">336</span><br><span class="line">337</span><br><span class="line">338</span><br><span class="line">339</span><br><span class="line">340</span><br><span class="line">341</span><br><span class="line">342</span><br><span class="line">343</span><br><span class="line">344</span><br><span class="line">345</span><br><span class="line">346</span><br><span class="line">347</span><br><span class="line">348</span><br><span class="line">349</span><br><span class="line">350</span><br><span class="line">351</span><br><span class="line">352</span><br><span class="line">353</span><br><span class="line">354</span><br><span class="line">355</span><br><span class="line">356</span><br><span class="line">357</span><br><span class="line">358</span><br><span class="line">359</span><br><span class="line">360</span><br><span class="line">361</span><br><span class="line">362</span><br><span class="line">363</span><br><span class="line">364</span><br><span class="line">365</span><br><span class="line">366</span><br><span class="line">367</span><br><span class="line">368</span><br><span class="line">369</span><br><span class="line">370</span><br><span class="line">371</span><br><span class="line">372</span><br><span class="line">373</span><br><span class="line">374</span><br><span class="line">375</span><br><span class="line">376</span><br><span class="line">377</span><br><span class="line">378</span><br><span class="line">379</span><br><span class="line">380</span><br><span class="line">381</span><br><span class="line">382</span><br><span class="line">383</span><br><span class="line">384</span><br><span class="line">385</span><br><span class="line">386</span><br><span class="line">387</span><br><span class="line">388</span><br><span class="line">389</span><br><span class="line">390</span><br><span class="line">391</span><br><span class="line">392</span><br><span class="line">393</span><br><span class="line">394</span><br><span class="line">395</span><br><span class="line">396</span><br><span class="line">397</span><br><span class="line">398</span><br><span class="line">399</span><br><span class="line">400</span><br><span class="line">401</span><br><span class="line">402</span><br><span class="line">403</span><br><span class="line">404</span><br><span class="line">405</span><br><span class="line">406</span><br><span class="line">407</span><br><span class="line">408</span><br><span class="line">409</span><br><span class="line">410</span><br></pre></td><td class="code"><pre><span class="line">using System.Collections.Generic;</span><br><span class="line">using UnityEngine;</span><br><span class="line">using UnityEditor;</span><br><span class="line">using System.Text.RegularExpressions;</span><br><span class="line">using UnityEngine.Rendering;</span><br><span class="line">using System;</span><br><span class="line">using UnityEngine.Events;</span><br><span class="line"></span><br><span class="line">//自定义效果-Button</span><br><span class="line">#region ButtonDrawer</span><br><span class="line">internal class ButtonDrawer:MaterialPropertyDrawer</span><br><span class="line">&#123;</span><br><span class="line">     GUILayoutOption[] buttonStyle = new GUILayoutOption[] &#123; GUILayout.Width(90) &#125;; </span><br><span class="line">    string singleK;</span><br><span class="line">    string doubleK1;</span><br><span class="line">    string doubleK2;</span><br><span class="line">    string bName;</span><br><span class="line">    public ButtonDrawer(string name,string Keyword)</span><br><span class="line">    &#123;</span><br><span class="line">        this.singleK = Keyword;</span><br><span class="line">        this.bName = name;</span><br><span class="line">    &#125;</span><br><span class="line">    public ButtonDrawer(string name,string Keyword1, string Keyword2)</span><br><span class="line">    &#123;</span><br><span class="line">        this.doubleK1 = Keyword1;</span><br><span class="line">        this.doubleK2 = Keyword2;</span><br><span class="line">        this.bName = name;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public ButtonDrawer() : this(&quot;&quot;,&quot;&quot;,&quot;&quot;) &#123; &#125;</span><br><span class="line">    public override void OnGUI(Rect position, MaterialProperty prop, GUIContent label, MaterialEditor editor)</span><br><span class="line">    &#123;</span><br><span class="line">        //  base.OnGUI(position, prop, label, editor);</span><br><span class="line">        float propertieValue = prop.floatValue;</span><br><span class="line">        string propName = prop.name;</span><br><span class="line">        string displayName = prop.displayName;</span><br><span class="line"></span><br><span class="line">        string ButtonNameOFF = (bName == &quot;&quot;) ? &quot;OFF&quot; : bName;</span><br><span class="line">        string ButtonNameACTIVE = (bName == &quot;&quot;) ? &quot;Active&quot; : bName;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        Material material = editor.target as Material;</span><br><span class="line">        EditorGUILayout.BeginHorizontal();</span><br><span class="line">        EditorGUILayout.PrefixLabel(displayName);</span><br><span class="line">        if (propertieValue==1)</span><br><span class="line">        &#123;</span><br><span class="line">            if (singleK != null)</span><br><span class="line">            &#123;</span><br><span class="line">                material.EnableKeyword(singleK);</span><br><span class="line">            &#125;</span><br><span class="line">            else if (doubleK1 != null &amp;&amp; doubleK2 != null)</span><br><span class="line">            &#123;</span><br><span class="line">                material.EnableKeyword(doubleK1);</span><br><span class="line">                material.DisableKeyword(doubleK2);</span><br><span class="line">            &#125;</span><br><span class="line">            if ( GUILayout.Button(ButtonNameOFF, buttonStyle))</span><br><span class="line">            &#123;</span><br><span class="line">                material.SetFloat(propName, 0);</span><br><span class="line">                if(singleK!= null)</span><br><span class="line">                &#123;</span><br><span class="line">                    material.DisableKeyword(singleK);</span><br><span class="line">                &#125;</span><br><span class="line">                else if(doubleK1!= null &amp;&amp; doubleK2!=null)</span><br><span class="line">                &#123;</span><br><span class="line">                    material.EnableKeyword(doubleK2);</span><br><span class="line">                    material.DisableKeyword(doubleK1);</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        else</span><br><span class="line">        &#123;</span><br><span class="line">            if (singleK != null)</span><br><span class="line">            &#123;</span><br><span class="line">                material.DisableKeyword(singleK);</span><br><span class="line">            &#125;</span><br><span class="line">            else if (doubleK1 != null &amp;&amp; doubleK2 != null)</span><br><span class="line">            &#123;</span><br><span class="line">                material.EnableKeyword(doubleK2);</span><br><span class="line">                material.DisableKeyword(doubleK1);</span><br><span class="line">            &#125;</span><br><span class="line">            if (GUILayout.Button(ButtonNameACTIVE, buttonStyle))</span><br><span class="line">            &#123;</span><br><span class="line">                material.SetFloat(propName, 1);</span><br><span class="line">                if (singleK != null)</span><br><span class="line">                &#123;</span><br><span class="line">                    material.EnableKeyword(singleK);</span><br><span class="line">                &#125;</span><br><span class="line">                else if (doubleK1 != null &amp;&amp; doubleK2 != null)</span><br><span class="line">                &#123;</span><br><span class="line">                    material.EnableKeyword(doubleK1);</span><br><span class="line">                    material.DisableKeyword(doubleK2);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        EditorGUILayout.EndHorizontal();</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">#endregion</span><br><span class="line"></span><br><span class="line">#region SingleLineDrawer</span><br><span class="line">//自定义效果-单行显示图片</span><br><span class="line">internal class SingleLineDrawer : MaterialPropertyDrawer</span><br><span class="line">&#123;</span><br><span class="line">    public override void OnGUI(Rect position, MaterialProperty prop, GUIContent label, MaterialEditor editor)</span><br><span class="line">    &#123;</span><br><span class="line">        editor.TexturePropertySingleLine(label, prop);</span><br><span class="line">    &#125;</span><br><span class="line">    public override float GetPropertyHeight(MaterialProperty prop, string label, MaterialEditor editor)</span><br><span class="line">    &#123;</span><br><span class="line">        return 0;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">#endregion</span><br><span class="line">#region AdvancedFoldoutDrawer</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">internal class SuperFoldoutDrawer : MaterialPropertyDrawer</span><br><span class="line">&#123;</span><br><span class="line">    bool showPosition;</span><br><span class="line">    static bool Foldout(bool showPosition, string label)</span><br><span class="line">    &#123;</span><br><span class="line">        GUIStyle style = new GUIStyle(&quot;ShurikenModuleTitle&quot;);</span><br><span class="line">        style.font = new GUIStyle(EditorStyles.boldLabel).font;</span><br><span class="line">        style.fontSize = new GUIStyle(EditorStyles.boldLabel).fontSize;</span><br><span class="line">        style.border = new RectOffset(5, 7, 4, 4);</span><br><span class="line">        style.padding = new RectOffset(5, 7, 4, 4);</span><br><span class="line">        style.fixedHeight = 30;</span><br><span class="line">        style.contentOffset = new Vector2(32f, -2f);</span><br><span class="line">        var rect = GUILayoutUtility.GetRect(30f, 32f, style);</span><br><span class="line">        GUI.Box(rect, label, style);</span><br><span class="line">        var FoldRect = new Rect(rect.x - 12f, rect.y + 8f, 13f, 13f); </span><br><span class="line">        var toggleRect = new Rect(rect.x + 8f, rect.y + 8f, 13f, 13f);</span><br><span class="line">        var e = Event.current;</span><br><span class="line">        if (e.type == EventType.Repaint)</span><br><span class="line">        &#123;</span><br><span class="line">           </span><br><span class="line">            EditorStyles.foldout.Draw(FoldRect, false, false, showPosition, false);</span><br><span class="line"></span><br><span class="line">            EditorStyles.toggle.Draw(toggleRect, false, false, showPosition, false);</span><br><span class="line">            // GUI.Toggle(toggleRect, showPosition, &quot;&quot;);</span><br><span class="line"></span><br><span class="line">        &#125; </span><br><span class="line">        if (e.type == EventType.MouseDown &amp;&amp; rect.Contains(e.mousePosition))</span><br><span class="line">        &#123;</span><br><span class="line">            showPosition = !showPosition;</span><br><span class="line">            e.Use();</span><br><span class="line">        &#125;</span><br><span class="line">        return showPosition;</span><br><span class="line"></span><br><span class="line">       </span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    public override void OnGUI(Rect position, MaterialProperty prop, string label, MaterialEditor editor)</span><br><span class="line">    &#123;</span><br><span class="line"></span><br><span class="line">        showPosition = Foldout(showPosition, label);</span><br><span class="line">       </span><br><span class="line"></span><br><span class="line">        prop.floatValue = Convert.ToSingle(showPosition);</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">    public override float GetPropertyHeight(MaterialProperty prop, string label, MaterialEditor editor)</span><br><span class="line">    &#123;</span><br><span class="line">        return 0;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">#endregion</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">#region FoldoutDrawer</span><br><span class="line">//自定义效果-折行显示图片</span><br><span class="line">internal class FoldoutDrawer : MaterialPropertyDrawer</span><br><span class="line">&#123;</span><br><span class="line">    bool showPosition;</span><br><span class="line">    </span><br><span class="line">    public override void OnGUI(Rect position, MaterialProperty prop, string label, MaterialEditor editor)</span><br><span class="line">    &#123; </span><br><span class="line">        showPosition = EditorGUILayout.Foldout(showPosition, label);</span><br><span class="line">        prop.floatValue = Convert.ToSingle(showPosition);</span><br><span class="line">    &#125;</span><br><span class="line">    public override float GetPropertyHeight(MaterialProperty prop, string label, MaterialEditor editor)</span><br><span class="line">    &#123;</span><br><span class="line">        return 0;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">#endregion</span><br><span class="line"></span><br><span class="line">public class UniversalShaderGUI : ShaderGUI</span><br><span class="line">&#123;   </span><br><span class="line">    </span><br><span class="line"> </span><br><span class="line">    public class MaterialData</span><br><span class="line">    &#123;</span><br><span class="line">        public MaterialProperty prop;</span><br><span class="line">        public bool indentLevel = false;</span><br><span class="line">        public bool needLineBefore = true;</span><br><span class="line">        public bool indentLevelPP = false;</span><br><span class="line">        public bool indentLevelSS = false;</span><br><span class="line">        public int  PPNumber = 1;</span><br><span class="line">        public int  SSNumber = 1;</span><br><span class="line">        public bool PassState = true;</span><br><span class="line">        public string LightModeName=null;</span><br><span class="line"></span><br><span class="line">    &#125;</span><br><span class="line">    static Dictionary&lt;string, MaterialProperty&gt; s_MaterialProperty = new Dictionary&lt;string, MaterialProperty&gt;();</span><br><span class="line">    static List&lt;MaterialData&gt; s_List = new List&lt;MaterialData&gt;();</span><br><span class="line">    public override void OnGUI(MaterialEditor materialEditor, MaterialProperty[] properties)</span><br><span class="line">    &#123;</span><br><span class="line">        Shader shader = (materialEditor.target as Material).shader;</span><br><span class="line">        Material material = materialEditor.target as Material;</span><br><span class="line">        s_List.Clear();</span><br><span class="line">        s_MaterialProperty.Clear();</span><br><span class="line">        for (int i = 0; i &lt; properties.Length; i++)</span><br><span class="line">        &#123;</span><br><span class="line">            var propertie = properties[i];</span><br><span class="line">            s_MaterialProperty[propertie.name] = propertie;</span><br><span class="line">            s_List.Add(new MaterialData() &#123; prop = propertie, indentLevel = false , needLineBefore =false ,indentLevelPP=false,indentLevelSS=false&#125;);</span><br><span class="line">            var attributes = shader.GetPropertyAttributes(i);</span><br><span class="line">            foreach (var item in attributes)</span><br><span class="line">            &#123;</span><br><span class="line">               </span><br><span class="line">                #region 是否隐藏 控制标签</span><br><span class="line">                //=======================================================是否隐藏 控制标签</span><br><span class="line">                if (item.StartsWith(&quot;HideSwitch&quot;))</span><br><span class="line">                &#123;</span><br><span class="line">                    Match match = Regex.Match(item, @&quot;(\w+)\s*\((.*)\)&quot;);</span><br><span class="line">                    if(match.Success)</span><br><span class="line">                    &#123;</span><br><span class="line">                        var name = match.Groups[2].Value.Trim();</span><br><span class="line">                        if(s_MaterialProperty.TryGetValue(name, out var a))</span><br><span class="line">                        &#123;   //toggle对应float为0就不绘制</span><br><span class="line">                            if(a.floatValue==0)</span><br><span class="line">                            &#123;</span><br><span class="line">                                s_List.RemoveAt(s_List.Count - 1);</span><br><span class="line">                                </span><br><span class="line">                            &#125;</span><br><span class="line">                            else</span><br><span class="line">                                s_List[s_List.Count - 1].indentLevel = true;</span><br><span class="line">                        &#125;</span><br><span class="line">                        </span><br><span class="line"></span><br><span class="line"></span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">                //======================================================是否隐藏 控制标签</span><br><span class="line">                #endregion</span><br><span class="line">                //======================================================IndentLevel</span><br><span class="line">                #region indentLevel</span><br><span class="line">                if (item.Contains(&quot;indentLevelPP&quot;))</span><br><span class="line">                &#123;</span><br><span class="line">                    s_List[s_List.Count - 1].indentLevelPP=true;</span><br><span class="line">                    int number =Convert.ToInt32( item.Substring(13));</span><br><span class="line">                    s_List[s_List.Count - 1].PPNumber = number;</span><br><span class="line">                &#125;</span><br><span class="line">                if (item.Contains(&quot;indentLevelSS&quot;))</span><br><span class="line">                &#123;</span><br><span class="line">                    s_List[s_List.Count - 1].indentLevelSS = true;</span><br><span class="line">                    int number = Convert.ToInt32(item.Substring(13));</span><br><span class="line">                    s_List[s_List.Count - 1].SSNumber = number;</span><br><span class="line">                &#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">                #endregion</span><br><span class="line">               </span><br><span class="line"></span><br><span class="line">                #region Line 标签</span><br><span class="line">                if (item==(&quot;Line&quot;))</span><br><span class="line">                &#123;</span><br><span class="line">                    s_List[s_List.Count - 1].needLineBefore = true;</span><br><span class="line">                    //GUILayout.Box(&quot;&quot;, GUILayout.ExpandWidth(true), GUILayout.Height(1));</span><br><span class="line">                &#125;</span><br><span class="line">                #endregion</span><br><span class="line">          </span><br><span class="line">                #region IsDef 控制标签</span><br><span class="line">                if (item.StartsWith(&quot;IfDef&quot;))</span><br><span class="line">                &#123;</span><br><span class="line">                    Match match = Regex.Match(item, @&quot;(\w+)\s*\((.*)\)&quot;);</span><br><span class="line">                    if (match.Success)</span><br><span class="line">                    &#123;</span><br><span class="line">                        var name = match.Groups[2].Value.Trim();  //name:keyword name</span><br><span class="line">                        </span><br><span class="line">                            if (propertie.textureValue!=null)</span><br><span class="line">                            &#123;</span><br><span class="line">                            material.EnableKeyword(name);</span><br><span class="line">                                </span><br><span class="line">                            &#125;</span><br><span class="line">                            else</span><br><span class="line">                        &#123;</span><br><span class="line">                            material.DisableKeyword(name);</span><br><span class="line">                        &#125;</span><br><span class="line">                               </span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">                #endregion</span><br><span class="line">                #region Foldout 控制标签</span><br><span class="line">                if (item.StartsWith(&quot;if&quot;))</span><br><span class="line">                &#123;</span><br><span class="line">                    Match match = Regex.Match(item, @&quot;(\w+)\s*\((.*)\)&quot;);</span><br><span class="line">                    if (match.Success)</span><br><span class="line">                    &#123;</span><br><span class="line">                        var name = match.Groups[2].Value.Trim();</span><br><span class="line">                      </span><br><span class="line">                        if (s_MaterialProperty.TryGetValue(name, out var a))</span><br><span class="line">                        &#123;</span><br><span class="line">                            if (a.floatValue == 0) &#123;</span><br><span class="line">                                //如果有if标签，并且Foldout没有展开不进行绘制</span><br><span class="line">                                s_List.RemoveAt(s_List.Count - 1); </span><br><span class="line">                                break;</span><br><span class="line">                            &#125;</span><br><span class="line">                            else</span><br><span class="line">                                s_List[s_List.Count - 1].indentLevel = true;</span><br><span class="line">                        &#125;</span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">                #endregion</span><br><span class="line"></span><br><span class="line">                #region 开关Pass 控制标签</span><br><span class="line">                if (item.StartsWith(&quot;Pass&quot;))</span><br><span class="line">                &#123;</span><br><span class="line">                    Match match = Regex.Match(item, @&quot;(\w+)\s*\((.*)\)&quot;);</span><br><span class="line">                    if (match.Success)</span><br><span class="line">                    &#123;</span><br><span class="line">                        var name = match.Groups[2].Value.Trim();</span><br><span class="line">                        s_List[s_List.Count - 1].PassState =Convert.ToBoolean( properties[i].floatValue);</span><br><span class="line">                        s_List[s_List.Count - 1].LightModeName = name;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">                    &#125;</span><br><span class="line">                &#125;</span><br><span class="line">                #endregion</span><br><span class="line"></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line"> </span><br><span class="line"> </span><br><span class="line">        /*如果不需要展开子节点像右缩进，可以直接调用base方法</span><br><span class="line">         base.OnGUI(materialEditor, s_List.ToArray());*/</span><br><span class="line"> </span><br><span class="line">        PropertiesDefaultGUI(materialEditor, s_List);</span><br><span class="line">    &#125;</span><br><span class="line">    private static int s_ControlHash = &quot;EditorTextField&quot;.GetHashCode();</span><br><span class="line">    public void PropertiesDefaultGUI(MaterialEditor materialEditor, List&lt;MaterialData&gt; props)</span><br><span class="line">    &#123;</span><br><span class="line">        var f = materialEditor.GetType().GetField(&quot;m_InfoMessage&quot;, System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.NonPublic);</span><br><span class="line">        if (f != null)</span><br><span class="line">        &#123;</span><br><span class="line">            string m_InfoMessage = (string)f.GetValue(materialEditor);</span><br><span class="line">            materialEditor.SetDefaultGUIWidths();</span><br><span class="line">            if (m_InfoMessage != null)</span><br><span class="line">            &#123;</span><br><span class="line">                EditorGUILayout.HelpBox(m_InfoMessage, MessageType.Info);</span><br><span class="line">            &#125;</span><br><span class="line">            else</span><br><span class="line">            &#123;</span><br><span class="line">                GUIUtility.GetControlID(s_ControlHash, FocusType.Passive, new Rect(0f, 0f, 0f, 0f));</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        for (int i = 0; i &lt; props.Count; i++)</span><br><span class="line">        &#123;</span><br><span class="line">            MaterialProperty prop = props[i].prop;</span><br><span class="line">            bool indentLevel = props[i].indentLevel;</span><br><span class="line">            bool needLine = props[i].needLineBefore;</span><br><span class="line">            bool indentLevelPP = props[i].indentLevelPP;</span><br><span class="line">            bool indentLevelSS = props[i].indentLevelSS;</span><br><span class="line">            int indentNumberPP = props[i].PPNumber;</span><br><span class="line">            int indentNumberSS = props[i].SSNumber;</span><br><span class="line">            bool PassState = props[i].PassState;</span><br><span class="line">            string LightModeName = props[i].LightModeName;</span><br><span class="line">            if ((prop.flags &amp; (MaterialProperty.PropFlags.HideInInspector | MaterialProperty.PropFlags.PerRendererData)) == MaterialProperty.PropFlags.None)</span><br><span class="line">            &#123;</span><br><span class="line">                if(LightModeName!=null)</span><br><span class="line">                &#123;</span><br><span class="line">                    Material material = materialEditor.target as Material;</span><br><span class="line">                    material.SetShaderPassEnabled(LightModeName, PassState);</span><br><span class="line">                   </span><br><span class="line">                    </span><br><span class="line">                &#125;</span><br><span class="line">                if (needLine) GUILayout.Box(&quot;&quot;, GUILayout.ExpandWidth(true), GUILayout.Height(3));</span><br><span class="line">                float propertyHeight = materialEditor.GetPropertyHeight(prop, prop.displayName);</span><br><span class="line">                Rect controlRect = EditorGUILayout.GetControlRect(true, propertyHeight, EditorStyles.layerMaskField);</span><br><span class="line">                if(indentLevelPP) EditorGUI.indentLevel+= indentNumberPP;</span><br><span class="line">                if (indentLevelSS) EditorGUI.indentLevel-= indentNumberSS;</span><br><span class="line">                if (indentLevel) EditorGUI.indentLevel++;</span><br><span class="line">               </span><br><span class="line">                            materialEditor.ShaderProperty(controlRect, prop, prop.displayName);</span><br><span class="line">                if (indentLevel) EditorGUI.indentLevel--;</span><br><span class="line">               </span><br><span class="line"></span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        EditorGUILayout.Space();</span><br><span class="line">        EditorGUILayout.Space();</span><br><span class="line">        if (SupportedRenderingFeatures.active.editableMaterialRenderQueue)</span><br><span class="line">        &#123;</span><br><span class="line">            materialEditor.RenderQueueField();</span><br><span class="line">        &#125;</span><br><span class="line">        materialEditor.EnableInstancingField();</span><br><span class="line">        materialEditor.DoubleSidedGIField();</span><br><span class="line">    &#125;</span><br><span class="line"> </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+    </article>
+    <!-- license  -->
+    
+        <div class="license-wrapper">
+            <p>原文作者：<a href="https://ever17-luqc.github.io">luqc</a>
+            <p>原文链接：<a href="https://ever17-luqc.github.io/ToonShading-1/">https://ever17-luqc.github.io/ToonShading-1/</a>
+            <p>发表日期：<a href="https://ever17-luqc.github.io/ToonShading-1/">July 12th 2021, 10:04:45 am</a>
+            <p>更新日期：<a href="https://ever17-luqc.github.io/ToonShading-1/">July 12th 2021, 9:28:26 pm</a>
+            <p>版权声明：本文采用<a rel="license noopener" target="_blank" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可</p>
+        </div>
+    
+    <!-- paginator  -->
+    <ul class="post-paginator">
+        <li class="next">
+            
+        </li>
+        <li class="previous">
+            
+                <div class="prevSlogan">Previous Post</div>
+                <a href= "/SSOutline/" title= "【Unity-URP】快速入门精确物体屏幕空间描边">
+                    <div class="prevTitle">【Unity-URP】快速入门精确物体屏幕空间描边</div>
+                </a>
+            
+        </li>
+    </ul>
+    <!-- 评论插件 -->
+    <!-- 来必力City版安装代码 -->
+
+<!-- City版安装代码已完成 -->
+    
+    
+    <!-- gitalk评论 -->
+
+    <!-- utteranc评论 -->
+
+    <!-- partial('_partial/comment/changyan') -->
+    <!--PC版-->
+
+
+    
+    
+
+    <!-- 评论 -->
+
+    <!-- idea from: https://hexo.fluid-dev.com/posts/hexo-injector/#%E6%96%87%E7%AB%A0%E6%97%B6%E6%95%88%E6%80%A7%E6%8F%90%E7%A4%BA -->
+    
+</main>
+
+            <!-- profile -->
+            
+        </div>
+        <footer class="footer footer-unloaded">
+    <!-- social  -->
+    
+    <div class="social">
+        
+    
+        
+            
+                <a href="mailto:1477030987@qq.com" class="iconfont-archer email" title=email ></a>
+            
+        
+    
+        
+            
+                <a href="//github.com/ever17-luqc" class="iconfont-archer github" target="_blank" title=github></a>
+            
+        
+    
+        
+    
+        
+    
+        
+    
+        
+            
+                <a href="https://www.zhihu.com/people/ever_17" class="iconfont-archer zhihu" target="_blank" title=zhihu></a>
+            
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+            
+                <a href="https://www.artstation.com/ever17" class="iconfont-archer artstation" target="_blank" title=artstation></a>
+            
+        
+    
+        
+    
+
+    </div>
+    
+    <!-- powered by Hexo  -->
+    <div class="copyright">
+        <span id="hexo-power">Powered by <a href="https://hexo.io/" target="_blank">Hexo</a></span><span class="iconfont-archer power">&#xe635;</span><span id="theme-info">theme <a href="https://github.com/fi3ework/hexo-theme-archer" target="_blank">Archer</a></span>
+    </div>
+    <!-- 不蒜子  -->
+    
+    <div class="busuanzi-container">
+    
+     
+    <span id="busuanzi_container_site_pv">PV: <span id="busuanzi_value_site_pv"></span> :)</span>
+    
+    </div>
+    
+</footer>
+    </div>
+    <!-- toc -->
+    
+    <div class="toc-wrapper" style=
+    
+
+
+
+
+
+
+
+top:50vh;
+
+    >
+        <div class="toc-catalog">
+            <span class="iconfont-archer catalog-icon">&#xe613;</span><span>CATALOG</span>
+        </div>
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%85%A5%E9%97%A8%E7%BA%A7%E5%8D%A1%E6%B8%B2%E4%BB%8E%E8%BF%99%E9%87%8C%E5%BC%80%E5%A7%8B"><span class="toc-number">2.</span> <span class="toc-text">入门级卡渲从这里开始</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%98%8E%E6%9A%97%E7%9D%80%E8%89%B2%E5%9F%BA%E7%A1%80"><span class="toc-number">2.1.</span> <span class="toc-text">明暗着色基础</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%B3%E4%BA%8E%E5%8D%A1%E6%B8%B2%E4%BB%A5%E5%8F%8A%E7%9B%B8%E5%85%B3%E7%9A%84%E5%86%85%E5%AE%B9%E6%88%91%E8%87%AA%E5%B7%B1%E7%9A%84%E7%90%86%E8%A7%A3"><span class="toc-number">2.1.1.</span> <span class="toc-text">关于卡渲以及相关的内容我自己的理解</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#cell-shading%EF%BC%9A%E7%BA%AF%E8%B5%9B%E7%92%90%E7%92%90%E7%9A%84%E5%BC%80%E5%A7%8B"><span class="toc-number">2.1.2.</span> <span class="toc-text">cell shading：纯赛璐璐的开始</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#CellShading%E7%BE%BD%E5%8C%96%E6%98%8E%E6%9A%97%E4%BA%A4%E7%95%8C%E8%BE%B9%E7%BC%98%E7%9A%84%E6%94%B9%E8%BF%9B"><span class="toc-number">2.1.3.</span> <span class="toc-text">CellShading羽化明暗交界边缘的改进</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#rampMap%E5%BC%95%E5%85%A5"><span class="toc-number">2.1.4.</span> <span class="toc-text">rampMap引入</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B5%B7%E5%A4%9C%E7%BA%A7%E6%9D%8E%E5%A7%90-ilm%E8%B4%B4%E5%9B%BE"><span class="toc-number">2.1.5.</span> <span class="toc-text">起夜级李姐-ilm贴图</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%AB%98%E5%85%89%E9%83%A8%E5%88%86"><span class="toc-number">2.2.</span> <span class="toc-text">高光部分</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BE%B9%E7%BC%98%E5%85%89%E9%83%A8%E5%88%86"><span class="toc-number">2.3.</span> <span class="toc-text">边缘光部分</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%8E%AF%E5%A2%83%E5%85%89%E9%83%A8%E5%88%86"><span class="toc-number">2.4.</span> <span class="toc-text">环境光部分</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8F%8F%E8%BE%B9%E9%83%A8%E5%88%86"><span class="toc-number">2.5.</span> <span class="toc-text">描边部分</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8F%92%E6%92%AD%EF%BC%9A%E5%9F%BA%E4%BA%8E%E6%B7%B1%E5%BA%A6%E5%9B%BE%E7%9A%84%E6%8A%95%E5%BD%B1"><span class="toc-number">2.6.</span> <span class="toc-text">插播：基于深度图的投影</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9F%BA%E7%A1%80%E9%83%A8%E5%88%86shader%E5%86%85%E5%AE%B9%EF%BC%88%E9%83%A8%E5%88%86%E5%8A%9F%E8%83%BD%E6%B2%A1%E5%8E%BB%E6%B5%8B%E8%AF%95%EF%BC%8C%E5%8F%AF%E8%83%BD%E5%AD%98%E5%9C%A8BUG%EF%BC%89"><span class="toc-number">2.7.</span> <span class="toc-text">基础部分shader内容（部分功能没去测试，可能存在BUG）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%8F%92%E6%92%AD-GUI%E7%9B%B8%E5%85%B3"><span class="toc-number">2.8.</span> <span class="toc-text">插播 GUI相关</span></a></li></ol></li></ol>
+    </div>
+    
+    <div class="back-top iconfont-archer">&#xe639;</div>
+    <div class="sidebar sidebar-hide">
+    <ul class="sidebar-tabs sidebar-tabs-active-0">
+        <li class="sidebar-tab-archives"><span class="iconfont-archer">&#xe67d;</span><span class="tab-name">Archive</span></li>
+        <li class="sidebar-tab-tags"><span class="iconfont-archer">&#xe61b;</span><span class="tab-name">Tag</span></li>
+        <li class="sidebar-tab-categories"><span class="iconfont-archer">&#xe666;</span><span class="tab-name">Cate</span></li>
+    </ul>
+    <div class="sidebar-content sidebar-content-show-archive">
+          <div class="sidebar-panel-archives">
+    <!-- 在ejs中将archive按照时间排序 -->
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <div class="total-and-search">
+        <div class="total-archive">
+        Total : 9
+        </div>
+        <!-- search  -->
+        
+    </div>
+    
+    <div class="post-archive">
+    
+    
+    
+    
+    <div class="archive-year"> 2021 </div>
+    <ul class="year-list">
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/12</span><a class="archive-post-title" href= "/ToonShading-1/" >快速入门日式动漫渲染【基础Shading篇】</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/07</span><a class="archive-post-title" href= "/SSOutline/" >【Unity-URP】快速入门精确物体屏幕空间描边</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/07</span><a class="archive-post-title" href= "/PaintingPractice02/" >【原画练习】一张角色速途</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/07</span><a class="archive-post-title" href= "/SD-3090/" >快速实战SD之3090核弹卡</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">06/30</span><a class="archive-post-title" href= "/SD-FX/" >【Substance Designer】快速入门SD:FXMap</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">06/27</span><a class="archive-post-title" href= "/SD1/" >【Substance Designer】入门级SD技巧-1</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">06/13</span><a class="archive-post-title" href= "/PaintingPractice01/" >【原画日常练习】速途场景，套皮以前毕业设计的设定</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">06/06</span><a class="archive-post-title" href= "/SSPR/" >【Unity-URP】快速入门屏幕空间平面反射(SSPR)————（1）</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">05/30</span><a class="archive-post-title" href= "/SSR/" >【Unity-URP】快速入门屏幕空间反射(SSR)</a>
+        </li>
+    
+    </div>
+  </div>
+        <div class="sidebar-panel-tags">
+    <div class="sidebar-tags-name">
+    
+        <span class="sidebar-tag-name" data-tags="原画"><span class="iconfont-archer">&#xe606;</span>原画</span>
+    
+        <span class="sidebar-tag-name" data-tags="场景"><span class="iconfont-archer">&#xe606;</span>场景</span>
+    
+        <span class="sidebar-tag-name" data-tags="速途"><span class="iconfont-archer">&#xe606;</span>速途</span>
+    
+        <span class="sidebar-tag-name" data-tags="角色"><span class="iconfont-archer">&#xe606;</span>角色</span>
+    
+        <span class="sidebar-tag-name" data-tags="Substance Designer"><span class="iconfont-archer">&#xe606;</span>Substance Designer</span>
+    
+        <span class="sidebar-tag-name" data-tags="Material"><span class="iconfont-archer">&#xe606;</span>Material</span>
+    
+        <span class="sidebar-tag-name" data-tags="Unity"><span class="iconfont-archer">&#xe606;</span>Unity</span>
+    
+        <span class="sidebar-tag-name" data-tags="Urp"><span class="iconfont-archer">&#xe606;</span>Urp</span>
+    
+        <span class="sidebar-tag-name" data-tags="Shader"><span class="iconfont-archer">&#xe606;</span>Shader</span>
+    
+        <span class="sidebar-tag-name" data-tags="NPR"><span class="iconfont-archer">&#xe606;</span>NPR</span>
+    
+        <span class="sidebar-tag-name" data-tags="ToonShading"><span class="iconfont-archer">&#xe606;</span>ToonShading</span>
+    
+    </div>
+    <div class="iconfont-archer sidebar-tags-empty">&#xe678;</div>
+    <div class="tag-load-fail" style="display: none; color: #ccc; font-size: 0.6rem;">
+    缺失模块。<br/>
+    1、请确保node版本大于6.2<br/>
+    2、在博客根目录（注意不是archer根目录）执行以下命令：<br/>
+    <span style="color: #f75357; font-size: 1rem; line-height: 2rem;">npm i hexo-generator-json-content --save</span><br/>
+    3、在根目录_config.yml里添加配置：
+    <pre style="color: #787878; font-size: 0.6rem;">
+jsonContent:
+  meta: false
+  pages: false
+  posts:
+    title: true
+    date: true
+    path: true
+    text: false
+    raw: false
+    content: false
+    slug: false
+    updated: false
+    comments: false
+    link: false
+    permalink: false
+    excerpt: false
+    categories: true
+    tags: true</pre>
+    </div> 
+    <div class="sidebar-tags-list"></div>
+</div>
+        <div class="sidebar-panel-categories">
+    <div class="sidebar-categories-name">
+    
+        <span class="sidebar-category-name" data-categories="原画"><span class="iconfont-archer">&#xe60a;</span>原画</span>
+    
+        <span class="sidebar-category-name" data-categories="Substance-Designer"><span class="iconfont-archer">&#xe60a;</span>Substance-Designer</span>
+    
+        <span class="sidebar-category-name" data-categories="Unity"><span class="iconfont-archer">&#xe60a;</span>Unity</span>
+    
+        <span class="sidebar-category-name" data-categories="Unity/ToonShading"><span class="iconfont-archer">&#xe60a;</span>Unity/ToonShading</span>
+    
+    </div>
+    <div class="iconfont-archer sidebar-categories-empty">&#xe678;</div>
+    <div class="sidebar-categories-list"></div>
+</div>
+    </div>
+</div> 
+    <script>
+    var siteMeta = {
+        root: "/",
+        author: "luqc"
+    }
+</script>
+    <!-- CDN failover -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
+    <script type="text/javascript">
+        if (typeof window.$ === 'undefined')
+        {
+            console.warn('jquery load from jsdelivr failed, will load local script')
+            document.write('<script src="/lib/jquery.min.js">\x3C/script>')
+        }
+    </script>
+    <script src="/scripts/main.js"></script>
+    <!-- algolia -->
+    
+    <!-- busuanzi  -->
+    
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    
+    <!-- CNZZ  -->
+    
+    </div>
+    <!-- async load share.js -->
+    
+        <script src="/scripts/share.js" async></script>    
+     
+    </body>
+</html>
+
+
