@@ -1,0 +1,937 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+    <!-- title -->
+
+
+
+
+<!-- keywords -->
+
+
+
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" >
+    <meta name="author" content="luqc">
+    <meta name="renderer" content="webkit">
+    <meta name="copyright" content="luqc">
+    
+    <meta name="keywords" content="hexo,hexo-theme,hexo-blog">
+    
+    <meta name="description" content="">
+    <meta name="description" content="前言上一篇讲到了大气散射单次散射的理论，这篇将会将理论化作实现，一步步去实现这套单次散射。因为是在URP去做后处理散射实现，需要用到RendererFeature，这部分本文不会涉及，如果对RendererFeature不怎么了解可以自行找文章了解。 第一步：大体框架首先是volume面板，这样就能在volume里添加大气散射的后处理了 123456789101112131415161718192">
+<meta property="og:type" content="article">
+<meta property="og:title" content="快速入门大气渲染【实现篇(一)】">
+<meta property="og:url" content="https://ever17-luqc.github.io/Atmosphere2/index.html">
+<meta property="og:site_name" content="ever17Blog">
+<meta property="og:description" content="前言上一篇讲到了大气散射单次散射的理论，这篇将会将理论化作实现，一步步去实现这套单次散射。因为是在URP去做后处理散射实现，需要用到RendererFeature，这部分本文不会涉及，如果对RendererFeature不怎么了解可以自行找文章了解。 第一步：大体框架首先是volume面板，这样就能在volume里添加大气散射的后处理了 123456789101112131415161718192">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ever17-luqc.github.io/Atmosphere2/10-1633852867543.png">
+<meta property="og:image" content="https://ever17-luqc.github.io/Atmosphere2/RL.png">
+<meta property="og:image" content="https://ever17-luqc.github.io/Atmosphere2/RL2.png">
+<meta property="article:published_time" content="2021-10-10T07:51:55.000Z">
+<meta property="article:modified_time" content="2021-10-10T08:31:49.966Z">
+<meta property="article:author" content="luqc">
+<meta property="article:tag" content="Unity">
+<meta property="article:tag" content="Urp">
+<meta property="article:tag" content="Atmosphere">
+<meta property="article:tag" content="Rendering">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ever17-luqc.github.io/Atmosphere2/10-1633852867543.png">
+    <meta http-equiv="Cache-control" content="no-cache">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+    
+    <title>快速入门大气渲染【实现篇(一)】 · Ever17&#39;s Studio</title>
+    <style type="text/css">
+    @font-face {
+        font-family: 'Oswald-Regular';
+        src: url("/font/Oswald-Regular.ttf");
+    }
+
+    body {
+        margin: 0;
+    }
+
+    header,
+    footer,
+    .back-top,
+    .sidebar,
+    .container,
+    .site-intro-meta,
+    .toc-wrapper {
+        display: none;
+    }
+
+    .site-intro {
+        position: relative;
+        z-index: 3;
+        width: 100%;
+        /* height: 50vh; */
+        overflow: hidden;
+    }
+
+    .site-intro-placeholder {
+        position: absolute;
+        z-index: -2;
+        top: 0;
+        left: 0;
+        width: calc(100% + 300px);
+        height: 100%;
+        background: repeating-linear-gradient(-45deg, #444 0, #444 80px, #333 80px, #333 160px);
+        background-position: center center;
+        transform: translate3d(-226px, 0, 0);
+        animation: gradient-move 2.5s ease-out 0s infinite;
+    }
+
+    @keyframes gradient-move {
+        0% {
+            transform: translate3d(-226px, 0, 0);
+        }
+        100% {
+            transform: translate3d(0, 0, 0);
+        }
+    }
+
+</style>
+
+    <link rel="preload" href= "/css/style.css?v=20210204" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+    <link rel="stylesheet" href= "/css/mobile.css?v=20210204" media="(max-width: 980px)">
+    
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+    
+    <!-- /*! loadCSS. [c]2017 Filament Group, Inc. MIT License */
+/* This file is meant as a standalone workflow for
+- testing support for link[rel=preload]
+- enabling async CSS loading in browsers that do not support rel=preload
+- applying rel preload css once loaded, whether supported or not.
+*/ -->
+<script>
+(function( w ){
+	"use strict";
+	// rel=preload support test
+	if( !w.loadCSS ){
+		w.loadCSS = function(){};
+	}
+	// define on the loadCSS obj
+	var rp = loadCSS.relpreload = {};
+	// rel=preload feature support test
+	// runs once and returns a function for compat purposes
+	rp.support = (function(){
+		var ret;
+		try {
+			ret = w.document.createElement( "link" ).relList.supports( "preload" );
+		} catch (e) {
+			ret = false;
+		}
+		return function(){
+			return ret;
+		};
+	})();
+
+	// if preload isn't supported, get an asynchronous load by using a non-matching media attribute
+	// then change that media back to its intended value on load
+	rp.bindMediaToggle = function( link ){
+		// remember existing media attr for ultimate state, or default to 'all'
+		var finalMedia = link.media || "all";
+
+		function enableStylesheet(){
+			link.media = finalMedia;
+		}
+
+		// bind load handlers to enable media
+		if( link.addEventListener ){
+			link.addEventListener( "load", enableStylesheet );
+		} else if( link.attachEvent ){
+			link.attachEvent( "onload", enableStylesheet );
+		}
+
+		// Set rel and non-applicable media type to start an async request
+		// note: timeout allows this to happen async to let rendering continue in IE
+		setTimeout(function(){
+			link.rel = "stylesheet";
+			link.media = "only x";
+		});
+		// also enable media after 3 seconds,
+		// which will catch very old browsers (android 2.x, old firefox) that don't support onload on link
+		setTimeout( enableStylesheet, 3000 );
+	};
+
+	// loop through link elements in DOM
+	rp.poly = function(){
+		// double check this to prevent external calls from running
+		if( rp.support() ){
+			return;
+		}
+		var links = w.document.getElementsByTagName( "link" );
+		for( var i = 0; i < links.length; i++ ){
+			var link = links[ i ];
+			// qualify links to those with rel=preload and as=style attrs
+			if( link.rel === "preload" && link.getAttribute( "as" ) === "style" && !link.getAttribute( "data-loadcss" ) ){
+				// prevent rerunning on link
+				link.setAttribute( "data-loadcss", true );
+				// bind listeners to toggle media back
+				rp.bindMediaToggle( link );
+			}
+		}
+	};
+
+	// if unsupported, run the polyfill
+	if( !rp.support() ){
+		// run once at least
+		rp.poly();
+
+		// rerun poly on an interval until onload
+		var run = w.setInterval( rp.poly, 500 );
+		if( w.addEventListener ){
+			w.addEventListener( "load", function(){
+				rp.poly();
+				w.clearInterval( run );
+			} );
+		} else if( w.attachEvent ){
+			w.attachEvent( "onload", function(){
+				rp.poly();
+				w.clearInterval( run );
+			} );
+		}
+	}
+
+
+	// commonjs
+	if( typeof exports !== "undefined" ){
+		exports.loadCSS = loadCSS;
+	}
+	else {
+		w.loadCSS = loadCSS;
+	}
+}( typeof global !== "undefined" ? global : this ) );
+</script>
+
+    <link rel="icon" href= "/assets/favicon2.ico" />
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/webfontloader@1.6.28/webfontloader.min.js" as="script" />
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js" as="script" />
+    <link rel="preload" href="/scripts/main.js?v=20210204" as="script" />
+    <link rel="preload" as="font" href="/font/Oswald-Regular.ttf" crossorigin>
+    <link rel="preload" as="font" href="https://at.alicdn.com/t/font_327081_1dta1rlogw17zaor.woff" crossorigin>
+    <script src="https://cdn.bootcdn.net/ajax/libs/font-awesome/5.15.3/js/all.min.js"  data-auto-replace-svg="nest" ></script>
+    
+    <!-- fancybox -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" defer></script>
+    <!-- 百度统计  -->
+    
+    <!-- 谷歌统计  -->
+    
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+    
+        <body class="post-body">
+    
+    
+<header class="header">
+
+    <div class="read-progress"></div>
+    <div class="header-sidebar-menu">&#xe775;</div>
+    <!-- post页的toggle banner  -->
+    
+    <div class="banner">
+            <div class="blog-title">
+                <a href="/" >Ever17&#39;s Studio.</a>
+            </div>
+            <div class="post-title">
+                <a href="#" class="post-name">快速入门大气渲染【实现篇(一)】</a>
+            </div>
+    </div>
+    
+    <a class="home-link" href=/>Ever17's Studio.</a>
+</header>
+    <div class="wrapper">
+        <div class="site-intro" style="
+
+
+
+
+
+
+
+height:50vh;
+">
+    
+    <!-- 主页  -->
+    
+    
+    <!-- 404页  -->
+            
+    <div class="site-intro-placeholder"></div>
+    <div class="site-intro-img" style="background-image: url(/intro/post-bg.jpg)"></div>
+    <div class="site-intro-meta">
+        <!-- 标题  -->
+        <h1 class="intro-title">
+            <!-- 主页  -->
+            
+            快速入门大气渲染【实现篇(一)】
+            <!-- 404 -->
+            
+        </h1>
+        <!-- 副标题 -->
+        <p class="intro-subtitle">
+            <!-- 主页副标题  -->
+            
+            
+            <!-- 404 -->
+            
+        </p>
+        <!-- 文章页meta -->
+        
+            <div class="post-intros">
+                <!-- 文章页标签  -->
+                
+                    <div class= post-intro-tags >
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags = "Unity">Unity</a>
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags = "Urp">Urp</a>
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags = "Atmosphere">Atmosphere</a>
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags = "Rendering">Rendering</a>
+    
+</div>
+                
+                
+                    <div class="post-intro-read">
+                        <span>字数统计: <span class="post-count word-count">1.9k</span>阅读时长: <span class="post-count reading-time">9 min</span></span>
+                    </div>
+                
+                <div class="post-intro-meta">
+                    <span class="post-intro-calander iconfont-archer">&#xe676;</span>
+                    <span class="post-intro-time">2021/10/10</span>
+                    
+                    <span id="busuanzi_container_page_pv" class="busuanzi-pv">
+                        <span class="iconfont-archer">&#xe602;</span>
+                        <span id="busuanzi_value_page_pv"></span>
+                    </span>
+                    
+                    <span class="shareWrapper">
+                        <span class="iconfont-archer shareIcon">&#xe71d;</span>
+                        <span class="shareText">Share</span>
+                        <ul class="shareList">
+                            <li class="iconfont-archer share-qr" data-type="qr">&#xe75b;
+                                <div class="share-qrcode"></div>
+                            </li>
+                            <li class="iconfont-archer" data-type="weibo">&#xe619;</li>
+                            <li class="iconfont-archer" data-type="qzone">&#xe62e;</li>
+                            <li class="iconfont-archer" data-type="twitter">&#xe634;</li>
+                            <li class="iconfont-archer" data-type="facebook">&#xe67a;</li>
+                        </ul>
+                    </span>
+                </div>
+            </div>
+        
+    </div>
+</div>
+        <script>
+ 
+  // get user agent
+  var browser = {
+    versions: function () {
+      var u = window.navigator.userAgent;
+      return {
+        userAgent: u,
+        trident: u.indexOf('Trident') > -1, //IE内核
+        presto: u.indexOf('Presto') > -1, //opera内核
+        webKit: u.indexOf('AppleWebKit') > -1, //苹果、谷歌内核
+        gecko: u.indexOf('Gecko') > -1 && u.indexOf('KHTML') == -1, //火狐内核
+        mobile: !!u.match(/AppleWebKit.*Mobile.*/), //是否为移动终端
+        ios: !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/), //ios终端
+        android: u.indexOf('Android') > -1 || u.indexOf('Linux') > -1, //android终端或者uc浏览器
+        iPhone: u.indexOf('iPhone') > -1 || u.indexOf('Mac') > -1, //是否为iPhone或者安卓QQ浏览器
+        iPad: u.indexOf('iPad') > -1, //是否为iPad
+        webApp: u.indexOf('Safari') == -1, //是否为web应用程序，没有头部与底部
+        weixin: u.indexOf('MicroMessenger') == -1, //是否为微信浏览器
+        uc: u.indexOf('UCBrowser') > -1 //是否为android下的UC浏览器
+      };
+    }()
+  }
+  console.log("userAgent:" + browser.versions.userAgent);
+
+  // callback
+  function fontLoaded() {
+    console.log('font loaded');
+    if (document.getElementsByClassName('site-intro-meta')) {
+      document.getElementsByClassName('intro-title')[0].classList.add('intro-fade-in');
+      document.getElementsByClassName('intro-subtitle')[0].classList.add('intro-fade-in');
+      var postIntros = document.getElementsByClassName('post-intros')[0]
+      if (postIntros) {
+        postIntros.classList.add('post-fade-in');
+      }
+    }
+  }
+
+  // UC不支持跨域，所以直接显示
+  function asyncCb(){
+    if (browser.versions.uc) {
+      console.log("UCBrowser");
+      fontLoaded();
+    } else {
+      WebFont.load({
+        custom: {
+          families: ['Oswald-Regular']
+        },
+        loading: function () {  //所有字体开始加载
+          // console.log('loading');
+        },
+        active: function () {  //所有字体已渲染
+          fontLoaded();
+        },
+        inactive: function () { //字体预加载失败，无效字体或浏览器不支持加载
+          console.log('inactive: timeout');
+          fontLoaded();
+        },
+        timeout: 5000 // Set the timeout to two seconds
+      });
+    }
+  }
+
+  function asyncErr(){
+    console.warn('script load from CDN failed, will load local script')
+  }
+
+  // load webfont-loader async, and add callback function
+  function async(u, cb, err) {
+    var d = document, t = 'script',
+      o = d.createElement(t),
+      s = d.getElementsByTagName(t)[0];
+    o.src = u;
+    if (cb) { o.addEventListener('load', function (e) { cb(null, e); }, false); }
+    if (err) { o.addEventListener('error', function (e) { err(null, e); }, false); }
+    s.parentNode.insertBefore(o, s);
+  }
+
+  var asyncLoadWithFallBack = function(arr, success, reject) {
+      var currReject = function(){
+        reject()
+        arr.shift()
+        if(arr.length)
+          async(arr[0], success, currReject)
+        }
+
+      async(arr[0], success, currReject)
+  }
+
+  asyncLoadWithFallBack([
+    "https://cdn.jsdelivr.net/npm/webfontloader@1.6.28/webfontloader.min.js", 
+    "https://cdn.bootcss.com/webfont/1.6.28/webfontloader.js",
+    "/lib/webfontloader.min.js"
+  ], asyncCb, asyncErr)
+</script>        
+        <img class="loading" src="/assets/loading.svg" style="display: block; margin: 6rem auto 0 auto; width: 6rem; height: 6rem;" />
+        <div class="container container-unloaded">
+            <main class="main post-page">
+    <article class="article-entry">
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>上一篇讲到了大气散射单次散射的理论，这篇将会将理论化作实现，一步步去实现这套单次散射。因为是在URP去做后处理散射实现，需要用到RendererFeature，这部分本文不会涉及，如果对RendererFeature不怎么了解可以自行找文章了解。</p>
+<h1 id="第一步：大体框架"><a href="#第一步：大体框架" class="headerlink" title="第一步：大体框架"></a>第一步：大体框架</h1><p>首先是volume面板，这样就能在volume里添加大气散射的后处理了</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><span class="line">using System.Collections;</span><br><span class="line">using System.Collections.Generic;</span><br><span class="line">using UnityEngine;</span><br><span class="line"></span><br><span class="line">using System;</span><br><span class="line">namespace UnityEngine.Rendering.Universal</span><br><span class="line">&#123;</span><br><span class="line">    [Serializable,VolumeComponentMenu(&quot;Atmospheric Scattering&quot;)]</span><br><span class="line">    public class Atmosphere:VolumeComponent,IPostProcessComponent</span><br><span class="line">    &#123;</span><br><span class="line">        public BoolParameter Enable = new BoolParameter(false);</span><br><span class="line">      </span><br><span class="line">  </span><br><span class="line">        public bool IsActive()</span><br><span class="line">        &#123;</span><br><span class="line">            return Enable.value&amp;&amp;active;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        public bool IsTileCompatible()</span><br><span class="line">        &#123;</span><br><span class="line">            return false;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">      </span><br><span class="line">    &#125;</span><br><span class="line"> &#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>然后就是rendererfeature</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br></pre></td><td class="code"><pre><span class="line">using UnityEngine;</span><br><span class="line">using UnityEngine.Rendering;</span><br><span class="line">using UnityEngine.Rendering.Universal;</span><br><span class="line"></span><br><span class="line">public class AtmosphereFeature : ScriptableRendererFeature</span><br><span class="line">&#123;</span><br><span class="line">    class CustomRenderPass : ScriptableRenderPass</span><br><span class="line">    &#123;</span><br><span class="line">        const string tag = &quot;Atmosphere&quot;;</span><br><span class="line">        Atmosphere atmosphere;</span><br><span class="line">        RenderTargetIdentifier source;</span><br><span class="line">        Material mtl;</span><br><span class="line">        RenderTextureDescriptor desc;</span><br><span class="line">        public override void OnCameraSetup(CommandBuffer cmd, ref RenderingData renderingData)</span><br><span class="line">        &#123;</span><br><span class="line">            desc = renderingData.cameraData.cameraTargetDescriptor;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        </span><br><span class="line">        public override void Execute(ScriptableRenderContext context, ref RenderingData renderingData)</span><br><span class="line">        &#123;</span><br><span class="line">            var stack = VolumeManager.instance.stack;</span><br><span class="line">            atmosphere = stack.GetComponent&lt;Atmosphere&gt;();</span><br><span class="line">            if(atmosphere.IsActive())</span><br><span class="line">            &#123;</span><br><span class="line">                CommandBuffer cmd = CommandBufferPool.Get(tag);</span><br><span class="line">                int AtmosphereTempRTid = Shader.PropertyToID(&quot;_AtmosphereTempRT&quot;);</span><br><span class="line">               </span><br><span class="line">                using (new ProfilingScope(cmd, new ProfilingSampler(tag)))</span><br><span class="line">                &#123;</span><br><span class="line">                    cmd.GetTemporaryRT(AtmosphereTempRTid, desc);</span><br><span class="line">                    cmd.Blit(this.source, AtmosphereTempRTid,mtl);</span><br><span class="line">                    cmd.Blit(AtmosphereTempRTid, this.source);</span><br><span class="line">                    cmd.ReleaseTemporaryRT(AtmosphereTempRTid);</span><br><span class="line">                &#125;</span><br><span class="line">                context.ExecuteCommandBuffer(cmd);</span><br><span class="line">                CommandBufferPool.Release(cmd);</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        </span><br><span class="line">        public override void OnCameraCleanup(CommandBuffer cmd)</span><br><span class="line">        &#123;</span><br><span class="line">        &#125;</span><br><span class="line">        public void setUp(RenderTargetIdentifier source,Material mtl)</span><br><span class="line">        &#123;</span><br><span class="line">            this.source = source;</span><br><span class="line">            this.mtl = mtl;</span><br><span class="line">           </span><br><span class="line"></span><br><span class="line">        &#125;</span><br><span class="line">           </span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    CustomRenderPass m_ScriptablePass;</span><br><span class="line">    public Material AtmosphericScatteringMaterial;</span><br><span class="line"></span><br><span class="line">    /// &lt;inheritdoc/&gt;</span><br><span class="line">    public override void Create()</span><br><span class="line">    &#123;</span><br><span class="line">        m_ScriptablePass = new CustomRenderPass();</span><br><span class="line"></span><br><span class="line"></span><br><span class="line">        m_ScriptablePass.renderPassEvent = RenderPassEvent.AfterRenderingTransparents;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    </span><br><span class="line">    public override void AddRenderPasses(ScriptableRenderer renderer, ref RenderingData renderingData)</span><br><span class="line">    &#123;</span><br><span class="line">        m_ScriptablePass.setUp(renderer.cameraColorTarget, AtmosphericScatteringMaterial);</span><br><span class="line">        renderer.EnqueuePass(m_ScriptablePass);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h1 id="第二步：后处理shader编写"><a href="#第二步：后处理shader编写" class="headerlink" title="第二步：后处理shader编写"></a>第二步：后处理shader编写</h1><img src="/Atmosphere2/10-1633852867543.png" alt="10" style="zoom:80%;">
+
+<p>我们需要计算的部分其实非常简单，相位函数P是和ViewDir/LightDir点积相关，这部分套公式非常好求出。β(λ)也是套公式或者我们完全可以先粗略用一个参数代替。后面的积分部分就复杂了很多，我们先聚焦一点P的强度，是和CP、PA的光学深度有关，这部分需要各对路径上做一次积分，积分这部分我们用光线步进代替，路径长度也非常简单，我们可以利用勾股定理三角形的性质或者干脆用最粗暴的联立方程组解交点然后distance拿到长度。拿到P点的强度后，对应方向上的强度需要对整个视线路径上的P点积分。也就是整体其实算是一个积分嵌套（其中能把三次积分的for循环放在两次里做，这里仅仅为了跟着自己的思路来不做这些优化）</p>
+<p>第一步我们需要知道世界坐标，我们通过深度图可以很方便的拿到世界坐标，深度重建世界坐标方法非常多，这里直接用unity封装的方法解出</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">  </span><br><span class="line">float depth = SAMPLE_TEXTURE2D(_CameraDepthTexture,sampler_CameraDepthTexture,i.uv);</span><br><span class="line">               </span><br><span class="line">float3 posWS=ComputeWorldSpacePosition( i.uv,depth, UNITY_MATRIX_I_VP);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>接着就是上文提到的积分过程</p>
+<p>首先是求解整个视线的长度【后面的PPos就是AP上的P<sub>n</sub>位置】</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">float PALen=min(getLen(PPos,viewDir,_AtmosphereHeight+_EarthRadius,centerWS),LinearEyeDepth(depth,_ZBufferParams)); </span><br></pre></td></tr></table></figure>
+
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"> </span><br><span class="line"> <span class="function"><span class="keyword">float</span> <span class="title">getLen</span><span class="params">(float3 pos, float3 dir, <span class="keyword">float</span> R,float3 centerPos)</span></span></span><br><span class="line"><span class="function">        </span>&#123;</span><br><span class="line">         float3 PO = centerPos - pos;</span><br><span class="line">         <span class="keyword">float</span> lPO = length(PO);</span><br><span class="line">         <span class="keyword">float</span> B = <span class="number">2.0</span>*dot(PO, dir);</span><br><span class="line">  </span><br><span class="line">         <span class="keyword">float</span> C = B*B - <span class="number">4</span>*(lPO*lPO-R*R);</span><br><span class="line">         <span class="keyword">float</span> det = <span class="built_in">sqrt</span>( max(<span class="number">0</span>, C) );</span><br><span class="line">  </span><br><span class="line">         <span class="comment">//elsed: .5*(B+det)</span></span><br><span class="line">         <span class="keyword">float</span> d = <span class="number">0.5</span>*(B-det);</span><br><span class="line">         float3 intersect = pos+d*dir;</span><br><span class="line">  </span><br><span class="line">         <span class="keyword">return</span> distance(intersect,pos);</span><br><span class="line">&#125;  </span><br></pre></td></tr></table></figure>
+
+<p>然后就是喜闻乐见的步进积分过程</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span>(<span class="keyword">float</span> k=<span class="number">0.5</span>;k&lt;maxStepCount;++k)</span><br><span class="line">            &#123; </span><br><span class="line">                 PPos=_WorldSpaceCameraPos+stepRay*k; <span class="comment">//P步进</span></span><br><span class="line">               </span><br><span class="line"></span><br><span class="line">                <span class="comment">//==========DCP</span></span><br><span class="line">           </span><br><span class="line">               <span class="keyword">float</span> CPLen=getLen(PPos,lightDir,_AtmosphereHeight+_EarthRadius,centerWS);  </span><br><span class="line">               </span><br><span class="line">               <span class="comment">//float3 CPos=PPos+lightDir*CPLen;</span></span><br><span class="line">               </span><br><span class="line">               </span><br><span class="line">               float3 stepCP=(lightDir*CPLen)/maxStepCount;</span><br><span class="line">               <span class="keyword">float</span> stepCPSize=length(stepCP);</span><br><span class="line">               <span class="keyword">float</span> opticalDepthCP=<span class="number">0</span>;</span><br><span class="line">              </span><br><span class="line">              </span><br><span class="line">               <span class="keyword">for</span>(<span class="keyword">float</span> j=<span class="number">0.5</span>;j&lt;maxStepCount;++j)</span><br><span class="line">               &#123;</span><br><span class="line">                   float3 pos=PPos+stepCP*j;</span><br><span class="line">                   <span class="keyword">float</span> h=<span class="built_in">abs</span>(length(pos-centerWS)-_EarthRadius);   </span><br><span class="line">                   </span><br><span class="line">                    opticalDepthCP+=<span class="built_in">exp</span>(-(h/_H) )* stepCPSize  ;</span><br><span class="line">                    </span><br><span class="line">                      </span><br><span class="line">               &#125;</span><br><span class="line">               </span><br><span class="line">              </span><br><span class="line">                 <span class="comment">//============DCPEnd</span></span><br><span class="line">                     <span class="comment">//PA路径上</span></span><br><span class="line">                     <span class="keyword">float</span> PALen=distance(_WorldSpaceCameraPos,PPos);</span><br><span class="line">                     float3 stepPA=PALen*viewDir/maxStepCount;</span><br><span class="line">                     <span class="keyword">float</span> stepPASize=length(stepPA);</span><br><span class="line">                     float3 pSamplePos=PPos;</span><br><span class="line">                <span class="keyword">for</span>(<span class="keyword">float</span> g=<span class="number">0</span>;g&lt;maxStepCount;++g) <span class="comment">//P</span></span><br><span class="line">                &#123;</span><br><span class="line">                   </span><br><span class="line">                   opticalDepthPA+=<span class="built_in">exp</span>(-<span class="built_in">abs</span>(length(PPos-centerWS)-_EarthRadius)/_H)*stepPASize;</span><br><span class="line">                   pSamplePos+=stepPA;</span><br><span class="line">                &#125;</span><br><span class="line">                   T+= <span class="built_in">exp</span>(-_betaRL*(opticalDepthCP+opticalDepthPA))*<span class="built_in">exp</span>(-<span class="built_in">abs</span>(length(PPos-centerWS)-_EarthRadius)/_H)*stepRaySize;   <span class="comment">//T项</span></span><br><span class="line">                   </span><br><span class="line">                </span><br><span class="line">            &#125;  </span><br><span class="line">            </span><br></pre></td></tr></table></figure>
+
+<p>到此为止，最麻烦的部分结束了，只需要吧其他的项乘上去就OK了，我们拿瑞利散射为例，最后的shader为</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br><span class="line">172</span><br><span class="line">173</span><br><span class="line">174</span><br><span class="line">175</span><br><span class="line">176</span><br><span class="line">177</span><br><span class="line">178</span><br><span class="line">179</span><br><span class="line">180</span><br><span class="line">181</span><br><span class="line">182</span><br><span class="line">183</span><br><span class="line">184</span><br><span class="line">185</span><br><span class="line">186</span><br><span class="line">187</span><br><span class="line">188</span><br><span class="line">189</span><br><span class="line">190</span><br><span class="line">191</span><br><span class="line">192</span><br></pre></td><td class="code"><pre><span class="line">Shader &quot;Hidden/AtmosphericScattering&quot;</span><br><span class="line">&#123;</span><br><span class="line">    Properties</span><br><span class="line">    &#123;</span><br><span class="line">        _EarthRadius(&quot;EarthRadius&quot;,float)=1600</span><br><span class="line">        _AtmosphereHeight(&quot;AtmosphereHeight&quot;,float)=1000</span><br><span class="line">        _H(&quot;H0(大气平均密度所在的高度)&quot;,float)=2000</span><br><span class="line">        //_betaMie(&quot;β(λ)Mie&quot;,float)=0.9</span><br><span class="line">        _betaRL(&quot;β(λ)RL&quot;,float)=0.9</span><br><span class="line">        _SunColor(&quot;SunColor&quot;,Color)=(1,1,1,1)</span><br><span class="line">    &#125;</span><br><span class="line">    SubShader</span><br><span class="line">    &#123;</span><br><span class="line">        Tags &#123;  &quot;LightMode&quot; =  &quot;UniversalForward&quot;&#125;</span><br><span class="line">        LOD 100</span><br><span class="line"></span><br><span class="line">        Pass</span><br><span class="line">        &#123;</span><br><span class="line">            HLSLPROGRAM</span><br><span class="line">            #pragma vertex vert</span><br><span class="line">            #pragma fragment frag</span><br><span class="line">     </span><br><span class="line"></span><br><span class="line">            #include &quot;Packages/com.unity.render-pipelines.universal/ShaderLibrary/Lighting.hlsl&quot;</span><br><span class="line"></span><br><span class="line">            struct appdata</span><br><span class="line">            &#123;</span><br><span class="line">                float4 vertex : POSITION;</span><br><span class="line">                float2 uv : TEXCOORD0;</span><br><span class="line">            &#125;;</span><br><span class="line"></span><br><span class="line">            struct v2f</span><br><span class="line">            &#123;</span><br><span class="line">                float2 uv : TEXCOORD0;</span><br><span class="line">             </span><br><span class="line">                float4 vertex : SV_POSITION;</span><br><span class="line">                //float4 rayVS:TEXCOORD1;</span><br><span class="line">            &#125;;</span><br><span class="line">            CBUFFER_START(UnityPerMaterial)</span><br><span class="line">            float _EarthRadius;</span><br><span class="line">            float _AtmosphereHeight;</span><br><span class="line">            float _H;</span><br><span class="line">            //float _betaMie;</span><br><span class="line">            float _betaRL;</span><br><span class="line">            half4 _SunColor;</span><br><span class="line">            CBUFFER_END</span><br><span class="line"></span><br><span class="line">           TEXTURE2D(_CameraDepthTexture);                  SAMPLER(sampler_CameraDepthTexture);</span><br><span class="line">        //    float getLen2(float3 pos,float3 dir,float R,float3 centerPos)</span><br><span class="line">        //    &#123;</span><br><span class="line">              </span><br><span class="line">        //        float3 ACenter=centerPos-pos;</span><br><span class="line">        //        float lenACenter=length(ACenter);</span><br><span class="line">        //        float cosTheta=dot(normalize(ACenter),dir);</span><br><span class="line">               </span><br><span class="line">        //        //</span><br><span class="line">        //        float lenAC=lenACenter*cosTheta;</span><br><span class="line">        //        float lenO2C= sqrt(lenACenter*lenACenter-lenAC*lenAC);</span><br><span class="line">        //        float lenA2C=sqrt(R*R-lenO2C*lenO2C);</span><br><span class="line">        //        float lenAA2=lenA2C-lenAC;</span><br><span class="line">        //        float lenBC=lenA2C;</span><br><span class="line">        //        float AB=cosTheta&gt;0?lenBC+lenAC:lenBC-lenAC;</span><br><span class="line">        //        return AB;</span><br><span class="line">        //    &#125;</span><br><span class="line">        float getLen(float3 pos, float3 dir, float R,float3 centerPos)</span><br><span class="line">        &#123;</span><br><span class="line">         float3 PO = centerPos - pos;</span><br><span class="line">         float lPO = length(PO);</span><br><span class="line">         float B = 2.0*dot(PO, dir);</span><br><span class="line">  </span><br><span class="line">         float C = B*B - 4*(lPO*lPO-R*R);</span><br><span class="line">         float det = sqrt( max(0, C) );</span><br><span class="line">  </span><br><span class="line">         //elsed: .5*(B+det)</span><br><span class="line">         float d = 0.5*(B-det);</span><br><span class="line">         float3 intersect = pos+d*dir;</span><br><span class="line">  </span><br><span class="line">         return distance(intersect,pos);</span><br><span class="line">&#125;  </span><br><span class="line"></span><br><span class="line">           </span><br><span class="line">            v2f vert (appdata v)</span><br><span class="line">            &#123;</span><br><span class="line">                v2f o;</span><br><span class="line">                o.vertex = TransformObjectToHClip(v.vertex);</span><br><span class="line">                o.uv = v.uv;</span><br><span class="line">                #if UNITY_UV_STARTS_TOP</span><br><span class="line">                o.uv.y=1-o.uv.y;</span><br><span class="line">                #endif</span><br><span class="line">               </span><br><span class="line"></span><br><span class="line">            </span><br><span class="line">                return o;</span><br><span class="line">            &#125;</span><br><span class="line"></span><br><span class="line">            half4 frag (v2f i) : SV_Target</span><br><span class="line">            &#123;</span><br><span class="line">                </span><br><span class="line">                float depth = SAMPLE_TEXTURE2D(_CameraDepthTexture,sampler_CameraDepthTexture,i.uv);</span><br><span class="line">               </span><br><span class="line">                float3 posWS=ComputeWorldSpacePosition( i.uv,depth, UNITY_MATRIX_I_VP);</span><br><span class="line">                </span><br><span class="line">                //return half4(posWS,1);</span><br><span class="line">  </span><br><span class="line">                //</span><br><span class="line">                float3 viewDir=_WorldSpaceCameraPos-posWS;</span><br><span class="line">                float viewLen=length(viewDir);</span><br><span class="line">                viewDir=-normalize(viewDir);</span><br><span class="line">                Light light=GetMainLight();</span><br><span class="line">                float3 lightDir=light.direction;</span><br><span class="line">                </span><br><span class="line">                float LdotV=dot(lightDir,-viewDir);</span><br><span class="line"></span><br><span class="line">                float3 centerWS=float3(0,-_EarthRadius,0);  //世界空间原点（0,0,0）作为表面起始位置，地心则在正下方R处</span><br><span class="line"></span><br><span class="line">                float maxStepCount=20;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">                float3 PPos=_WorldSpaceCameraPos;</span><br><span class="line">                </span><br><span class="line">                //float PALen=getLen(PPos,viewDir,_AtmosphereHeight+_EarthRadius,centerWS);</span><br><span class="line">                float PALen=min(getLen(PPos,viewDir,_AtmosphereHeight+_EarthRadius,centerWS),LinearEyeDepth(depth,_ZBufferParams)); </span><br><span class="line">               </span><br><span class="line">                float3 stepRay=(viewDir*PALen)/maxStepCount;</span><br><span class="line">                float stepRaySize=length(stepRay);</span><br><span class="line">                float opticalDepthPA=0;</span><br><span class="line">                float T=0;</span><br><span class="line">               </span><br><span class="line">               </span><br><span class="line">                </span><br><span class="line">            for(float k=0.5;k&lt;maxStepCount;++k)</span><br><span class="line">            &#123; </span><br><span class="line">                 PPos=_WorldSpaceCameraPos+stepRay*k; //P步进</span><br><span class="line">               </span><br><span class="line"></span><br><span class="line">                //==========DCP</span><br><span class="line">           </span><br><span class="line">               float CPLen=getLen(PPos,lightDir,_AtmosphereHeight+_EarthRadius,centerWS);  </span><br><span class="line">               </span><br><span class="line">               //float3 CPos=PPos+lightDir*CPLen;</span><br><span class="line">               </span><br><span class="line">               </span><br><span class="line">               float3 stepCP=(lightDir*CPLen)/maxStepCount;</span><br><span class="line">               float stepCPSize=length(stepCP);</span><br><span class="line">               float opticalDepthCP=0;</span><br><span class="line">              </span><br><span class="line">              </span><br><span class="line">               for(float j=0.5;j&lt;maxStepCount;++j)</span><br><span class="line">               &#123;</span><br><span class="line">                   float3 pos=PPos+stepCP*j;</span><br><span class="line">                   float h=abs(length(pos-centerWS)-_EarthRadius);   </span><br><span class="line">                   </span><br><span class="line">                    opticalDepthCP+=exp(-(h/_H) )* stepCPSize  ;</span><br><span class="line">                    </span><br><span class="line">                      </span><br><span class="line">               &#125;</span><br><span class="line">               </span><br><span class="line">              </span><br><span class="line">                 //============DCPEnd</span><br><span class="line">                     //PA路径上</span><br><span class="line">                     float PALen=distance(_WorldSpaceCameraPos,PPos);</span><br><span class="line">                     float3 stepPA=PALen*viewDir/maxStepCount;</span><br><span class="line">                     float stepPASize=length(stepPA);</span><br><span class="line">                     float3 pSamplePos=PPos;</span><br><span class="line">                for(float g=0;g&lt;maxStepCount;++g) //P</span><br><span class="line">                &#123;</span><br><span class="line">                   </span><br><span class="line">                   opticalDepthPA+=exp(-abs(length(PPos-centerWS)-_EarthRadius)/_H)*stepPASize;</span><br><span class="line">                   pSamplePos+=stepPA;</span><br><span class="line">                &#125;</span><br><span class="line">                   T+= exp(-_betaRL*(opticalDepthCP+opticalDepthPA))*exp(-abs(length(PPos-centerWS)-_EarthRadius)/_H)*stepRaySize;   //T项</span><br><span class="line">                   </span><br><span class="line">                </span><br><span class="line">            &#125;  </span><br><span class="line">            </span><br><span class="line">           </span><br><span class="line">           </span><br><span class="line">            //相位函数</span><br><span class="line">            float phase=(3.0 / (16.0 * 3.1415926)) * (1.0+ (LdotV * LdotV));</span><br><span class="line"></span><br><span class="line">            float3 I_A=_SunColor.rgb*T*_betaRL*phase;</span><br><span class="line">               </span><br><span class="line">              // return T;</span><br><span class="line">                return half4(I_A.rgb,1);</span><br><span class="line">            &#125;</span><br><span class="line">           </span><br><span class="line">            ENDHLSL</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>结果：</p>
+<img src="/Atmosphere2/RL.png" alt="RL" style="zoom: 67%;">
+
+<img src="/Atmosphere2/RL2.png" alt="RL2" style="zoom:80%;">
+
+<p>先解释一下为什么近景是黑的，这就涉及到大气散射的<strong>大气透视</strong>了，他和天空盒渲染不一样的地方在于，地表上的物体本身也会贡献反射出来的光到眼睛，为什么我们能看到物体，因为光打到物体反射到人眼内，而这部分的光也会受到大气散射的影响，也就是需要本身颜色乘上衰减方程T，而画面里近处景色我们还没处理，所以本身积分的量就相比非常远的天空盒就非常微弱基本为0。</p>
+<h1 id="结束"><a href="#结束" class="headerlink" title="结束"></a>结束</h1><p>本文暂时到这里就告一段落了，本篇算是按照推导比较完整的实现了瑞利散射模型。因为瑞利散射和米氏散射本身做法没区别只是在相位函数以及H的取值有区别，本文出于时间问题先结一个尾。后续有时间应该会再发布一篇米氏散射+瑞利散射+大气透视的更加完整的版本。</p>
+
+    </article>
+    <!-- license  -->
+    
+        <div class="license-wrapper">
+            <p>原文作者：<a href="https://ever17-luqc.github.io">luqc</a>
+            <p>原文链接：<a href="https://ever17-luqc.github.io/Atmosphere2/">https://ever17-luqc.github.io/Atmosphere2/</a>
+            <p>发表日期：<a href="https://ever17-luqc.github.io/Atmosphere2/">十月 10日 2021, 3:51:55 下午</a>
+            <p>更新日期：<a href="https://ever17-luqc.github.io/Atmosphere2/">October 10th 2021, 4:31:49 pm</a>
+            <p>版权声明：本文采用<a rel="license noopener" target="_blank" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可</p>
+        </div>
+    
+    <!-- paginator  -->
+    <ul class="post-paginator">
+        <li class="next">
+            
+        </li>
+        <li class="previous">
+            
+                <div class="prevSlogan">Previous Post</div>
+                <a href= "/Atmosphere/" title= "快速入门大气渲染【理论基础篇】">
+                    <div class="prevTitle">快速入门大气渲染【理论基础篇】</div>
+                </a>
+            
+        </li>
+    </ul>
+    <!-- 评论插件 -->
+    <!-- 来必力City版安装代码 -->
+
+<!-- City版安装代码已完成 -->
+    
+    
+    <!-- gitalk评论 -->
+
+    <!-- utteranc评论 -->
+
+    <!-- partial('_partial/comment/changyan') -->
+    <!--PC版-->
+
+
+    
+    
+
+    <!-- 评论 -->
+
+    <!-- idea from: https://hexo.fluid-dev.com/posts/hexo-injector/#%E6%96%87%E7%AB%A0%E6%97%B6%E6%95%88%E6%80%A7%E6%8F%90%E7%A4%BA -->
+    
+</main>
+
+            <!-- profile -->
+            
+        </div>
+        <footer class="footer footer-unloaded">
+    <!-- social  -->
+    
+    <div class="social">
+        
+    
+        
+            
+                <a href="mailto:1477030987@qq.com" class="iconfont-archer email" title=email ></a>
+            
+        
+    
+        
+            
+                <a href="//github.com/ever17-luqc" class="iconfont-archer github" target="_blank" title=github></a>
+            
+        
+    
+        
+    
+        
+    
+        
+    
+        
+            
+                <a href="https://www.zhihu.com/people/ever_17" class="iconfont-archer zhihu" target="_blank" title=zhihu></a>
+            
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+    
+        
+            
+                <a href="https://www.artstation.com/ever17" class="iconfont-archer artstation" target="_blank" title=artstation></a>
+            
+        
+    
+        
+    
+
+    </div>
+    
+    <!-- powered by Hexo  -->
+    <div class="copyright">
+        <span id="hexo-power">Powered by <a href="https://hexo.io/" target="_blank">Hexo</a></span><span class="iconfont-archer power">&#xe635;</span><span id="theme-info">theme <a href="https://github.com/fi3ework/hexo-theme-archer" target="_blank">Archer</a></span>
+    </div>
+    <!-- 不蒜子  -->
+    
+    <div class="busuanzi-container">
+    
+     
+    <span id="busuanzi_container_site_pv">PV: <span id="busuanzi_value_site_pv"></span> :)</span>
+    
+    </div>
+    
+</footer>
+    </div>
+    <!-- toc -->
+    
+    <div class="toc-wrapper" style=
+    
+
+
+
+
+
+
+
+top:50vh;
+
+    >
+        <div class="toc-catalog">
+            <span class="iconfont-archer catalog-icon">&#xe613;</span><span>CATALOG</span>
+        </div>
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E6%AD%A5%EF%BC%9A%E5%A4%A7%E4%BD%93%E6%A1%86%E6%9E%B6"><span class="toc-number">2.</span> <span class="toc-text">第一步：大体框架</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%AC%AC%E4%BA%8C%E6%AD%A5%EF%BC%9A%E5%90%8E%E5%A4%84%E7%90%86shader%E7%BC%96%E5%86%99"><span class="toc-number">3.</span> <span class="toc-text">第二步：后处理shader编写</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%BB%93%E6%9D%9F"><span class="toc-number">4.</span> <span class="toc-text">结束</span></a></li></ol>
+    </div>
+    
+    <div class="back-top iconfont-archer">&#xe639;</div>
+    <div class="sidebar sidebar-hide">
+    <ul class="sidebar-tabs sidebar-tabs-active-0">
+        <li class="sidebar-tab-archives"><span class="iconfont-archer">&#xe67d;</span><span class="tab-name">Archive</span></li>
+        <li class="sidebar-tab-tags"><span class="iconfont-archer">&#xe61b;</span><span class="tab-name">Tag</span></li>
+        <li class="sidebar-tab-categories"><span class="iconfont-archer">&#xe666;</span><span class="tab-name">Cate</span></li>
+    </ul>
+    <div class="sidebar-content sidebar-content-show-archive">
+          <div class="sidebar-panel-archives">
+    <!-- 在ejs中将archive按照时间排序 -->
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <div class="total-and-search">
+        <div class="total-archive">
+        Total : 12
+        </div>
+        <!-- search  -->
+        
+    </div>
+    
+    <div class="post-archive">
+    
+    
+    
+    
+    <div class="archive-year"> 2021 </div>
+    <ul class="year-list">
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">10/10</span><a class="archive-post-title" href= "/Atmosphere2/" >快速入门大气渲染【实现篇(一)】</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">10/03</span><a class="archive-post-title" href= "/Atmosphere/" >快速入门大气渲染【理论基础篇】</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">10/03</span><a class="archive-post-title" href= "/ToonShading-2/" >进阶日式动漫渲染【睫毛以及眼睛】</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/12</span><a class="archive-post-title" href= "/ToonShading-1/" >快速入门日式动漫渲染【基础Shading篇】</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/07</span><a class="archive-post-title" href= "/SSOutline/" >【Unity-URP】快速入门精确物体屏幕空间描边</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/07</span><a class="archive-post-title" href= "/PaintingPractice02/" >【原画练习】一张角色速途</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">07/07</span><a class="archive-post-title" href= "/SD-3090/" >快速实战SD之3090核弹卡</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">06/30</span><a class="archive-post-title" href= "/SD-FX/" >【Substance Designer】快速入门SD:FXMap</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">06/27</span><a class="archive-post-title" href= "/SD1/" >【Substance Designer】入门级SD技巧-1</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">06/13</span><a class="archive-post-title" href= "/PaintingPractice01/" >【原画日常练习】速途场景</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">06/06</span><a class="archive-post-title" href= "/SSPR/" >【Unity-URP】快速入门屏幕空间平面反射(SSPR)————（1）</a>
+        </li>
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">05/30</span><a class="archive-post-title" href= "/SSR/" >【Unity-URP】快速入门屏幕空间反射(SSR)</a>
+        </li>
+    
+    </div>
+  </div>
+        <div class="sidebar-panel-tags">
+    <div class="sidebar-tags-name">
+    
+        <span class="sidebar-tag-name" data-tags="原画"><span class="iconfont-archer">&#xe606;</span>原画</span>
+    
+        <span class="sidebar-tag-name" data-tags="场景"><span class="iconfont-archer">&#xe606;</span>场景</span>
+    
+        <span class="sidebar-tag-name" data-tags="速途"><span class="iconfont-archer">&#xe606;</span>速途</span>
+    
+        <span class="sidebar-tag-name" data-tags="角色"><span class="iconfont-archer">&#xe606;</span>角色</span>
+    
+        <span class="sidebar-tag-name" data-tags="Substance Designer"><span class="iconfont-archer">&#xe606;</span>Substance Designer</span>
+    
+        <span class="sidebar-tag-name" data-tags="Material"><span class="iconfont-archer">&#xe606;</span>Material</span>
+    
+        <span class="sidebar-tag-name" data-tags="Unity"><span class="iconfont-archer">&#xe606;</span>Unity</span>
+    
+        <span class="sidebar-tag-name" data-tags="Urp"><span class="iconfont-archer">&#xe606;</span>Urp</span>
+    
+        <span class="sidebar-tag-name" data-tags="Shader"><span class="iconfont-archer">&#xe606;</span>Shader</span>
+    
+        <span class="sidebar-tag-name" data-tags="NPR"><span class="iconfont-archer">&#xe606;</span>NPR</span>
+    
+        <span class="sidebar-tag-name" data-tags="ToonShading"><span class="iconfont-archer">&#xe606;</span>ToonShading</span>
+    
+        <span class="sidebar-tag-name" data-tags="Atmosphere"><span class="iconfont-archer">&#xe606;</span>Atmosphere</span>
+    
+        <span class="sidebar-tag-name" data-tags="Rendering"><span class="iconfont-archer">&#xe606;</span>Rendering</span>
+    
+    </div>
+    <div class="iconfont-archer sidebar-tags-empty">&#xe678;</div>
+    <div class="tag-load-fail" style="display: none; color: #ccc; font-size: 0.6rem;">
+    缺失模块。<br/>
+    1、请确保node版本大于6.2<br/>
+    2、在博客根目录（注意不是archer根目录）执行以下命令：<br/>
+    <span style="color: #f75357; font-size: 1rem; line-height: 2rem;">npm i hexo-generator-json-content --save</span><br/>
+    3、在根目录_config.yml里添加配置：
+    <pre style="color: #787878; font-size: 0.6rem;">
+jsonContent:
+  meta: false
+  pages: false
+  posts:
+    title: true
+    date: true
+    path: true
+    text: false
+    raw: false
+    content: false
+    slug: false
+    updated: false
+    comments: false
+    link: false
+    permalink: false
+    excerpt: false
+    categories: true
+    tags: true</pre>
+    </div> 
+    <div class="sidebar-tags-list"></div>
+</div>
+        <div class="sidebar-panel-categories">
+    <div class="sidebar-categories-name">
+    
+        <span class="sidebar-category-name" data-categories="原画"><span class="iconfont-archer">&#xe60a;</span>原画</span>
+    
+        <span class="sidebar-category-name" data-categories="Substance-Designer"><span class="iconfont-archer">&#xe60a;</span>Substance-Designer</span>
+    
+        <span class="sidebar-category-name" data-categories="Unity"><span class="iconfont-archer">&#xe60a;</span>Unity</span>
+    
+        <span class="sidebar-category-name" data-categories="Unity/ToonShading"><span class="iconfont-archer">&#xe60a;</span>Unity/ToonShading</span>
+    
+    </div>
+    <div class="iconfont-archer sidebar-categories-empty">&#xe678;</div>
+    <div class="sidebar-categories-list"></div>
+</div>
+    </div>
+</div> 
+    <script>
+    var siteMeta = {
+        root: "/",
+        author: "luqc"
+    }
+</script>
+    <!-- CDN failover -->
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
+    <script type="text/javascript">
+        if (typeof window.$ === 'undefined')
+        {
+            console.warn('jquery load from jsdelivr failed, will load local script')
+            document.write('<script src="/lib/jquery.min.js">\x3C/script>')
+        }
+    </script>
+    <script src="/scripts/main.js"></script>
+    <!-- algolia -->
+    
+    <!-- busuanzi  -->
+    
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    
+    <!-- CNZZ  -->
+    
+    </div>
+    <!-- async load share.js -->
+    
+        <script src="/scripts/share.js" async></script>    
+     
+    </body>
+</html>
+
+
