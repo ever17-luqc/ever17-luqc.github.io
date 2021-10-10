@@ -20,17 +20,34 @@
     <meta name="keywords" content="hexo,hexo-theme,hexo-blog">
     
     <meta name="description" content="">
-    <meta property="og:type" content="website">
-<meta property="og:title" content="ever17Blog">
-<meta property="og:url" content="https://ever17-luqc.github.io/tags/Substance-Designer/index.html">
+    <meta name="description" content="前言国庆写了一篇关于睫毛眼睛特殊渲染的，这次讲讲关于明暗分界线，比较常规的做法就是之前第一篇基础篇里的step或者unityJapan UTS V2的那种类似两次smoothstep的算法，或者rampmap法，这些仅仅算是比较通用的做法，有些游戏如果风格特殊可能会做更多的trick去接近原画的风格，机缘巧合看到了最近网易的哈利波特手游，为了去接近那种美术卡通的做法去定制化了明暗分割线，这里就简单">
+<meta property="og:type" content="article">
+<meta property="og:title" content="进阶日式动漫渲染【明暗分界线与风格化】">
+<meta property="og:url" content="https://ever17-luqc.github.io/ToonShading-3/index.html">
 <meta property="og:site_name" content="ever17Blog">
+<meta property="og:description" content="前言国庆写了一篇关于睫毛眼睛特殊渲染的，这次讲讲关于明暗分界线，比较常规的做法就是之前第一篇基础篇里的step或者unityJapan UTS V2的那种类似两次smoothstep的算法，或者rampmap法，这些仅仅算是比较通用的做法，有些游戏如果风格特殊可能会做更多的trick去接近原画的风格，机缘巧合看到了最近网易的哈利波特手游，为了去接近那种美术卡通的做法去定制化了明暗分割线，这里就简单">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://ever17-luqc.github.io/ToonShading-3/1.jpg">
+<meta property="og:image" content="https://ever17-luqc.github.io/ToonShading-3/nomx-0526.jpg">
+<meta property="og:image" content="https://ever17-luqc.github.io/ToonShading-3/R.png">
+<meta property="og:image" content="https://ever17-luqc.github.io/ToonShading-3/G.png">
+<meta property="og:image" content="https://ever17-luqc.github.io/ToonShading-3/Y.png">
+<meta property="og:image" content="https://ever17-luqc.github.io/ToonShading-3/2.png">
+<meta property="og:image" content="https://ever17-luqc.github.io/ToonShading-3/3.png">
+<meta property="article:published_time" content="2021-10-10T08:37:35.000Z">
+<meta property="article:modified_time" content="2021-10-10T11:46:12.403Z">
 <meta property="article:author" content="luqc">
+<meta property="article:tag" content="Unity">
+<meta property="article:tag" content="Urp">
+<meta property="article:tag" content="Shader">
+<meta property="article:tag" content="NPR">
+<meta property="article:tag" content="ToonShading">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ever17-luqc.github.io/ToonShading-3/1.jpg">
     <meta http-equiv="Cache-control" content="no-cache">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
     
-    <title>Ever17&#39;s Studio</title>
+    <title>进阶日式动漫渲染【明暗分界线与风格化】 · Ever17&#39;s Studio</title>
     <style type="text/css">
     @font-face {
         font-family: 'Oswald-Regular';
@@ -212,12 +229,23 @@
 <meta name="generator" content="Hexo 5.4.0"></head>
 
     
+        <body class="post-body">
+    
     
 <header class="header">
 
     <div class="read-progress"></div>
     <div class="header-sidebar-menu">&#xe775;</div>
     <!-- post页的toggle banner  -->
+    
+    <div class="banner">
+            <div class="blog-title">
+                <a href="/" >Ever17&#39;s Studio.</a>
+            </div>
+            <div class="post-title">
+                <a href="#" class="post-name">进阶日式动漫渲染【明暗分界线与风格化】</a>
+            </div>
+    </div>
     
     <a class="home-link" href=/>Ever17's Studio.</a>
 </header>
@@ -229,24 +257,82 @@
 
 
 
+
+height:50vh;
 ">
     
     <!-- 主页  -->
+    
+    
+    <!-- 404页  -->
             
     <div class="site-intro-placeholder"></div>
-    <div class="site-intro-img" style="background-image: url(/)"></div>
+    <div class="site-intro-img" style="background-image: url(/intro/post-bg.jpg)"></div>
     <div class="site-intro-meta">
         <!-- 标题  -->
         <h1 class="intro-title">
             <!-- 主页  -->
+            
+            进阶日式动漫渲染【明暗分界线与风格化】
+            <!-- 404 -->
             
         </h1>
         <!-- 副标题 -->
         <p class="intro-subtitle">
             <!-- 主页副标题  -->
             
+            
+            <!-- 404 -->
+            
         </p>
         <!-- 文章页meta -->
+        
+            <div class="post-intros">
+                <!-- 文章页标签  -->
+                
+                    <div class= post-intro-tags >
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags = "Unity">Unity</a>
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags = "Urp">Urp</a>
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags = "Shader">Shader</a>
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags = "NPR">NPR</a>
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags = "ToonShading">ToonShading</a>
+    
+</div>
+                
+                
+                    <div class="post-intro-read">
+                        <span>字数统计: <span class="post-count word-count">748</span>阅读时长: <span class="post-count reading-time">2 min</span></span>
+                    </div>
+                
+                <div class="post-intro-meta">
+                    <span class="post-intro-calander iconfont-archer">&#xe676;</span>
+                    <span class="post-intro-time">2021/10/10</span>
+                    
+                    <span id="busuanzi_container_page_pv" class="busuanzi-pv">
+                        <span class="iconfont-archer">&#xe602;</span>
+                        <span id="busuanzi_value_page_pv"></span>
+                    </span>
+                    
+                    <span class="shareWrapper">
+                        <span class="iconfont-archer shareIcon">&#xe71d;</span>
+                        <span class="shareText">Share</span>
+                        <ul class="shareList">
+                            <li class="iconfont-archer share-qr" data-type="qr">&#xe75b;
+                                <div class="share-qrcode"></div>
+                            </li>
+                            <li class="iconfont-archer" data-type="weibo">&#xe619;</li>
+                            <li class="iconfont-archer" data-type="qzone">&#xe62e;</li>
+                            <li class="iconfont-archer" data-type="twitter">&#xe634;</li>
+                            <li class="iconfont-archer" data-type="facebook">&#xe67a;</li>
+                        </ul>
+                    </span>
+                </div>
+            </div>
         
     </div>
 </div>
@@ -347,127 +433,81 @@
 </script>        
         <img class="loading" src="/assets/loading.svg" style="display: block; margin: 6rem auto 0 auto; width: 6rem; height: 6rem;" />
         <div class="container container-unloaded">
-            <main class="main index-page">
-    
-    
-    
-    
-    
-    
-    <article class="index-post">
-        <a class="abstract-title" href = "/SD-3090/" >
-            
-                <span>快速实战SD之3090核弹卡</span>
-        </a>
-        <div class="abstract-content">
-            前言SD教程看的多了，需要自己整点活把学的东西吸收成自己的，于是有了个点子，把程序纹理和拼纹理在一个工程里去实战一次，本篇会挑重点阐述一下SD里制作3090以及底下的编织沙发的思路做法。
-最终效果图
+            <main class="main post-page">
+    <article class="article-entry">
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>国庆写了一篇关于睫毛眼睛特殊渲染的，这次讲讲关于明暗分界线，比较常规的做法就是之前第一篇基础篇里的step或者unityJapan UTS V2的那种类似两次smoothstep的算法，或者rampmap法，这些仅仅算是比较通用的做法，有些游戏如果风格特殊可能会做更多的trick去接近原画的风格，机缘巧合看到了最近网易的哈利波特手游，为了去接近那种美术卡通的做法去定制化了明暗分割线，这里就简单开一篇文章讲讲常用的两种做法。</p>
+<p>当然，首先得说说为什么会有这种需求</p>
+<img src="/ToonShading-3/1.jpg" alt="图片" style="zoom:50%;">
 
+<p>可以明显的看到，角色明暗分界线有一条非常明显的描边，有非常强烈的笔触质感，</p>
+<img src="/ToonShading-3/nomx-0526.jpg" alt="nomx-0526" style="zoom: 67%;">
 
+<p>即便是厚涂风格的概念设计在很多地方为了强调结构也会在部分明暗分界线画非常强烈的过度甚至涂一笔描边（参考肩甲部位）</p>
+<p>但是如何吧这种明暗分界线的描边做出来其实在游戏中其实比较有难度，因为这种描边和常规描边不一样的地方在于他的描边是和明暗分界线息息相关，我们只能从NdotL或者rampmap采样着手。</p>
+<h1 id="思路一：rampmap法"><a href="#思路一：rampmap法" class="headerlink" title="思路一：rampmap法"></a>思路一：rampmap法</h1><p>这里的rampmap做法和常规有非常多的区别，R通道是用来做明暗方向的重映射（smoothstep不可以用来替代！因为这里G通道有大用，需要和明暗分界线位置保持一致），G通道是明暗分界线的形状，大体如下</p>
+<p>R通道：</p>
+<img src="/ToonShading-3/R.png" alt="R" style="zoom: 50%;">
 
-完整节点
+<p>G通道：</p>
+<img src="/ToonShading-3/G.png" alt="G" style="zoom:50%;">
 
-细节思路大型搭建
+<p>这两个通道的rampmap作用是这样的，通过R通NdotL采样X轴道确定卡渲的明暗分割映射，而Y轴采样这张mask【为什么需要这种圆形扩散的平铺？这样X轴确定明暗交界线位置，Y轴需要再明暗分界线上连续的明暗过度实现重复采样G通道，这样圆形的各项同性会比较适合，而且这种圆形的平铺在SD非常容易出贴图】</p>
+<img src="/ToonShading-3/Y.png" alt="Y" style="zoom:50%;">
 
-做法是我在快速入门SD（1）中提及的，利用edge detect的软角扩边，因为3090本身是具有弧度的，制作出大型之后，后续的各种切图案都会用得上
-外框部分
+<p>结果如下：</p>
+<img src="/ToonShading-3/2.png" alt="2" style="zoom:80%;">
 
-切，就嗯切！拿polygon调整段数到3角形，压扁mirror出三角部分。拿之前的大型的边缘检测做一次相减，再和用三角形边缘检测获得的X做一个max，获得边缘框的大形状（但是事实上这样的效果还是...
-        </div>
-        <div class="abstract-post-meta">
-            <!-- date  -->
-            <div class="abstract-date">
-                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2021/07/07</span>
-            </div>
-            <!-- tags  -->
-            
-            <div class= abstract-tags >
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "Substance Designer">Substance Designer</a>
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "Material">Material</a>
-    
-</div>
-            
-        </div>
+<p>当然这种做法缺点也挺多，首先是这种做法会产生依赖纹理因为UV是依据NdotL以及另一张mask的采样决定，会比普通采样消耗更大。然后就是致命伤了，如果描边非常有风格化会在旋转的时候有明显的变化（因为对应的区域一直在变）</p>
+<h1 id="思路二：修改NdotL"><a href="#思路二：修改NdotL" class="headerlink" title="思路二：修改NdotL"></a>思路二：修改NdotL</h1><p>这种之前在米哈游的分享里也提过，原理非常简单，通过风格笔刷的偏移图去修正NdotL，这种做法其实就和采样描边图有本质区别了，他这种做法本质还是用修改NdotL的结果造成rampmap偏移，这种就没什么好说了。</p>
+<img src="/ToonShading-3/3.png" alt="3" style="zoom:80%;">
     </article>
+    <!-- license  -->
     
-    
-    
-    
-    
-    
-    <article class="index-post">
-        <a class="abstract-title" href = "/SD-FX/" >
-            
-                <span>【Substance Designer】快速入门SD:FXMap</span>
-        </a>
-        <div class="abstract-content">
-            前言零零散散接触了一段时间SD，一直都是看些教程学一些思路，最近在看Daneil Thiger的教程发现他用了一个重复纹理的节点（他自制的），但是自己尝试复现的
-时候法线常规的tile sampler实现不了这种重叠的纹理，而如果用transform又无法控制个数，于是自己找到了FXMap这个功能节点。算是SD非常具有代表性的东西了。我看了些关于FXMAP的文章和案例，于是尝试用FXMAP来做一个重叠纹理的自制节点，做法比较简单，也非常能体现FXMAP的便捷性，同样非常适合入门SD的初学者去理解。
-关于FXMAP1The FX-Map node allows the creation o...
+        <div class="license-wrapper">
+            <p>原文作者：<a href="https://ever17-luqc.github.io">luqc</a>
+            <p>原文链接：<a href="https://ever17-luqc.github.io/ToonShading-3/">https://ever17-luqc.github.io/ToonShading-3/</a>
+            <p>发表日期：<a href="https://ever17-luqc.github.io/ToonShading-3/">October 10th 2021, 4:37:35 pm</a>
+            <p>更新日期：<a href="https://ever17-luqc.github.io/ToonShading-3/">October 10th 2021, 7:46:12 pm</a>
+            <p>版权声明：本文采用<a rel="license noopener" target="_blank" href="http://creativecommons.org/licenses/by-nc/4.0/">知识共享署名-非商业性使用 4.0 国际许可协议</a>进行许可</p>
         </div>
-        <div class="abstract-post-meta">
-            <!-- date  -->
-            <div class="abstract-date">
-                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2021/06/30</span>
-            </div>
-            <!-- tags  -->
-            
-            <div class= abstract-tags >
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "Substance Designer">Substance Designer</a>
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "Material">Material</a>
-    
-</div>
-            
-        </div>
-    </article>
-    
-    
-    
-    
-    
-    
-    <article class="index-post">
-        <a class="abstract-title" href = "/SD1/" >
-            
-                <span>【Substance Designer】入门级SD技巧-1</span>
-        </a>
-        <div class="abstract-content">
-            前言最近看了些SD大佬的教程，打算开一个 SD系列的文章记录一下学到的操作，当然，SD学起来难度不算高，TA的经验其实对于SD还是非常有用的，或者说SD非常适合TA同学去学习。个人对SD相当感兴趣，后续学习SD会继续记录这些内容权当笔记了。
-阶梯状高度Shape节点出形状Curve节点做曲率变化，做出剧烈变化的高度
-
-
-平滑边界线Histogram scan获得的纹理通常可能存在本身因素导致的边缘硬，如果需要软过度的包边，可以使用边缘检测获得再blend到Histogram scan后的纹理中
-
-
-边缘检测处理
-
-如图如果本身纹理就是这种情况，会导致边缘检测描边出问题，解决的做法为通过h...
-        </div>
-        <div class="abstract-post-meta">
-            <!-- date  -->
-            <div class="abstract-date">
-                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2021/06/27</span>
-            </div>
-            <!-- tags  -->
-            
-            <div class= abstract-tags >
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "Substance Designer">Substance Designer</a>
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "Material">Material</a>
-    
-</div>
-            
-        </div>
-    </article>
     
     <!-- paginator  -->
+    <ul class="post-paginator">
+        <li class="next">
+            
+        </li>
+        <li class="previous">
+            
+                <div class="prevSlogan">Previous Post</div>
+                <a href= "/Atmosphere2/" title= "快速入门大气渲染【实现篇(一)】">
+                    <div class="prevTitle">快速入门大气渲染【实现篇(一)】</div>
+                </a>
+            
+        </li>
+    </ul>
+    <!-- 评论插件 -->
+    <!-- 来必力City版安装代码 -->
+
+<!-- City版安装代码已完成 -->
+    
+    
+    <!-- gitalk评论 -->
+
+    <!-- utteranc评论 -->
+
+    <!-- partial('_partial/comment/changyan') -->
+    <!--PC版-->
+
+
+    
+    
+
+    <!-- 评论 -->
+
+    <!-- idea from: https://hexo.fluid-dev.com/posts/hexo-injector/#%E6%96%87%E7%AB%A0%E6%97%B6%E6%95%88%E6%80%A7%E6%8F%90%E7%A4%BA -->
     
 </main>
+
             <!-- profile -->
             
         </div>
@@ -550,6 +590,24 @@
 </footer>
     </div>
     <!-- toc -->
+    
+    <div class="toc-wrapper" style=
+    
+
+
+
+
+
+
+
+top:50vh;
+
+    >
+        <div class="toc-catalog">
+            <span class="iconfont-archer catalog-icon">&#xe613;</span><span>CATALOG</span>
+        </div>
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%9D%E8%B7%AF%E4%B8%80%EF%BC%9Arampmap%E6%B3%95"><span class="toc-number">2.</span> <span class="toc-text">思路一：rampmap法</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%80%9D%E8%B7%AF%E4%BA%8C%EF%BC%9A%E4%BF%AE%E6%94%B9NdotL"><span class="toc-number">3.</span> <span class="toc-text">思路二：修改NdotL</span></a></li></ol>
+    </div>
     
     <div class="back-top iconfont-archer">&#xe639;</div>
     <div class="sidebar sidebar-hide">
@@ -887,6 +945,8 @@ jsonContent:
     
     </div>
     <!-- async load share.js -->
+    
+        <script src="/scripts/share.js" async></script>    
      
     </body>
 </html>
