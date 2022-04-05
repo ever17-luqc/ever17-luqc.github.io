@@ -20,12 +20,12 @@
     <meta name="keywords" content="hexo,hexo-theme,hexo-blog">
     
     <meta name="description" content="">
-    <meta name="description" content="前言关于经典老番，是指那些做某些效果必看的内容。本篇是非常著名的Precomputed Atmospheric Scattering https:&#x2F;&#x2F;hal.inria.fr&#x2F;inria-00288758&#x2F;en，发表于2008年，是基本上做预计算大气散射必看的文章。 为什么会写这篇？大气散射内容多而且杂，并且理解起来很麻烦，是我TA做了一年多认为最不好理解的内容之一，有工程难度Debug也很难找参">
+    <meta name="description" content="前言 关于经典老番，是指那些做某些效果必看的内容。本篇是非常著名的Precomputed Atmospheric Scattering https:&#x2F;&#x2F;hal.inria.fr&#x2F;inria-00288758&#x2F;en，发表于2008年，是基本上做预计算大气散射必看的文章。 为什么会写这篇？大气散射内容多而且杂，并且理解起来很麻烦，是我TA做了一年多认为最不好理解的内容之一，有工程难度Debug">
 <meta property="og:type" content="article">
 <meta property="og:title" content="【经典老番系列】Precomputed Atmospheric Scattering-Eric Bruneton and Fabrice Neyret">
 <meta property="og:url" content="https://ever17-luqc.github.io/Atmoshperic-Papper-1/index.html">
 <meta property="og:site_name" content="ever17Blog">
-<meta property="og:description" content="前言关于经典老番，是指那些做某些效果必看的内容。本篇是非常著名的Precomputed Atmospheric Scattering https:&#x2F;&#x2F;hal.inria.fr&#x2F;inria-00288758&#x2F;en，发表于2008年，是基本上做预计算大气散射必看的文章。 为什么会写这篇？大气散射内容多而且杂，并且理解起来很麻烦，是我TA做了一年多认为最不好理解的内容之一，有工程难度Debug也很难找参">
+<meta property="og:description" content="前言 关于经典老番，是指那些做某些效果必看的内容。本篇是非常著名的Precomputed Atmospheric Scattering https:&#x2F;&#x2F;hal.inria.fr&#x2F;inria-00288758&#x2F;en，发表于2008年，是基本上做预计算大气散射必看的文章。 为什么会写这篇？大气散射内容多而且杂，并且理解起来很麻烦，是我TA做了一年多认为最不好理解的内容之一，有工程难度Debug">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://ever17-luqc.github.io/Atmoshperic-Papper-1/image-20220330233115453.png">
 <meta property="og:image" content="https://ever17-luqc.github.io/Atmoshperic-Papper-1/image-20220405181738296.png">
@@ -300,7 +300,7 @@ height:50vh;
                 
                 
                     <div class="post-intro-read">
-                        <span>字数统计: <span class="post-count word-count">5.6k</span>阅读时长: <span class="post-count reading-time">22 min</span></span>
+                        <span>字数统计: <span class="post-count word-count">5.4k</span>阅读时长: <span class="post-count reading-time">21 min</span></span>
                     </div>
                 
                 <div class="post-intro-meta">
@@ -429,56 +429,281 @@ height:50vh;
         <div class="container container-unloaded">
             <main class="main post-page">
     <article class="article-entry">
-        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>关于经典老番，是指那些做某些效果必看的内容。本篇是非常著名的Precomputed Atmospheric Scattering <a target="_blank" rel="noopener" href="https://hal.inria.fr/inria-00288758/en%EF%BC%8C%E5%8F%91%E8%A1%A8%E4%BA%8E2008%E5%B9%B4%EF%BC%8C%E6%98%AF%E5%9F%BA%E6%9C%AC%E4%B8%8A%E5%81%9A%E9%A2%84%E8%AE%A1%E7%AE%97%E5%A4%A7%E6%B0%94%E6%95%A3%E5%B0%84%E5%BF%85%E7%9C%8B%E7%9A%84%E6%96%87%E7%AB%A0%E3%80%82">https://hal.inria.fr/inria-00288758/en，发表于2008年，是基本上做预计算大气散射必看的文章。</a></p>
-<p>为什么会写这篇？大气散射内容多而且杂，并且理解起来很麻烦，是我TA做了一年多认为最不好理解的内容之一，有工程难度Debug也很难找参考也得啃很久….<br>在做到预计算大气散射的部分这篇基本也绕不开，但是当时只是浅看一下就跑去Github看了SlightMad的实现<a target="_blank" rel="noopener" href="https://github.com/SlightlyMad">SlightlyMad</a> ，这导致很多细节当时都没很好的吸收理解。这次借这篇文章，重新从头到尾理一下，不但是一个翻译，也是一个重新理解温故知新的过程。</p>
+        <h1 id="前言">前言</h1>
+<p>关于经典老番，是指那些做某些效果必看的内容。本篇是非常著名的Precomputed
+Atmospheric Scattering
+https://hal.inria.fr/inria-00288758/en，发表于2008年，是基本上做预计算大气散射必看的文章。</p>
+<p>为什么会写这篇？大气散射内容多而且杂，并且理解起来很麻烦，是我TA做了一年多认为最不好理解的内容之一，有工程难度Debug也很难找参考也得啃很久....
+在做到预计算大气散射的部分这篇基本也绕不开，但是当时只是浅看一下就跑去Github看了SlightMad的实现<a target="_blank" rel="noopener" href="https://github.com/SlightlyMad">SlightlyMad</a>
+，这导致很多细节当时都没很好的吸收理解。这次借这篇文章，重新从头到尾理一下，不但是一个翻译，也是一个重新理解温故知新的过程。</p>
 <p>本文会不仅仅包含翻译，还会夹杂简化的理解和我自己的理解。</p>
 <p>当然我觉得为什么需要翻译是因为这篇论文的符号真的太多太专业，导致如果不做翻译我看了后面忘了前面，太难顶了【AMD的关于大气散射的两篇论文就相对来讲比较适合新人入门，比较好看懂，符号用的也不多】。</p>
 <p>当然，最后要说的就是本文以翻译为主，自己理解为辅，遇到有些地方可能存在偏差和理解的出入，以论文原文为准。</p>
-<img src="/Atmoshperic-Papper-1/image-20220330233115453.png" alt="image-20220330233115453" style="zoom:80%;">
-
-<h1 id="翻译以及我的理解【部分翻译部分为了方便理解做了简化】"><a href="#翻译以及我的理解【部分翻译部分为了方便理解做了简化】" class="headerlink" title="翻译以及我的理解【部分翻译部分为了方便理解做了简化】"></a>翻译以及我的理解【部分翻译部分为了方便理解做了简化】</h1><h2 id="第一节-介绍-Section-1-Introduction"><a href="#第一节-介绍-Section-1-Introduction" class="headerlink" title="第一节 介绍                                                                                         Section 1.Introduction"></a>第一节 介绍                                                                                         Section 1.Introduction</h2><p>在许多应用中，大气效果对于增加户外场景的真实感非常重要。天空颜色代表着时间的流逝，而大气透视则为评估距离提供了重要依据。在许多游戏或应用程序（例如飞行模拟器或 Google 地球等地球浏览器）中，需要实时渲染这些效果，从地面到太空。对于以现实主义为目标的应用程序来说尤其如此，例如 Celestia 或 Nasa WorldWind。然而，这些应用程序目前使用非常基本的模型来渲染这些效果，这些模型不能提供逼真的图像。在本文中，我们提出了一种从地面到空间的任何视角实时渲染这些效果的方法。这种方法考虑了多重散射，这对于正确渲染暮光或地球在大气层中的阴影很重要。它基于适度的简化假设，使我们能够获得渲染方程的更好近似解（与以前的工作相比），其中大多数项都可以预先计算。我们的方法是第一个考虑所有视点、所有视图和太阳方向以及多重散射的实时方法。接下来的部分组织如下。第 2 节介绍了物理模型和渲染方程并回顾了相关工作。第 3 节介绍了我们的解析方法，以获得可预计算的公式。第 4 节和第 5 节介绍了我们的预计算和渲染算法。第 6 节给出了实现细节并展示了我们的结果。</p>
-<p>[^]: 事实上在预计算大气散射之前，大气散射得纯raymarching 的去做，要达到非常完美的效果必然需要非常多的步进次数，这样也导致在机能有限的平台是基本上跑不动的，而预计算的提出，就可以完美的通过Lut的方式，内存换时间，把raymarching的内容放到了Lut中，显著的缩短了渲染的耗时</p>
-<h2 id="第二节-大气散射模型-Section-2-Atmospheric-Models"><a href="#第二节-大气散射模型-Section-2-Atmospheric-Models" class="headerlink" title="第二节 大气散射模型                                                             Section 2.Atmospheric Models"></a>第二节 大气散射模型                                                             Section 2.Atmospheric Models</h2><p>渲染大气光照依赖于两个方面：局部介质属性的物理模型【<font color="red"><em>也就是大气散射光学路径上每个微分点的属性</em></font>】，以及基于观察者眼睛的GI的模拟。这包括与地面打交道【*<font color="red">也就是所谓的大气透视</font>*】，可以将其建模为一个具有关于反射率 α(x,λ)、法线 n(x) 等等的高度场构成的兰伯特表面。大多数计算机图形学 (CG) 论文，从 [NSTN93] 开始，都依赖于包含空气分子和气溶胶颗粒的介质物理模型，总结于 第 2.1 节。然而，参与媒体的经典渲染方程在大气 CG 模型中很少被完全解释，尤其是对于交互式渲染。我们在第 2.2 节中重申了一般模型，并在第 2.3 节中介绍了它在以前的 CG 模型中的近似值</p>
-<h3 id="2-1-物理模型-Physical-Model"><a href="#2-1-物理模型-Physical-Model" class="headerlink" title="2.1 物理模型 Physical Model"></a>2.1 物理模型 Physical Model</h3><p>CG中常用的物理模型是基于空气分子和气溶胶颗粒这两种成分的Clear Sky模型，在Rg &#x3D; 6360 km和Rt &#x3D; 6420 km之间的密度递减的薄球形层中。在每一点，偏离其入射方向θ的散射光的比例由散射系数 βs 和相位函数 P 【*<font color="red">phase function</font>*】的乘积给出。βs 取决于粒子密度，相位函数P 描述了角度相关的散射概率。对于空气分子β s 和 P 由瑞利理论 给出：</p>
-<p>$$<br>\beta_{R}^{s}(h, \lambda)&#x3D;\frac{8 \pi^{3}\left(n^{2}-1\right)^{2}}{3 N \lambda^{4}} e^{-\frac{b}{H_{R}}}<br>$$</p>
-<p>$$<br>P_{R}(\mu)&#x3D;\frac{3}{16 \pi}\left(1+\mu^{2}\right) \\quad \text { 这里的 } \mu就是\cos \theta，注意\theta指viewDir和LightDir夹角，后续还有天顶角相关，不能混淆角度的含义<br>$$</p>
-<p>其中 h &#x3D; r -Rg 是海拔高度【<font color="red"><em>r是大气最高点所在的球体的半径，Rg是地平线所在球体的半径</em></font>】，λ是波长，n 是空气的折射率，N 是海平面的分子密度 ，H<sub>R</sub>&#x3D; 8 km 是大气密度均匀时的厚度。在前人的论文中我们使用<br>$$<br>\beta_{R}^{s}(h, \lambda)&#x3D; (5.8, 13.5, 33.1)10^{−6} m^{−1 }   \\quad  这里λ &#x3D; (680, 550, 440) nm<br>$$<br>。气溶胶的密度也呈指数下降，高度尺度 HM ≃1.2 公里。它们的相位函数由 Mie 理论给出，近似于 Cornette-Shanks 相位函数<br>$$<br>\beta_{M}^{s}(h, \lambda)&#x3D;\beta_{M}^{s}(0, \lambda) e^{-\frac{h}{h_{H}}}<br>$$</p>
-<p>$$<br>P_{M}(\mu)&#x3D;\frac{3}{8 \pi} \frac{\left(1-g^{2}\right)\left(1+\mu^{2}\right)}{\left(2+g^{2}\right)\left(1+g^{2}-2 g \mu\right)^{3 &#x2F; 2}}<br>$$</p>
-<p>与空气分子不同，气溶胶吸收一小部分入射光。它是用吸收系数β <sup><sub>α</sub></sup><sub>M</sub>测量的，它给出了消光系数β <sup>e</sup><sub>M</sub> &#x3D; β <sup>α</sup><sub>M</sub> +β <sup>s</sup><sub>M</sub> 。请注意，折射率随高度的变化会导致光线的小幅弯曲（小于 2 度 ）。为简单起见，我们忽略它.</p>
-<h3 id="2-2-渲染方程-Rendering-equation"><a href="#2-2-渲染方程-Rendering-equation" class="headerlink" title="2.2 渲染方程 Rendering equation"></a>2.2 渲染方程 Rendering equation</h3><p>我们在这里回顾了应用于大气的参与介质中的渲染方程。我们注意到 L(x, v, s) 是当太阳在 s 方向时从 v 方向到达 x 的光的辐射度，而 xo (x, v) 是射线 x +tv 的末端（见图 1）。请注意，xo 要么在地面上，要么在顶部大气边界 r &#x3D; Rt 上。 xo 和 x 之间的透射率 T、在 xo 处反射的光的辐射率 I 以及在 y 方向 -v 上散射的光的辐射率 J 定义为<br>$$<br>T\left(\mathbf{x}, \mathbf{x}<em>{o}\right)&#x3D;\exp \left(-\int</em>{\mathbf{x}}^{\mathbf{x}<em>{o}} \sum</em>{i \in{R, M}} \beta_{i}^{e}(\mathbf{y}) d y\right)<br>$$</p>
-<p>$$<br>\mathcal{I}[L]\left(\mathbf{x}<em>{o}, \mathbf{s}\right)&#x3D;\frac{\alpha\left(\mathbf{x}</em>{o}\right)}{\pi} \int_{2 \pi} L\left(\mathbf{x}<em>{o}, \boldsymbol{\omega}, \mathbf{s}\right) \boldsymbol{\omega} \cdot \mathbf{n}\left(\mathbf{x}</em>{o}\right) d \omega, \text { or } 0<br>$$</p>
-<p>$$<br>\mathcal{J}[L](\mathbf{y}, \mathbf{v}, \mathbf{s})&#x3D;\int_{4 \pi} \sum_{i \in{R, M}} \beta_{i}^{s}(\mathbf{y}) P_{i}(\mathbf{v} . \boldsymbol{\omega}) L(\mathbf{y}, \boldsymbol{\omega}, \mathbf{s}) d \omega<br>$$</p>
+<p><img src="/Atmoshperic-Papper-1/image-20220330233115453.png" alt="image-20220330233115453" style="zoom:80%;"></p>
+<h1 id="翻译以及我的理解部分翻译部分为了方便理解做了简化">翻译以及我的理解【部分翻译部分为了方便理解做了简化】</h1>
+<h2 id="第一节-介绍-section-1.introduction">第一节 介绍 Section
+1.Introduction</h2>
+<p>在许多应用中，大气效果对于增加户外场景的真实感非常重要。天空颜色代表着时间的流逝，而大气透视则为评估距离提供了重要依据。在许多游戏或应用程序（例如飞行模拟器或
+Google
+地球等地球浏览器）中，需要实时渲染这些效果，从地面到太空。对于以现实主义为目标的应用程序来说尤其如此，例如
+Celestia 或 Nasa
+WorldWind。然而，这些应用程序目前使用非常基本的模型来渲染这些效果，这些模型不能提供逼真的图像。在本文中，我们提出了一种从地面到空间的任何视角实时渲染这些效果的方法。这种方法考虑了多重散射，这对于正确渲染暮光或地球在大气层中的阴影很重要。它基于适度的简化假设，使我们能够获得渲染方程的更好近似解（与以前的工作相比），其中大多数项都可以预先计算。我们的方法是第一个考虑所有视点、所有视图和太阳方向以及多重散射的实时方法。接下来的部分组织如下。第
+2 节介绍了物理模型和渲染方程并回顾了相关工作。第 3
+节介绍了我们的解析方法，以获得可预计算的公式。第 4 节和第 5
+节介绍了我们的预计算和渲染算法。第 6
+节给出了实现细节并展示了我们的结果。</p>
+<p>[^]: 事实上在预计算大气散射之前，大气散射得纯raymarching
+的去做，要达到非常完美的效果必然需要非常多的步进次数，这样也导致在机能有限的平台是基本上跑不动的，而预计算的提出，就可以完美的通过Lut的方式，内存换时间，把raymarching的内容放到了Lut中，显著的缩短了渲染的耗时</p>
+<h2 id="第二节-大气散射模型-section-2.atmospheric-models">第二节
+大气散射模型 Section 2.Atmospheric Models</h2>
+<p>渲染大气光照依赖于两个方面：局部介质属性的物理模型【<font color="red"><em>也就是大气散射光学路径上每个微分点的属性</em></font>】，以及基于观察者眼睛的GI的模拟。这包括与地面打交道【<em><font color="red">也就是所谓的大气透视</font></em>】，可以将其建模为一个具有关于反射率
+α(x,λ)、法线 n(x) 等等的高度场构成的兰伯特表面。大多数计算机图形学 (CG)
+论文，从 [NSTN93]
+开始，都依赖于包含空气分子和气溶胶颗粒的介质物理模型，总结于 第 2.1
+节。然而，参与媒体的经典渲染方程在大气 CG
+模型中很少被完全解释，尤其是对于交互式渲染。我们在第 2.2
+节中重申了一般模型，并在第 2.3 节中介绍了它在以前的 CG
+模型中的近似值</p>
+<h3 id="物理模型-physical-model">2.1 物理模型 Physical Model</h3>
+<p>CG中常用的物理模型是基于空气分子和气溶胶颗粒这两种成分的Clear
+Sky模型，在Rg = 6360 km和Rt = 6420
+km之间的密度递减的薄球形层中。在每一点，偏离其入射方向θ的散射光的比例由散射系数
+βs 和相位函数 P 【<em><font color="red">phase
+function</font></em>】的乘积给出。βs 取决于粒子密度，相位函数P
+描述了角度相关的散射概率。对于空气分子β s 和 P 由瑞利理论 给出：</p>
+<p><span class="math display">\[
+\beta_{R}^{s}(h, \lambda)=\frac{8 \pi^{3}\left(n^{2}-1\right)^{2}}{3 N
+\lambda^{4}} e^{-\frac{b}{H_{R}}}
+\]</span></p>
+<p><span class="math display">\[
+P_{R}(\mu)=\frac{3}{16 \pi}\left(1+\mu^{2}\right) \\\quad \text { 这里的
+} \mu就是\cos
+\theta，注意\theta指viewDir和LightDir夹角，后续还有天顶角相关，不能混淆角度的含义
+\]</span></p>
+<p>其中 h = r -Rg
+是海拔高度【<font color="red"><em>r是大气最高点所在的球体的半径，Rg是地平线所在球体的半径</em></font>】，λ是波长，n
+是空气的折射率，N 是海平面的分子密度 ，H<sub>R</sub>= 8 km
+是大气密度均匀时的厚度。在前人的论文中我们使用 <span class="math display">\[
+\beta_{R}^{s}(h, \lambda)= (5.8, 13.5, 33.1)10^{−6} m^{−1
+}   \\\quad  这里λ = (680, 550, 440) nm
+\]</span> 。气溶胶的密度也呈指数下降，高度尺度 HM ≃1.2
+公里。它们的相位函数由 Mie 理论给出，近似于 Cornette-Shanks 相位函数
+<span class="math display">\[
+\beta_{M}^{s}(h, \lambda)=\beta_{M}^{s}(0, \lambda) e^{-\frac{h}{h_{H}}}
+\]</span></p>
+<p><span class="math display">\[
+P_{M}(\mu)=\frac{3}{8 \pi}
+\frac{\left(1-g^{2}\right)\left(1+\mu^{2}\right)}{\left(2+g^{2}\right)\left(1+g^{2}-2
+g \mu\right)^{3 / 2}}
+\]</span></p>
+<p>与空气分子不同，气溶胶吸收一小部分入射光。它是用吸收系数β
+<sup><sub>α</sub></sup><sub>M</sub>测量的，它给出了消光系数β
+<sup>e</sup><sub>M</sub> = β <sup>α</sup><sub>M</sub> +β
+<sup>s</sup><sub>M</sub>
+。请注意，折射率随高度的变化会导致光线的小幅弯曲（小于 2 度
+）。为简单起见，我们忽略它.</p>
+<h3 id="渲染方程-rendering-equation">2.2 渲染方程 Rendering
+equation</h3>
+<p>我们在这里回顾了应用于大气的参与介质中的渲染方程。我们注意到 L(x, v,
+s) 是当太阳在 s 方向时从 v 方向到达 x 的光的辐射度，而 xo (x, v) 是射线
+x +tv 的末端（见图 1）。请注意，xo 要么在地面上，要么在顶部大气边界 r =
+Rt 上。 xo 和 x 之间的透射率 T、在 xo 处反射的光的辐射率 I 以及在 y 方向
+-v 上散射的光的辐射率 J 定义为 <span class="math display">\[
+T\left(\mathbf{x}, \mathbf{x}_{o}\right)=\exp
+\left(-\int_{\mathbf{x}}^{\mathbf{x}_{o}} \sum_{i \in\{R, M\}}
+\beta_{i}^{e}(\mathbf{y}) d y\right)
+\]</span></p>
+<p><span class="math display">\[
+\mathcal{I}[L]\left(\mathbf{x}_{o},
+\mathbf{s}\right)=\frac{\alpha\left(\mathbf{x}_{o}\right)}{\pi} \int_{2
+\pi} L\left(\mathbf{x}_{o}, \boldsymbol{\omega}, \mathbf{s}\right)
+\boldsymbol{\omega} \cdot \mathbf{n}\left(\mathbf{x}_{o}\right) d
+\omega, \text { or } 0
+\]</span></p>
+<p><span class="math display">\[
+\mathcal{J}[L](\mathbf{y}, \mathbf{v}, \mathbf{s})=\int_{4 \pi} \sum_{i
+\in\{R, M\}} \beta_{i}^{s}(\mathbf{y}) P_{i}(\mathbf{v} .
+\boldsymbol{\omega}) L(\mathbf{y}, \boldsymbol{\omega}, \mathbf{s}) d
+\omega
+\]</span></p>
 <img src="/Atmoshperic-Papper-1/image-20220405181738296.png" class title="image-20220405181738296">
-
-<p>[^图1]: 左：参考方案包括从 x 到 x0 集成的单散射 (a) 和多散射 (b)，所有这些都考虑了遮挡。右：我们的近似值。积分是从 x 到 xs 完成的【*<font color="red">这里其实意思就是Xs下面的部分都近似认为光线传播被场景物体挡住了【以单次散射的光路为准】</font>*】，忽略遮挡（通过使用 xs 隐含）。 (a) 不变。 (b) 受到忽略二次散射遮挡的影响（这会产生正偏差和负偏差，无论如何影响很小）。</p>
 <img src="/Atmoshperic-Papper-1/image-20220405182440138.png" class title="image-20220405182440138">
-
-<p>[^图2]: (a) 大气透明度 T 由吸收和散射光产生。 (b) I[L] 是在 x0 处反射的光 L。它在顶部大气边界上为空【*<font color="red">这里其实意思就是光路的终点如果没有物体那就是不会有反射光的参与</font>*】。 (c) J [L] 是在 y 方向 -v 散射的光 L。 (d) S[L] 是从任意方向向 x0 和 x 之间的 x 散射的光</p>
-<p>这样的话，渲染方程如下：<br>$$<br>\begin{aligned}<br>L(\mathbf{x}, \mathbf{v}, \mathbf{s}) &amp;&#x3D;\left(L_{0}+\mathcal{R}[L]+\mathcal{S}[L]\right)(\mathbf{x}, \mathbf{v}, \mathbf{s}) \<br>L_{0}(\mathbf{x}, \mathbf{v}, \mathbf{s}) &amp;&#x3D;T\left(\mathbf{x}, \mathbf{x}<em>{O}\right) L</em>{s u m}, \text { or } 0 \<br>\mathcal{R}[L](\mathbf{x}, \mathbf{v}, \mathbf{s}) &amp;&#x3D;T\left(\mathbf{x}, \mathbf{x}<em>{0}\right) \mathcal{I}[L]\left(\mathbf{x}</em>{O}, \mathbf{s}\right) \<br>\mathcal{S}[L](\mathbf{x}, \mathbf{v}, \mathbf{s}) &amp;&#x3D;\int_{\mathbf{x}}^{\mathbf{x}_{0}} T(\mathbf{x}, \mathbf{y}) \mathcal{J}[L](\mathbf{y}, \mathbf{v}, \mathbf{s}) d y<br>\end{aligned}<br>$$<br>其中 L0 是在到达 x 之前被 T (x, xo) 衰减的直射阳光 Lsun【*<font color="red">这里其实就是渲染太阳的形状和颜色，太阳光不发生散射或者说光路一条直线的部分</font><em>】。如果 v 和s方向不不相等，或者太阳被地形遮挡，L0 为空。如果x0在地面上,R[L] 是在 x0 处反射并在到达 x 之前衰减的光，S[L] 是入射散射光，即在 x 和 x0 之间向 x 散射的光（见图 2）【</em><font color="red">这里其实就是说的光照方程包含了sun disk渲染【可能为0】，地面反射光渲染【这也可能为0】,散射光渲染 三部分</font>*】</p>
-<h3 id="2-3-之前的渲染方法-Previous-rendering-methods"><a href="#2-3-之前的渲染方法-Previous-rendering-methods" class="headerlink" title="2.3 之前的渲染方法  Previous rendering methods"></a>2.3 之前的渲染方法  Previous rendering methods</h3><p>最终的结果求解起来非常复杂。因此，在 CG 中进行了许多简化假设以找到近似值更容易计算。大多数实时方法忽略多重散射。在这种情况下，公式简化为 L &#x3D; L0 + R[L0] + S[L0]。然而，即使是 S[L0] 也很难求解。一些作者以理想化为代价提出了分析解决方案：具有恒定大气密度的平坦地球，或没有米氏散射。平坦地球假说将它们限制在地面上的观察者身上。否则，S[L0] 通常通过数值积分计算，这可以使用低采样实时完成。然而，为了减少参数的数量，之前的论文他们只考虑了视角和太阳天顶角，而忽略了视角和太阳方向之间的夹角。因此，它们无法再现一些情况，例如，地球在大气层中的阴影。忽略上述多重散射对于日光是可以接受的，但对于暮光则不行。这是因为白天穿过大气层的阳光比日落或日出时少得多。因此，一些作者提出了解释多重散射的方法。 用解析模型拟合双散射 Monte-Carlo 模拟的结果，但他们的模型仅对地面上的观察者有效。使用体积辐射度算法来计算多重散射，但它们的方法远非实时（每张图像需要几分钟到几小时）。在本文中，我们提出了一种从地面到空间的所有视点实时渲染天空和空中视角的新方法，同时考虑到多重散射通过多重散射、以前忽略的视角-太阳角参数、对预先计算的表的更好参数化以及LightShaft的新方法进行了扩展。</p>
-<h2 id="第三节-我们的新方案-Section-3-Our-Method"><a href="#第三节-我们的新方案-Section-3-Our-Method" class="headerlink" title="第三节  我们的新方案                                                        Section 3.Our Method"></a>第三节  我们的新方案                                                        Section 3.Our Method</h2><p>为了提高效率和真实性，我们的目标是尽可能多地预先计算 L，只使用最小的近似值。我们的解决方案基于零散射和单次散射的精确计算【*<font color="red">零次就是sundisk，单次就是光路只改变一次就进入人眼</font>*】，并使用遮挡效应的近似值来计算多次散射。事实上，我们将详细的地面形状考虑到零散射和单次散射，以获得正确的地面颜色、阴影和光轴。但是我们用一个恒定反射率的完美球体来近似它来计算多重散射，以允许预先计算。</p>
-<p><em><strong>符号： 在介绍我们的方法之前，我们需要一些符号和辅助函数。我们注意到$\overline{\text{L}}$ &#x3D;$\overline{\text{L0}}$ +( $\overline{\text{R}}$+ $\overline{\text{S}}$)[ $\overline{\text{L}}$] 对于具有恒定反射率 $\overline{\text{α}}$的完美球形地面的情况，方程 8 的解。 $\overline{\text{L}}$,$\overline{\text{R}}$,$\overline{\text{S}}$，$\overline{\text{X0}}$,$\overline{\text{I}}$等定义同前，只是针对这个球面。请注意，由于地面的球对称性，x 和 v 的描述可以减少到高度和视角天顶角【*<font color="red">三维降到二维</font>*】。因此，x、v、s 的函数，例如 $\overline{\text{L}}$或者$\overline{\text{S}}$【$\overline{\text{ L}}$】可以简化为 4 个参数的函数（x、v 两个，s 两个）。</strong></em></p>
-<p><strong>零散射和单散射</strong> 我们在渲染期间精确计算 L0 和 R[L0]。为此，我们使用阴影算法来计算太阳遮挡【*<font color="red">其实就是类似shadowmap的深度比较</font><em>】，以及透射率 T 的预计算表，该表仅取决于 2 个参数（参见第 4 节）。 S[L0] 更复杂。它是 x 和 xo 之间的积分，但由于 L0 中的遮挡项，被积函数在阴影中的所有点 y 处为空（这就是产生LightShaft的原因）。我们在这里假设这些点在 xs 和 xo 之间（参见图 1——一般情况在第 5 节中讨论）。然后积分可以简化为光照渲染片段 [x, xs ]。此外，可以忽略遮挡，因为它已经通过 xs 计算，即 L0 可以替换为$\overline{\text{L0}}$。这表明 S[L0] &#x3D; ∫<sub>X</sub><sup>Xt</sup>T  J[ $\overline{\text{L0}}$]。通过将其重写为<br>$$<br>\int_{\mathbf{x}}^{\mathbf{x}<em>{0}} T \mathcal{J}\left[\bar{L}</em>{0}\right]-\int_{\mathbf{x}<em>{0}}^{\overline{\mathbf{x}}</em>{0}} T \mathcal{J}\left[\bar{L}<em>{0}\right]<br>$$<br> 我们最终得到<br>$$<br>\mathcal{S}\left[L_{0}\right](\mathbf{x}, \mathbf{v}, \mathbf{s})&#x3D;\overline{\mathcal{S}}\left[\bar{L}_{0}\right](\mathbf{x}, \mathbf{v}, \mathbf{s})-T\left(\mathbf{x}, \mathbf{x}</em>{s}\right) \overline{\mathcal{S}}\left[\bar{L}<em>{0}\right]\left(\mathbf{x}</em>{s}, \mathbf{v}, \mathbf{s}\right)<br>$$<br>【</em><font color="red">这里的上划线X0就是被遮挡位置点的位置</font>】</p>
-<p><strong>多重散射</strong>如上所示，尽管有遮挡，仍可以准确计算 L0 和 L1。不幸的是，在其他项 L2 + L3+ . . Ln&#x3D; R[L∗] + S[L∗] 要困难得多。希望在这种情况下，遮挡可以近似。实际上，与白天的单次散射相比，多次散射效应很小，而在没有直接被太阳照射时，地面贡献很小。因此，我们通过在 x 和 xs 之间集成多次散射的贡献来近似 S【L* 】中的遮挡效应，计算时没有遮挡。这会产生正偏差和负偏差（见图 1）。在数学上，这个近似给出了<br>$$<br>\mathcal{S}\left[L_{<em>}\right] \simeq \int_{\mathbf{x}}^{\mathbf{x}<em>{s}} T \mathcal{J}\left[\bar{L}</em>{</em>}\right]<br>$$</p>
-<p>我们还通过地面的切线使用水平半球的环境遮挡来近似 R[L*] 中的遮挡效果。 由此推导<br>$$<br>\mathcal{R}\left[L_{<em>}\right] \simeq \hat{\mathcal{R}}\left[\bar{L}_{</em>}\right]<br>$$<br>为 ：<br>$$<br>\begin{aligned}<br>&amp;\hat{\mathcal{R}}\left[\bar{L}<em>{*}\right]&#x3D;T\left(\mathbf{x}, \mathbf{x}</em>{o}\right) \frac{\alpha\left(\mathbf{x}<em>{o}\right)}{\pi} \frac{1+\mathbf{n}\left(\mathbf{x}</em>{o}\right) \cdot \overline{\mathbf{n}}\left(\mathbf{x}<em>{o}\right)}{2} \overline{\mathcal{E}}\left[\bar{L}</em>{<em>}\right]\left(\mathbf{x}<em>{o}, \mathbf{s}\right) \<br>&amp;\overline{\mathcal{E}}\left[\bar{L}</em>{</em>}\right]\left(\mathbf{x}<em>{o}, \mathbf{s}\right)&#x3D;\int</em>{2 \pi} \bar{L}<em>{*}\left(\mathbf{x}</em>{o}, \boldsymbol{\omega}, \mathbf{s}\right) \boldsymbol{\omega} \cdot \overline{\mathbf{n}}\left(\mathbf{x}<em>{o}\right) d \omega, \text { or } 0<br>\end{aligned}<br>$$<br>最高后我们获得：<br>$$<br>L \simeq L</em>{0}+\mathcal{R}\left[L_{0}\right]+\hat{\mathcal{R}}\left[\bar{L}<em>{*}\right]+\overline{\mathcal{S}}[\bar{L}]</em>{\mid \mathbf{x}}-T\left(\mathbf{x}, \mathbf{x}<em>{s}\right) \overline{\mathcal{S}}[\bar{L}]</em>{\mid \mathbf{x}_{s}}<br>$$<br>其中前三个项可以借助 T 和 $\overline{\text{E}}$ [ $\overline{\text{ L* }}$ ] 的预先计算的 2D 表快速计算，而 $\overline{\text{S}}$ [ $\overline{\text{L}}$ ] 可以在 4D 表中预先计算。我们现在展示如何在合理大小的表格中预先计算它们【空心部分是需要预计算的LUT】：</p>
+<p>这样的话，渲染方程如下： <span class="math display">\[
+\begin{aligned}
+L(\mathbf{x}, \mathbf{v}, \mathbf{s})
+&amp;=\left(L_{0}+\mathcal{R}[L]+\mathcal{S}[L]\right)(\mathbf{x},
+\mathbf{v}, \mathbf{s}) \\
+L_{0}(\mathbf{x}, \mathbf{v}, \mathbf{s}) &amp;=T\left(\mathbf{x},
+\mathbf{x}_{O}\right) L_{s u m}, \text { or } 0 \\
+\mathcal{R}[L](\mathbf{x}, \mathbf{v}, \mathbf{s})
+&amp;=T\left(\mathbf{x}, \mathbf{x}_{0}\right)
+\mathcal{I}[L]\left(\mathbf{x}_{O}, \mathbf{s}\right) \\
+\mathcal{S}[L](\mathbf{x}, \mathbf{v}, \mathbf{s})
+&amp;=\int_{\mathbf{x}}^{\mathbf{x}_{0}} T(\mathbf{x}, \mathbf{y})
+\mathcal{J}[L](\mathbf{y}, \mathbf{v}, \mathbf{s}) d y
+\end{aligned}
+\]</span> 其中 L0 是在到达 x 之前被 T (x, xo) 衰减的直射阳光
+Lsun【<em><font color="red">这里其实就是渲染太阳的形状和颜色，太阳光不发生散射或者说光路一条直线的部分</font></em>】。如果
+v 和s方向不不相等，或者太阳被地形遮挡，L0 为空。如果x0在地面上,R[L] 是在
+x0 处反射并在到达 x 之前衰减的光，S[L] 是入射散射光，即在 x 和 x0 之间向
+x 散射的光（见图
+2）【<em><font color="red">这里其实就是说的光照方程包含了sun
+disk渲染【可能为0】，地面反射光渲染【这也可能为0】,散射光渲染
+三部分</font></em>】</p>
+<h3 id="之前的渲染方法-previous-rendering-methods">2.3 之前的渲染方法
+Previous rendering methods</h3>
+<p>最终的结果求解起来非常复杂。因此，在 CG
+中进行了许多简化假设以找到近似值更容易计算。大多数实时方法忽略多重散射。在这种情况下，公式简化为
+L = L0 + R[L0] + S[L0]。然而，即使是 S[L0]
+也很难求解。一些作者以理想化为代价提出了分析解决方案：具有恒定大气密度的平坦地球，或没有米氏散射。平坦地球假说将它们限制在地面上的观察者身上。否则，S[L0]
+通常通过数值积分计算，这可以使用低采样实时完成。然而，为了减少参数的数量，之前的论文他们只考虑了视角和太阳天顶角，而忽略了视角和太阳方向之间的夹角。因此，它们无法再现一些情况，例如，地球在大气层中的阴影。忽略上述多重散射对于日光是可以接受的，但对于暮光则不行。这是因为白天穿过大气层的阳光比日落或日出时少得多。因此，一些作者提出了解释多重散射的方法。
+用解析模型拟合双散射 Monte-Carlo
+模拟的结果，但他们的模型仅对地面上的观察者有效。使用体积辐射度算法来计算多重散射，但它们的方法远非实时（每张图像需要几分钟到几小时）。在本文中，我们提出了一种从地面到空间的所有视点实时渲染天空和空中视角的新方法，同时考虑到多重散射通过多重散射、以前忽略的视角-太阳角参数、对预先计算的表的更好参数化以及LightShaft的新方法进行了扩展。</p>
+<h2 id="第三节-我们的新方案-section-3.our-method">第三节 我们的新方案
+Section 3.Our Method</h2>
+<p>为了提高效率和真实性，我们的目标是尽可能多地预先计算
+L，只使用最小的近似值。我们的解决方案基于零散射和单次散射的精确计算【<em><font color="red">零次就是sundisk，单次就是光路只改变一次就进入人眼</font></em>】，并使用遮挡效应的近似值来计算多次散射。事实上，我们将详细的地面形状考虑到零散射和单次散射，以获得正确的地面颜色、阴影和光轴。但是我们用一个恒定反射率的完美球体来近似它来计算多重散射，以允许预先计算。</p>
+<p><strong><em>符号：
+在介绍我们的方法之前，我们需要一些符号和辅助函数。我们注意到<span class="math inline">\(\overline{\text{L}}\)</span> =<span class="math inline">\(\overline{\text{L0}}\)</span> +( <span class="math inline">\(\overline{\text{R}}\)</span>+ <span class="math inline">\(\overline{\text{S}}\)</span>)[ <span class="math inline">\(\overline{\text{L}}\)</span>] 对于具有恒定反射率
+<span class="math inline">\(\overline{\text{α}}\)</span>的完美球形地面的情况，方程
+8 的解。 <span class="math inline">\(\overline{\text{L}}\)</span>,<span class="math inline">\(\overline{\text{R}}\)</span>,<span class="math inline">\(\overline{\text{S}}\)</span>，<span class="math inline">\(\overline{\text{X0}}\)</span>,<span class="math inline">\(\overline{\text{I}}\)</span>等定义同前，只是针对这个球面。请注意，由于地面的球对称性，x
+和 v
+的描述可以减少到高度和视角天顶角【</em><font color="red">三维降到二维</font><em>】。因此，x、v、s
+的函数，例如 <span class="math inline">\(\overline{\text{L}}\)</span>或者<span class="math inline">\(\overline{\text{S}}\)</span>【<span class="math inline">\(\overline{\text{ L}}\)</span>】可以简化为 4
+个参数的函数（x、v 两个，s 两个）。</em></strong></p>
+<p><strong>零散射和单散射</strong> 我们在渲染期间精确计算 L0 和
+R[L0]。为此，我们使用阴影算法来计算太阳遮挡【<em><font color="red">其实就是类似shadowmap的深度比较</font></em>】，以及透射率
+T 的预计算表，该表仅取决于 2 个参数（参见第 4 节）。 S[L0] 更复杂。它是
+x 和 xo 之间的积分，但由于 L0 中的遮挡项，被积函数在阴影中的所有点 y
+处为空（这就是产生LightShaft的原因）。我们在这里假设这些点在 xs 和 xo
+之间（参见图 1——一般情况在第 5
+节中讨论）。然后积分可以简化为光照渲染片段 [x, xs
+]。此外，可以忽略遮挡，因为它已经通过 xs 计算，即 L0 可以替换为<span class="math inline">\(\overline{\text{L0}}\)</span>。这表明 S[L0] =
+∫<sub>X</sub><sup>Xt</sup>T J[ <span class="math inline">\(\overline{\text{L0}}\)</span>]。通过将其重写为
+<span class="math display">\[
+\int_{\mathbf{x}}^{\mathbf{x}_{0}} T
+\mathcal{J}\left[\bar{L}_{0}\right]-\int_{\mathbf{x}_{0}}^{\overline{\mathbf{x}}_{0}}
+T \mathcal{J}\left[\bar{L}_{0}\right]
+\]</span> 我们最终得到 <span class="math display">\[
+\mathcal{S}\left[L_{0}\right](\mathbf{x}, \mathbf{v},
+\mathbf{s})=\overline{\mathcal{S}}\left[\bar{L}_{0}\right](\mathbf{x},
+\mathbf{v}, \mathbf{s})-T\left(\mathbf{x}, \mathbf{x}_{s}\right)
+\overline{\mathcal{S}}\left[\bar{L}_{0}\right]\left(\mathbf{x}_{s},
+\mathbf{v}, \mathbf{s}\right)
+\]</span>
+【*<font color="red">这里的上划线X0就是被遮挡位置点的位置</font>】</p>
+<p><strong>多重散射</strong>如上所示，尽管有遮挡，仍可以准确计算 L0 和
+L1。不幸的是，在其他项 L2 + L3+ . . Ln= R[L∗] + S[L∗]
+要困难得多。希望在这种情况下，遮挡可以近似。实际上，与白天的单次散射相比，多次散射效应很小，而在没有直接被太阳照射时，地面贡献很小。因此，我们通过在
+x 和 xs 之间集成多次散射的贡献来近似 S【L*
+】中的遮挡效应，计算时没有遮挡。这会产生正偏差和负偏差（见图
+1）。在数学上，这个近似给出了 <span class="math display">\[
+\mathcal{S}\left[L_{*}\right] \simeq \int_{\mathbf{x}}^{\mathbf{x}_{s}}
+T \mathcal{J}\left[\bar{L}_{*}\right]
+\]</span></p>
+<p>我们还通过地面的切线使用水平半球的环境遮挡来近似 R[L*] 中的遮挡效果。
+由此推导 <span class="math display">\[
+\mathcal{R}\left[L_{*}\right] \simeq
+\hat{\mathcal{R}}\left[\bar{L}_{*}\right]
+\]</span> 为 ： <span class="math display">\[
+\begin{aligned}
+&amp;\hat{\mathcal{R}}\left[\bar{L}_{*}\right]=T\left(\mathbf{x},
+\mathbf{x}_{o}\right) \frac{\alpha\left(\mathbf{x}_{o}\right)}{\pi}
+\frac{1+\mathbf{n}\left(\mathbf{x}_{o}\right) \cdot
+\overline{\mathbf{n}}\left(\mathbf{x}_{o}\right)}{2}
+\overline{\mathcal{E}}\left[\bar{L}_{*}\right]\left(\mathbf{x}_{o},
+\mathbf{s}\right) \\
+&amp;\overline{\mathcal{E}}\left[\bar{L}_{*}\right]\left(\mathbf{x}_{o},
+\mathbf{s}\right)=\int_{2 \pi} \bar{L}_{*}\left(\mathbf{x}_{o},
+\boldsymbol{\omega}, \mathbf{s}\right) \boldsymbol{\omega} \cdot
+\overline{\mathbf{n}}\left(\mathbf{x}_{o}\right) d \omega, \text { or }
+0
+\end{aligned}
+\]</span> 最高后我们获得： <span class="math display">\[
+L \simeq
+L_{0}+\mathcal{R}\left[L_{0}\right]+\hat{\mathcal{R}}\left[\bar{L}_{*}\right]+\overline{\mathcal{S}}[\bar{L}]_{\mid
+\mathbf{x}}-T\left(\mathbf{x}, \mathbf{x}_{s}\right)
+\overline{\mathcal{S}}[\bar{L}]_{\mid \mathbf{x}_{s}}
+\]</span> 其中前三个项可以借助 T 和 <span class="math inline">\(\overline{\text{E}}\)</span> [ <span class="math inline">\(\overline{\text{ L* }}\)</span> ] 的预先计算的 2D
+表快速计算，而 <span class="math inline">\(\overline{\text{S}}\)</span>
+[ <span class="math inline">\(\overline{\text{L}}\)</span> ] 可以在 4D
+表中预先计算。我们现在展示如何在合理大小的表格中预先计算它们【空心部分是需要预计算的LUT】：</p>
 <img src="/Atmoshperic-Papper-1/image-20220405200447732.png" class title="image-20220405200447732">
-
-<h2 id="第四节-预计算-Precomputations"><a href="#第四节-预计算-Precomputations" class="headerlink" title="第四节  预计算  Precomputations"></a>第四节  预计算  Precomputations</h2><img src="/Atmoshperic-Papper-1/image-20220405200949379.png" alt="image-20220405200949379" style="zoom:80%;">
-
-
-
-
-
-<p>我们为二维表 T(x, v) 中的所有 x, v 预先计算 T (x,$\overline{\text{x0}}$(x, v))。由于球对称性，T 仅取决于 r &#x3D; ‖x‖和 μ &#x3D; v.x&#x2F;r [<font color="red">这里也就是算Cosθ，θ是指视线方向和天顶方向的夹角</font>] 。我们然后使用恒等式 T (x, y) &#x3D; T(x, v)&#x2F;T(y, v)，其中 v &#x3D; (y -x)&#x2F;‖y -x‖。我们在两个表 E 和 S 中预先计算  $\overline{\text{E}}$ [ $\overline{\text{L *}}$ ] 和  $\overline{\text{S}}$ [ $\overline{\text{L}}$ ]  ，使用一种算法依次计算每个散射阶  $\overline{\text{Li}}$ 。该算法使用三个中间表 E、S 和 J，在每次迭代后包含E 、S 、J。 E 和 S 在每次迭代结束时添加到结果表 E 和 S </p>
+<h2 id="第四节-预计算-precomputations">第四节 预计算
+Precomputations</h2>
+<p><img src="/Atmoshperic-Papper-1/image-20220405200949379.png" alt="image-20220405200949379" style="zoom:80%;"></p>
+<p>我们为二维表 T(x, v) 中的所有 x, v 预先计算 T (x,<span class="math inline">\(\overline{\text{x0}}\)</span>(x,
+v))。由于球对称性，T 仅取决于 r = ‖x‖和 μ = v.x/r
+[<font color="red">这里也就是算Cosθ，θ是指视线方向和天顶方向的夹角</font>]
+。我们然后使用恒等式 T (x, y) = T(x, v)/T(y, v)，其中 v = (y -x)/‖y
+-x‖。我们在两个表 E 和 S 中预先计算 <span class="math inline">\(\overline{\text{E}}\)</span> [ <span class="math inline">\(\overline{\text{L *}}\)</span> ] 和 <span class="math inline">\(\overline{\text{S}}\)</span> [ <span class="math inline">\(\overline{\text{L}}\)</span> ]
+，使用一种算法依次计算每个散射阶 <span class="math inline">\(\overline{\text{Li}}\)</span>
+。该算法使用三个中间表 E、S 和 J，在每次迭代后包含E 、S 、J。 E 和 S
+在每次迭代结束时添加到结果表 E 和 S</p>
 <p>【<font color="red">简单来说就是每次微分位置的计算结果需要叠加，大气散射原理就是这样的</font>】</p>
-<p><strong>角度精度</strong> 由于 S 是一个 4D 表，它的大小随着分辨率的增加而迅速增加。所以我们只能对 v 使用有限的角分辨率。这带来了一个精度问题，但仅限于强的前向 Mie 散射。为了解决它，我们将 S 中的单个 Mie 散射项与所有其他项分开，以便在运行时应用相位函数。为此，我们将 $\overline{\text{S}}$ [ $\overline{\text{L}}$ ] 重写为<br>$$<br>P_{M }S_{M}\left[L_{0}\right]+P_{R} \mathcal{S}<em>{R}\left[L</em>{0}\right]+\mathcal{S}\left|L_{<em>}\right|<br>$$<br>然后我们分别存储 C<sub>M</sub> &#x3D; $\overline{\text{S}}$<sub>M </sub>[$\overline{\text{L0}}$] 和 C∗&#x3D;$\overline{\text{S}}$ <sub>R</sub>[$\overline{\text{L0}}$ ] +$\overline{\text{S}}$ [$\overline{\text{L <em>}}$ ]&#x2F;P<sub>R</sub>，这需要 S 中每次输入 6 个值[<font color="red">简单来说就是Mie的RGB通道+ Rayleigh的RGB通道</font>]。如果需要，为了效率，可以将其减少到每个条目 4 个值通过仅存储 C<sub>M</sub> 的红色分量r通道来输入【<font color="red">就是RGBA一张图 RGB存Rayleigh的结果 A通道存Mie的R通道</font>】。在这种情况下，其他分量可以用 $\overline{\text{S}}$<sub>M </sub> [$\overline{\text{L0}}$] 和$\overline{\text{S}}$<sub>R</sub>[$\overline{\text{L0}}$] 之间的比例规则来近似：<br>$$<br>C_{M} \simeq C_{</em>} \frac{C_{M, r}}{C_{</em>, r}} \frac{\beta_{R, r}^{s}}{\beta_{M, r}^{s}} \frac{\beta_{M}^{s}}{\beta_{R}^{s}}<br>$$<br><strong>参数化</strong>[<font color="red">这部分不需要细看了，主要是LUT的精度问题，需要做重映射，我们只需要把结论和现象大体了解一下就行，这部分可以略看</font>] 为了将 $\overline{\text{S}}$[  $\overline{\text{L}}$] 存储到 S 中，我们需要从 (x, v, s) 到 [0, 1]4 中的表索引的映射。一个简单的解决方案是使用 r &#x3D; ‖x‖和视天顶、太阳天顶和视太阳角度的余弦 μ &#x3D; v.x&#x2F;r, μs &#x3D; s.x&#x2F;r 和 v&#x3D; v.s（从 [Rg, Rt ] 线性映射×[-1, 1] <sup>3</sup>到 [0, 1]<sup>3</sup>)。这种参数化的问题在于，它需要非常高的分辨率才能获得良好的大气透视(aerial perspective)的采样。例如，考虑一个靠近地面的观察者水平观察，距离 d 处有一座山（见图 3）。空中视角由公式 16 给出为 S(x, v, s) -T (x, xs)S(xs , v, s)。那么对于 x，μ &#x3D; 0，图 3：视角参数。左：使用 μ 会产生伪影。右图：使用 uμ &#x3D; do &#x2F;dh 或 do &#x2F;dH 解决了这个问题（在预先计算的天空辐射表 S 中使用 128 个 μ 或 uμ 值）。图 4：参数化。 ur , uμ , uμs 作为 r, μ, μs 的函数。和 d&#x2F;√r<sup>2</sup>+ d<sup>2</sup> 对于 xs ，对于 d &#x3D; 100 km 给出 μ &#x3D; 0.016 ≪ 1。这个太小的值会产生可见的伪影（参见图 3）。为了解决这个问题，我们依靠更好的参数化。我们将 μ 替换为 uμ，定义为距离 do &#x3D; ‖ ̄xo -x‖ 与从 x 到地平线（分别到地平线“后面”的大气边界）的距离 dh（分别为 dH）之间的比率——参见图 3 ）。在前面的例子中，对于 x 和 xs，dH ≃ (Rt<sup>2</sup> -Rg<sup>2</sup>)<sup>1&#x2F;2</sup>，而对于 x 和 dH <sup>-d</sup>，对于 xs，dH &#x3D; 0.11 ≫0.016，对于 d &#x3D; 100 km。使用此映射，128 个 uμ 样本足以避免上述伪影。另一个问题是 S 在地平线上是不连续的，因为这里的视线长度是不连续的。因此，连续映射会在这种不连续性上产生线性插值，这会导致伪影。我们通过确保 uμ 本身在地平线上是不连续的来解决这个问题（见图 4）。最后，我们对 r 和 μs 使用特别的非线性映射，选择这些映射是为了在接近地面和接近 90° 的太阳天顶角时获得更好的精度。所以我们从 (x, v, s) 到 [0, 1] <sup>4</sup>的映射最终定义如下<br>$$<br>\begin{aligned}<br>u_{r} &amp;&#x3D;\rho &#x2F; H \<br>u_{\mu}&#x3D;&amp; 1 &#x2F; 2+(r \mu+\sqrt{\Delta}) &#x2F;(2 \rho) \quad \text { if } r \mu&lt;0 \text { and } \Delta&gt;0 \<br>&amp; 1 &#x2F; 2-\left(r \mu-\sqrt{\Delta+H^{2}}\right) &#x2F;(2 \rho+2 H) \quad \text { otherwise } \<br>u_{\mu_{x}} &amp;&#x3D;\left(1-e^{-3 \mu_{1}-0.6}\right) &#x2F;\left(1-e^{-3.6}\right) \<br>u_{v} &amp;&#x3D;(1+v) &#x2F; 2 \<br>\text { with } \rho &amp;&#x3D;\left(r^{2}-R_{g}^{2}\right)^{1 &#x2F; 2}, H&#x3D;\left(R_{t}^{2}-R_{g}^{2}\right)^{1 &#x2F; 2}, \text { and } \Delta&#x3D;r^{2} \mu^{2}-\rho^{2} .<br>\end{aligned}<br>$$</p>
+<p><strong>角度精度</strong> 由于 S 是一个 4D
+表，它的大小随着分辨率的增加而迅速增加。所以我们只能对 v
+使用有限的角分辨率。这带来了一个精度问题，但仅限于强的前向 Mie
+散射。为了解决它，我们将 S 中的单个 Mie
+散射项与所有其他项分开，以便在运行时应用相位函数。为此，我们将 <span class="math inline">\(\overline{\text{S}}\)</span> [ <span class="math inline">\(\overline{\text{L}}\)</span> ] 重写为 <span class="math display">\[
+P_{M }S_{M}\left[L_{0}\right]+P_{R}
+\mathcal{S}_{R}\left[L_{0}\right]+\mathcal{S}\left|L_{*}\right|
+\]</span> 然后我们分别存储 C<sub>M</sub> = <span class="math inline">\(\overline{\text{S}}\)</span><sub>M </sub>[<span class="math inline">\(\overline{\text{L0}}\)</span>] 和 C∗=<span class="math inline">\(\overline{\text{S}}\)</span> <sub>R</sub>[<span class="math inline">\(\overline{\text{L0}}\)</span> ] +<span class="math inline">\(\overline{\text{S}}\)</span> [<span class="math inline">\(\overline{\text{L *}}\)</span>
+]/P<sub>R</sub>，这需要 S 中每次输入 6
+个值[<font color="red">简单来说就是Mie的RGB通道+
+Rayleigh的RGB通道</font>]。如果需要，为了效率，可以将其减少到每个条目 4
+个值通过仅存储 C<sub>M</sub>
+的红色分量r通道来输入【<font color="red">就是RGBA一张图
+RGB存Rayleigh的结果
+A通道存Mie的R通道</font>】。在这种情况下，其他分量可以用 <span class="math inline">\(\overline{\text{S}}\)</span><sub>M </sub> [<span class="math inline">\(\overline{\text{L0}}\)</span>] 和<span class="math inline">\(\overline{\text{S}}\)</span><sub>R</sub>[<span class="math inline">\(\overline{\text{L0}}\)</span>]
+之间的比例规则来近似： <span class="math display">\[
+C_{M} \simeq C_{*} \frac{C_{M, r}}{C_{*, r}} \frac{\beta_{R,
+r}^{s}}{\beta_{M, r}^{s}} \frac{\beta_{M}^{s}}{\beta_{R}^{s}}
+\]</span>
+<strong>参数化</strong>[<font color="red">这部分不需要细看了，主要是LUT的精度问题，需要做重映射，我们只需要把结论和现象大体了解一下就行，这部分可以略看</font>]
+为了将 <span class="math inline">\(\overline{\text{S}}\)</span>[ <span class="math inline">\(\overline{\text{L}}\)</span>] 存储到 S
+中，我们需要从 (x, v, s) 到 [0, 1]4
+中的表索引的映射。一个简单的解决方案是使用 r =
+‖x‖和视天顶、太阳天顶和视太阳角度的余弦 μ = v.x/r, μs = s.x/r 和 v=
+v.s（从 [Rg, Rt ] 线性映射×[-1, 1] <sup>3</sup>到 [0,
+1]<sup>3</sup>)。这种参数化的问题在于，它需要非常高的分辨率才能获得良好的大气透视(aerial
+perspective)的采样。例如，考虑一个靠近地面的观察者水平观察，距离 d
+处有一座山（见图 3）。空中视角由公式 16 给出为 S(x, v, s) -T (x, xs)S(xs
+, v, s)。那么对于 x，μ = 0，图 3：视角参数。左：使用 μ
+会产生伪影。右图：使用 uμ = do /dh 或 do /dH
+解决了这个问题（在预先计算的天空辐射表 S 中使用 128 个 μ 或 uμ 值）。图
+4：参数化。 ur , uμ , uμs 作为 r, μ, μs 的函数。和 d/√r<sup>2</sup>+
+d<sup>2</sup> 对于 xs ，对于 d = 100 km 给出 μ = 0.016 ≪
+1。这个太小的值会产生可见的伪影（参见图
+3）。为了解决这个问题，我们依靠更好的参数化。我们将 μ 替换为
+uμ，定义为距离 do = ‖ ̄xo -x‖ 与从 x
+到地平线（分别到地平线“后面”的大气边界）的距离 dh（分别为
+dH）之间的比率——参见图 3 ）。在前面的例子中，对于 x 和 xs，dH ≃
+(Rt<sup>2</sup> -Rg<sup>2</sup>)<sup>1/2</sup>，而对于 x 和 dH
+<sup>-d</sup>，对于 xs，dH = 0.11 ≫0.016，对于 d = 100
+km。使用此映射，128 个 uμ 样本足以避免上述伪影。另一个问题是 S
+在地平线上是不连续的，因为这里的视线长度是不连续的。因此，连续映射会在这种不连续性上产生线性插值，这会导致伪影。我们通过确保
+uμ 本身在地平线上是不连续的来解决这个问题（见图 4）。最后，我们对 r 和
+μs 使用特别的非线性映射，选择这些映射是为了在接近地面和接近 90°
+的太阳天顶角时获得更好的精度。所以我们从 (x, v, s) 到 [0, 1]
+<sup>4</sup>的映射最终定义如下 <span class="math display">\[
+\begin{aligned}
+u_{r} &amp;=\rho / H \\
+u_{\mu}=&amp; 1 / 2+(r \mu+\sqrt{\Delta}) /(2 \rho) \quad \text { if } r
+\mu&lt;0 \text { and } \Delta&gt;0 \\
+&amp; 1 / 2-\left(r \mu-\sqrt{\Delta+H^{2}}\right) /(2 \rho+2 H) \quad
+\text { otherwise } \\
+u_{\mu_{x}} &amp;=\left(1-e^{-3 \mu_{1}-0.6}\right)
+/\left(1-e^{-3.6}\right) \\
+u_{v} &amp;=(1+v) / 2 \\
+\text { with } \rho &amp;=\left(r^{2}-R_{g}^{2}\right)^{1 / 2},
+H=\left(R_{t}^{2}-R_{g}^{2}\right)^{1 / 2}, \text { and } \Delta=r^{2}
+\mu^{2}-\rho^{2} .
+\end{aligned}
+\]</span></p>
 <img src="/Atmoshperic-Papper-1/image-20220405205853150.png" class title="image-20220405205853150">
-
-
-
-
-
-<h2 id="最后："><a href="#最后：" class="headerlink" title="最后："></a>最后：</h2><p>论文的后续内容都是一些实验结果和最后的展望，直接pass了，有兴趣的可以去细看原文。</p>
+<h2 id="最后">最后：</h2>
+<p>论文的后续内容都是一些实验结果和最后的展望，直接pass了，有兴趣的可以去细看原文。</p>
 <p>虽然这篇论文真的写的蛮晦涩的，但是还是非常具有启发性，预处理的方法非常好，甚至可以去做一些缩减用到移动平台上。</p>
 <p>举个例子，如果不需要渲染角色视角从地面到外太空的攀升变化，可以直接把起始点的高度输入去掉用定值代替【举个例子水平线的0】，去掉多级散射【别问，问就是不会】，等等操作去做简化计算，减少LUT的尺寸【主体思想还是用近似或者特殊情况去代替没必要的输入】</p>
 
@@ -628,7 +853,13 @@ top:50vh;
         <div class="toc-catalog">
             <span class="iconfont-archer catalog-icon">&#xe613;</span><span>CATALOG</span>
         </div>
-        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%BF%BB%E8%AF%91%E4%BB%A5%E5%8F%8A%E6%88%91%E7%9A%84%E7%90%86%E8%A7%A3%E3%80%90%E9%83%A8%E5%88%86%E7%BF%BB%E8%AF%91%E9%83%A8%E5%88%86%E4%B8%BA%E4%BA%86%E6%96%B9%E4%BE%BF%E7%90%86%E8%A7%A3%E5%81%9A%E4%BA%86%E7%AE%80%E5%8C%96%E3%80%91"><span class="toc-number">2.</span> <span class="toc-text">翻译以及我的理解【部分翻译部分为了方便理解做了简化】</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E8%8A%82-%E4%BB%8B%E7%BB%8D-Section-1-Introduction"><span class="toc-number">2.1.</span> <span class="toc-text">第一节 介绍                                                                                         Section 1.Introduction</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%BA%8C%E8%8A%82-%E5%A4%A7%E6%B0%94%E6%95%A3%E5%B0%84%E6%A8%A1%E5%9E%8B-Section-2-Atmospheric-Models"><span class="toc-number">2.2.</span> <span class="toc-text">第二节 大气散射模型                                                             Section 2.Atmospheric Models</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-%E7%89%A9%E7%90%86%E6%A8%A1%E5%9E%8B-Physical-Model"><span class="toc-number">2.2.1.</span> <span class="toc-text">2.1 物理模型 Physical Model</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-%E6%B8%B2%E6%9F%93%E6%96%B9%E7%A8%8B-Rendering-equation"><span class="toc-number">2.2.2.</span> <span class="toc-text">2.2 渲染方程 Rendering equation</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-%E4%B9%8B%E5%89%8D%E7%9A%84%E6%B8%B2%E6%9F%93%E6%96%B9%E6%B3%95-Previous-rendering-methods"><span class="toc-number">2.2.3.</span> <span class="toc-text">2.3 之前的渲染方法  Previous rendering methods</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%B8%89%E8%8A%82-%E6%88%91%E4%BB%AC%E7%9A%84%E6%96%B0%E6%96%B9%E6%A1%88-Section-3-Our-Method"><span class="toc-number">2.3.</span> <span class="toc-text">第三节  我们的新方案                                                        Section 3.Our Method</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E5%9B%9B%E8%8A%82-%E9%A2%84%E8%AE%A1%E7%AE%97-Precomputations"><span class="toc-number">2.4.</span> <span class="toc-text">第四节  预计算  Precomputations</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%80%E5%90%8E%EF%BC%9A"><span class="toc-number">2.5.</span> <span class="toc-text">最后：</span></a></li></ol></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%BF%BB%E8%AF%91%E4%BB%A5%E5%8F%8A%E6%88%91%E7%9A%84%E7%90%86%E8%A7%A3%E9%83%A8%E5%88%86%E7%BF%BB%E8%AF%91%E9%83%A8%E5%88%86%E4%B8%BA%E4%BA%86%E6%96%B9%E4%BE%BF%E7%90%86%E8%A7%A3%E5%81%9A%E4%BA%86%E7%AE%80%E5%8C%96"><span class="toc-number">2.</span> <span class="toc-text">翻译以及我的理解【部分翻译部分为了方便理解做了简化】</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E8%8A%82-%E4%BB%8B%E7%BB%8D-section-1.introduction"><span class="toc-number">2.1.</span> <span class="toc-text">第一节 介绍 Section
+1.Introduction</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%BA%8C%E8%8A%82-%E5%A4%A7%E6%B0%94%E6%95%A3%E5%B0%84%E6%A8%A1%E5%9E%8B-section-2.atmospheric-models"><span class="toc-number">2.2.</span> <span class="toc-text">第二节
+大气散射模型 Section 2.Atmospheric Models</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%89%A9%E7%90%86%E6%A8%A1%E5%9E%8B-physical-model"><span class="toc-number">2.2.1.</span> <span class="toc-text">2.1 物理模型 Physical Model</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B8%B2%E6%9F%93%E6%96%B9%E7%A8%8B-rendering-equation"><span class="toc-number">2.2.2.</span> <span class="toc-text">2.2 渲染方程 Rendering
+equation</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B9%8B%E5%89%8D%E7%9A%84%E6%B8%B2%E6%9F%93%E6%96%B9%E6%B3%95-previous-rendering-methods"><span class="toc-number">2.2.3.</span> <span class="toc-text">2.3 之前的渲染方法
+Previous rendering methods</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%B8%89%E8%8A%82-%E6%88%91%E4%BB%AC%E7%9A%84%E6%96%B0%E6%96%B9%E6%A1%88-section-3.our-method"><span class="toc-number">2.3.</span> <span class="toc-text">第三节 我们的新方案
+Section 3.Our Method</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E5%9B%9B%E8%8A%82-%E9%A2%84%E8%AE%A1%E7%AE%97-precomputations"><span class="toc-number">2.4.</span> <span class="toc-text">第四节 预计算
+Precomputations</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%80%E5%90%8E"><span class="toc-number">2.5.</span> <span class="toc-text">最后：</span></a></li></ol></li></ol>
     </div>
     
     <div class="back-top iconfont-archer">&#xe639;</div>

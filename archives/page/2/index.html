@@ -365,6 +365,7 @@
         </a>
         <div class="abstract-content">
             
+
         </div>
         <div class="abstract-post-meta">
             <!-- date  -->
@@ -397,9 +398,13 @@
                 <span>【Substance Designer】快速入门SD:FXMap</span>
         </a>
         <div class="abstract-content">
-            前言零零散散接触了一段时间SD，一直都是看些教程学一些思路，最近在看Daneil Thiger的教程发现他用了一个重复纹理的节点（他自制的），但是自己尝试复现的
-时候法线常规的tile sampler实现不了这种重叠的纹理，而如果用transform又无法控制个数，于是自己找到了FXMap这个功能节点。算是SD非常具有代表性的东西了。我看了些关于FXMAP的文章和案例，于是尝试用FXMAP来做一个重叠纹理的自制节点，做法比较简单，也非常能体现FXMAP的便捷性，同样非常适合入门SD的初学者去理解。
-关于FXMAP1The FX-Map node allows the creation o...
+            前言
+零零散散接触了一段时间SD，一直都是看些教程学一些思路，最近在看Daneil
+Thiger的教程发现他用了一个重复纹理的节点（他自制的），但是自己尝试复现的
+时候法线常规的tile
+sampler实现不了这种重叠的纹理，而如果用transform又无法控制个数，于是自己找到了FXMap这个功能节点。算是SD非常具有代表性的东西了。我看了些关于FXMAP的文章和案例，于是尝试用FXMAP来做一个重叠纹理的自制节点，做法比较简单，也非常能体现FXMAP的便捷性，同样非常适合入门SD的初学者去理解。
+关于FXMAP
+1The FX-Map node allows the cr...
         </div>
         <div class="abstract-post-meta">
             <!-- date  -->
@@ -430,16 +435,20 @@
                 <span>【Substance Designer】入门级SD技巧-1</span>
         </a>
         <div class="abstract-content">
-            前言最近看了些SD大佬的教程，打算开一个 SD系列的文章记录一下学到的操作，当然，SD学起来难度不算高，TA的经验其实对于SD还是非常有用的，或者说SD非常适合TA同学去学习。个人对SD相当感兴趣，后续学习SD会继续记录这些内容权当笔记了。
-阶梯状高度Shape节点出形状Curve节点做曲率变化，做出剧烈变化的高度
+            前言
+最近看了些SD大佬的教程，打算开一个
+SD系列的文章记录一下学到的操作，当然，SD学起来难度不算高，TA的经验其实对于SD还是非常有用的，或者说SD非常适合TA同学去学习。个人对SD相当感兴趣，后续学习SD会继续记录这些内容权当笔记了。
+阶梯状高度
+Shape节点出形状Curve节点做曲率变化，做出剧烈变化的高度
 
-
-平滑边界线Histogram scan获得的纹理通常可能存在本身因素导致的边缘硬，如果需要软过度的包边，可以使用边缘检测获得再blend到Histogram scan后的纹理中
-
+平滑边界线
+Histogram
+scan获得的纹理通常可能存在本身因素导致的边缘硬，如果需要软过度的包边，可以使用边缘检测获得再blend到Histogram
+scan后的纹理中
 
 边缘检测处理
 
-如图如果本身纹理就是这种情况，会导致边缘检测描边出问题，解决的做法为通过h...
+如图如果本身纹理就是这种情况，会导致边缘检测描...
         </div>
         <div class="abstract-post-meta">
             <!-- date  -->
@@ -505,7 +514,12 @@
                 <span>【Unity-URP】快速入门屏幕空间平面反射(SSPR)————（1）</span>
         </a>
         <div class="abstract-content">
-            前言紧接上一篇文章，简单在URP实现以下屏幕空间平面反射，同样会和上篇一样着重于原理以及基础实现，不会涉及更加深层次的东西比如多平台优化（如果想学习更加深入的，可以移步Colin的ColinLeung-NiloCat&#x2F;UnityURP-MobileScreenSpacePlanarReflection: Reusable RendererFeature of MobileScreenSpacePlanarReflection (github.com)   或者Unity URP 移动平台的屏幕空间平面反射（SSPR）趟坑记 - 知乎 (zhihu.com)），当然，后续如果有空...
+            前言
+紧接上一篇文章，简单在URP实现以下屏幕空间平面反射，同样会和上篇一样着重于原理以及基础实现，不会涉及更加深层次的东西比如多平台优化（如果想学习更加深入的，可以移步Colin的ColinLeung-NiloCat/UnityURP-MobileScreenSpacePlanarReflection:
+Reusable RendererFeature of MobileScreenSpacePlanarReflection
+(github.com) 或者Unity URP
+移动平台的屏幕空间平面反射（SSPR）趟坑记 - 知乎
+(zhihu.com)），当然，后续如果有空了...
         </div>
         <div class="abstract-post-meta">
             <!-- date  -->
@@ -538,10 +552,12 @@
                 <span>【Unity-URP】快速入门屏幕空间反射(SSR)</span>
         </a>
         <div class="abstract-content">
-            前言关于我的第一篇博客为什么写这个以及会涉及什么：
-  在我任职A向TA的第一年，由于项目里使用了URP，需要学习的内容也较为多，而RenderFeature算是一个比较有意思的东西，能让使用者轻松插入你想做的渲染,所以用它做了一个后处理向的实践顺便了解一下SSR的原理。
-  这篇博客会在URP上搭建一个简易版本的SSR，不会涉及优化以及进阶，着重于理清SSR的原理，同时会涉及到URP的Rendererfeature写法。如果你是一位学习URP的新人，希望本文能对你有所帮助。
-关于ScreenSpaceReflection(SSR)  为了表现光滑的平面的反射效果（实时，非烘焙），常见的...
+            前言
+关于我的第一篇博客为什么写这个以及会涉及什么：
+在我任职A向TA的第一年，由于项目里使用了URP，需要学习的内容也较为多，而RenderFeature算是一个比较有意思的东西，能让使用者轻松插入你想做的渲染,所以用它做了一个后处理向的实践顺便了解一下SSR的原理。
+这篇博客会在URP上搭建一个简易版本的SSR，不会涉及优化以及进阶，着重于理清SSR的原理，同时会涉及到URP的Rendererfeature写法。如果你是一位学习URP的新人，希望本文能对你有所帮助。
+关于ScreenSpaceReflection(SSR)
+为了表现光滑的平面的反射效果（实时，非烘焙），常见...
         </div>
         <div class="abstract-post-meta">
             <!-- date  -->

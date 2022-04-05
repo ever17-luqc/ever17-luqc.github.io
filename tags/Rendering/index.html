@@ -364,8 +364,13 @@
                 <span>【经典老番系列】Precomputed Atmospheric Scattering-Eric Bruneton and Fabrice Neyret</span>
         </a>
         <div class="abstract-content">
-            前言关于经典老番，是指那些做某些效果必看的内容。本篇是非常著名的Precomputed Atmospheric Scattering https://hal.inria.fr/inria-00288758/en，发表于2008年，是基本上做预计算大气散射必看的文章。
-为什么会写这篇？大气散射内容多而且杂，并且理解起来很麻烦，是我TA做了一年多认为最不好理解的内容之一，有工程难度Debug也很难找参考也得啃很久….在做到预计算大气散射的部分这篇基本也绕不开，但是当时只是浅看一下就跑去Github看了SlightMad的实现SlightlyMad ，这导致很多细节当时都没很好的吸收理解。这次...
+            前言
+关于经典老番，是指那些做某些效果必看的内容。本篇是非常著名的Precomputed
+Atmospheric Scattering
+https://hal.inria.fr/inria-00288758/en，发表于2008年，是基本上做预计算大气散射必看的文章。
+为什么会写这篇？大气散射内容多而且杂，并且理解起来很麻烦，是我TA做了一年多认为最不好理解的内容之一，有工程难度Debug也很难找参考也得啃很久....
+在做到预计算大气散射的部分这篇基本也绕不开，但是当时只是浅看一下就跑去Github看了SlightMad的实现SlightlyMad
+，这导致很多细节当时都没...
         </div>
         <div class="abstract-post-meta">
             <!-- date  -->
@@ -396,9 +401,11 @@
                 <span>快速入门大气渲染【实现篇(一)】</span>
         </a>
         <div class="abstract-content">
-            前言上一篇讲到了大气散射单次散射的理论，这篇将会将理论化作实现，一步步去实现这套单次散射。因为是在URP去做后处理散射实现，需要用到RendererFeature，这部分本文不会涉及，如果对RendererFeature不怎么了解可以自行找文章了解。
-第一步：大体框架首先是volume面板，这样就能在volume里添加大气散射的后处理了
-123456789101112131415161718192021222324252627using System.Collections;using System.Collections.Generic;using UnityEngine;using ...
+            前言
+上一篇讲到了大气散射单次散射的理论，这篇将会将理论化作实现，一步步去实现这套单次散射。因为是在URP去做后处理散射实现，需要用到RendererFeature，这部分本文不会涉及，如果对RendererFeature不怎么了解可以自行找文章了解。
+第一步：大体框架
+首先是volume面板，这样就能在volume里添加大气散射的后处理了
+123456789101112131415161718192021222324252627using System.Collections;using System.Collections.Generic;using UnityEngine;...
         </div>
         <div class="abstract-post-meta">
             <!-- date  -->
@@ -433,12 +440,13 @@
                 <span>快速入门大气渲染【理论基础篇】</span>
         </a>
         <div class="abstract-content">
-            前言现在很多游戏为了场景的表现都会加入大气散射等等的效果，甚至有些NPR的游戏都会引入大气散射，大气散射和常规渲染不一样的地方在于常规渲染都是发生在面片表面的，而大气散射隶属于体渲染的范畴
+            前言
+现在很多游戏为了场景的表现都会加入大气散射等等的效果，甚至有些NPR的游戏都会引入大气散射，大气散射和常规渲染不一样的地方在于常规渲染都是发生在面片表面的，而大气散射隶属于体渲染的范畴
 
-
-^: 图源 荒野大镖客2的大气散射效果
+[^]: 图源 荒野大镖客2的大气散射效果
 前一阵子出于某些原因看了alan那篇很知名的大气散射的文章翻译，自己又找了点文章看了看，有所收获
-大气散射理论相关首先由于光这种东西非常特殊，具有波粒二象性，可以认为是粒子也可以认为是电磁波。在大气中（真空中不会发生散射），电磁波由于和大气分子或者气溶胶发生相互作用【这里和大气分子由于本身非常微观，对于尺度小于光的波长1&#x2F;10的粒子，如大气分子等，...
+大气散射理论相关
+首先由于光这种东西非常特殊，具有波粒二象性，可以认为是粒子也可以认为是电磁波。在大气中（真空中不会发生散射），电磁波由于和大气分子或者气溶胶发生相互作用【这里和大气分子由于本身非常微观，对于尺度小于光的波长1/10的粒子，如大气...
         </div>
         <div class="abstract-post-meta">
             <!-- date  -->

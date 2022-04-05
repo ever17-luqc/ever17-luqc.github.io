@@ -20,12 +20,12 @@
     <meta name="keywords" content="hexo,hexo-theme,hexo-blog">
     
     <meta name="description" content="">
-    <meta name="description" content="​     前言​                关于玻璃瓶以及瓶内液体的渲染，相对来说由于本身复杂的表面特性，游戏很少会去基于物理渲染这样的材质，难度较大。 ​                举个例子，以写实渲染出名的大表哥2内的杯子+液体是这样的：  ​                  ​                看下来做的最好的还是20年半条命Alyx的那个Shader   ​">
+    <meta name="description" content="​ 前言 ​ 关于玻璃瓶以及瓶内液体的渲染，相对来说由于本身复杂的表面特性，游戏很少会去基于物理渲染这样的材质，难度较大。 ​ 举个例子，以写实渲染出名的大表哥2内的杯子+液体是这样的：  ​   [^]: 荒野大镖客2内的液体和玻璃质感 ​ 看下来做的最好的还是20年半条命Alyx的那个Shader  [^]: Aylx的玻璃质感 ​ 拿Unity HDRP的举例，透">
 <meta property="og:type" content="article">
 <meta property="og:title" content="玻璃瓶以及瓶内液体的渲染的一种思路">
 <meta property="og:url" content="https://ever17-luqc.github.io/Bottle-Shading/index.html">
 <meta property="og:site_name" content="ever17Blog">
-<meta property="og:description" content="​     前言​                关于玻璃瓶以及瓶内液体的渲染，相对来说由于本身复杂的表面特性，游戏很少会去基于物理渲染这样的材质，难度较大。 ​                举个例子，以写实渲染出名的大表哥2内的杯子+液体是这样的：  ​                  ​                看下来做的最好的还是20年半条命Alyx的那个Shader   ​">
+<meta property="og:description" content="​ 前言 ​ 关于玻璃瓶以及瓶内液体的渲染，相对来说由于本身复杂的表面特性，游戏很少会去基于物理渲染这样的材质，难度较大。 ​ 举个例子，以写实渲染出名的大表哥2内的杯子+液体是这样的：  ​   [^]: 荒野大镖客2内的液体和玻璃质感 ​ 看下来做的最好的还是20年半条命Alyx的那个Shader  [^]: Aylx的玻璃质感 ​ 拿Unity HDRP的举例，透">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://ever17-luqc.github.io/Bottle-Shading/RR2Bottle.png">
 <meta property="og:image" content="https://ever17-luqc.github.io/Bottle-Shading/Alyx.png">
@@ -441,66 +441,80 @@ height:50vh;
         <div class="container container-unloaded">
             <main class="main post-page">
     <article class="article-entry">
-        <p>​    </p>
-<h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>​                关于玻璃瓶以及瓶内液体的渲染，相对来说由于本身复杂的表面特性，游戏很少会去基于物理渲染这样的材质，难度较大。</p>
-<p>​                举个例子，以写实渲染出名的大表哥2内的杯子+液体是这样的：</p>
+        <p>​</p>
+<h1 id="前言">前言</h1>
+<p>​
+关于玻璃瓶以及瓶内液体的渲染，相对来说由于本身复杂的表面特性，游戏很少会去基于物理渲染这样的材质，难度较大。</p>
+<p>​ 举个例子，以写实渲染出名的大表哥2内的杯子+液体是这样的：</p>
 <blockquote>
-<p>​                <img src="/Bottle-Shading/RR2Bottle.png" alt="RR2Bottle" style="zoom:80%;"></p>
+<p>​
+<img src="/Bottle-Shading/RR2Bottle.png" alt="RR2Bottle" style="zoom:80%;"></p>
 </blockquote>
-<p>​                看下来做的最好的还是20年半条命Alyx的那个Shader</p>
-<img src="/Bottle-Shading/Alyx.png" alt="Alyx" style="zoom:80%;">
-
-<p>​                拿Unity HDRP的举例，透明材质提供了折射的方案[双层表面的屏幕空间折射，由于光进入透明表面再出去会有两次折射]，最终的效果也算是差强人意，很难真正去拿这个去渲染瓶子，而且由于屏幕空间的折射[<code>类似屏幕空间反射，需要通过计算光线到达的位置的屏幕空间坐标去采样颜色缓冲的拷贝，这种其实严格算是一种不透明的渲染，只不过是拷贝需要在完成不透明渲染后采样，需要在透明队列去采样这张抓屏</code>]这个特性，如果需要做液体，需要用的不透明的方案去渲染液体模型，比如用环境探针去获得折射反射而不能用抓屏。如果真这样去做渲染玻璃杯和水，不谈最终结果是否接受，性能上就是一道坎了。</p>
-<p>​                为了手机上甚至普通配置也能兼容，我们需要一个不同以往的渲染方案需要效果视觉可信并且需要性能可控，尽量去舍弃使用抓屏和深度图，那么如何非常廉价的渲染出玻璃瓶和水，甚至在一个Pass内完成渲染呢。试本文将会提供一个思路。</p>
-<p>​                先放一个效果图【别问我为什么用手机拍，问就是工程在公司，写的时候只能拿当时随手拍的图了&#x3D;-&#x3D;】：</p>
-<p>​                <img src="/Bottle-Shading/MyTest1.jpg" alt="MyTest1" style="zoom: 80%;"></p>
-<img src="/Bottle-Shading/MyTest2.jpg" alt="MyTest2" style="zoom: 80%;">
-
-<h1 id="渲染思路"><a href="#渲染思路" class="headerlink" title="渲染思路"></a>渲染思路</h1><h2 id="第一部分：一些初期考虑的内容，为什么一些方案是不合适的"><a href="#第一部分：一些初期考虑的内容，为什么一些方案是不合适的" class="headerlink" title="第一部分：一些初期考虑的内容，为什么一些方案是不合适的"></a>第一部分：一些初期考虑的内容，为什么一些方案是不合适的</h2><p>首先是<strong>透射</strong>。听到这个名词基本约等于体渲染常用的比尔定律</p>
+<p>[^]: 荒野大镖客2内的液体和玻璃质感</p>
+<p>​ 看下来做的最好的还是20年半条命Alyx的那个Shader</p>
+<p><img src="/Bottle-Shading/Alyx.png" alt="Alyx" style="zoom:80%;"></p>
+<p>[^]: Aylx的玻璃质感</p>
+<p>​ 拿Unity
+HDRP的举例，透明材质提供了折射的方案[双层表面的屏幕空间折射，由于光进入透明表面再出去会有两次折射]，最终的效果也算是差强人意，很难真正去拿这个去渲染瓶子，而且由于屏幕空间的折射[<code>类似屏幕空间反射，需要通过计算光线到达的位置的屏幕空间坐标去采样颜色缓冲的拷贝，这种其实严格算是一种不透明的渲染，只不过是拷贝需要在完成不透明渲染后采样，需要在透明队列去采样这张抓屏</code>]这个特性，如果需要做液体，需要用的不透明的方案去渲染液体模型，比如用环境探针去获得折射反射而不能用抓屏。如果真这样去做渲染玻璃杯和水，不谈最终结果是否接受，性能上就是一道坎了。</p>
+<p>​
+为了手机上甚至普通配置也能兼容，我们需要一个不同以往的渲染方案需要效果视觉可信并且需要性能可控，尽量去舍弃使用抓屏和深度图，那么如何非常廉价的渲染出玻璃瓶和水，甚至在一个Pass内完成渲染呢。试本文将会提供一个思路。</p>
+<p>​
+先放一个效果图【别问我为什么用手机拍，问就是工程在公司，写的时候只能拿当时随手拍的图了=-=】：</p>
+<p>​
+<img src="/Bottle-Shading/MyTest1.jpg" alt="MyTest1" style="zoom: 80%;"></p>
+<p><img src="/Bottle-Shading/MyTest2.jpg" alt="MyTest2" style="zoom: 80%;"></p>
+<h1 id="渲染思路">渲染思路</h1>
+<h2 id="第一部分一些初期考虑的内容为什么一些方案是不合适的">第一部分：一些初期考虑的内容，为什么一些方案是不合适的</h2>
+<p>首先是<strong>透射</strong>。听到这个名词基本约等于体渲染常用的比尔定律</p>
 <blockquote>
-<p>比尔定律：Exp(-x)            这里的x代表的光学深度OpticalDepth</p>
+<p>比尔定律：Exp(-x) 这里的x代表的光学深度OpticalDepth</p>
 </blockquote>
-<p>同样，和<strong>大气透视</strong>的方案一样，我们可以假定沿着光学路径【也就是视角方向】液体的密度是恒定的，这样光学深度就不需要积分【常数在a~b的积分就是a-b的长度*常数】，可以参考AMD这篇<a target="_blank" rel="noopener" href="http://renderwonk.com/publications/s2003-course/preetham/notes-preetham.pdf">C (renderwonk.com)</a> 大气透视部分【实际上Unity雾效就是exp(-x)，来源就是地面的大气透视】</p>
-<p>但是如果用这种比较基于物理的做法，会比较依赖<strong>深度图</strong>，我们需要获得这段光学深度需要管线开启深度图，然后为了获得视线在液体内走过的距离，我们还需要液体开额外一个pass去Cull front写入深度，然后在另一个Pass里去算深度差。</p>
+<p>同样，和<strong>大气透视</strong>的方案一样，我们可以假定沿着光学路径【也就是视角方向】液体的密度是恒定的，这样光学深度就不需要积分【常数在a~b的积分就是a-b的长度*常数】，可以参考AMD这篇<a target="_blank" rel="noopener" href="http://renderwonk.com/publications/s2003-course/preetham/notes-preetham.pdf">C
+(renderwonk.com)</a>
+大气透视部分【实际上Unity雾效就是exp(-x)，来源就是地面的大气透视】</p>
+<p>但是如果用这种比较基于物理的做法，会比较依赖<strong>深度图</strong>，我们需要获得这段光学深度需要管线开启深度图，然后为了获得视线在液体内走过的距离，我们还需要液体开额外一个pass去Cull
+front写入深度，然后在另一个Pass里去算深度差。</p>
 <blockquote>
-<img src="/Bottle-Shading/Depth.jpg" alt="Depth" style="zoom: 50%;">
-
-<p>透射的颜色可以参考HDRP Lit的做法，用迪士尼的那套颜色透射方案，是一个Log函数</p>
+<p><img src="/Bottle-Shading/Depth.jpg" alt="Depth" style="zoom: 50%;"></p>
+<p>透射的颜色可以参考HDRP
+Lit的做法，用迪士尼的那套颜色透射方案，是一个Log函数</p>
 </blockquote>
 <p>但是考虑到性能，有些固定视角的项目可能在中低配置会关闭深度图，或者说是不允许深度图常驻，只在某些情况获取。所以透射的这种方案被舍弃了。</p>
 <p>当然我自己一开始用这个方案做过一个测试，效果还行，但是一般项目很少会常驻深度图所以基本没什么必要。</p>
 <p>然后是液体<strong>散射</strong>，这类渲染有和大气散射或者云的散射不一样，大气散射和云的散射主要来源是太阳的平行光，而玻璃瓶的散射主要来源是周围的环境光，本身尺寸都太小，基本可以忽略太阳光的散射【如果确实想要可以简单用光照的反向以及偏移去实现，液体这种级别的没必要真的去做步进，而且步进也得要深度图获得光学深度，并且真的去做步进这点光学深度累加出来的亮度基本和没有差不多】</p>
-<h2 id="第二部分：关于matcap是否使用"><a href="#第二部分：关于matcap是否使用" class="headerlink" title="第二部分：关于matcap是否使用"></a>第二部分：关于matcap是否使用</h2><p>事实上网上是有matcap瓶子方案，但是matcap事实上无法去做折射，其实更加像是对于环境光+直接光的近似，但是灵活性是不够的，可以考虑分两个瓶子shader，matcap的瓶子shader作为对效果要求不高的代替品。因为matcap如果仅作为高光引入，会和我最后的方案有冲突【我的最终方案是反射探针，反正都需要采样一张环境图，就没必要再采样matcap了】</p>
-<h2 id="第三部分：关于如何一个pass内画液面液体和玻璃"><a href="#第三部分：关于如何一个pass内画液面液体和玻璃" class="headerlink" title="第三部分：关于如何一个pass内画液面液体和玻璃"></a>第三部分：关于如何一个pass内画液面液体和玻璃</h2><p>这里我给出我的方案。</p>
+<h2 id="第二部分关于matcap是否使用">第二部分：关于matcap是否使用</h2>
+<p>事实上网上是有matcap瓶子方案，但是matcap事实上无法去做折射，其实更加像是对于环境光+直接光的近似，但是灵活性是不够的，可以考虑分两个瓶子shader，matcap的瓶子shader作为对效果要求不高的代替品。因为matcap如果仅作为高光引入，会和我最后的方案有冲突【我的最终方案是反射探针，反正都需要采样一张环境图，就没必要再采样matcap了】</p>
+<h2 id="第三部分关于如何一个pass内画液面液体和玻璃">第三部分：关于如何一个pass内画液面液体和玻璃</h2>
+<p>这里我给出我的方案。</p>
 <p>事实上Twitter上之前讨论alyx的水的时候，Gil给了一个双Pass的方案，水单独一个pass，通过压平液面处理。</p>
 <p>我的处理和他有异曲同工之妙，只不过是我需要在一个Pass内画需要获得对应的Mask，或者说是标记，来确定哪些是液体，哪些是液面：</p>
-<p>在shader里把物体空间顶点传入片元，我们用这套保存的顶点在片元计算压平后的结果【<em><strong>Q：为什么不在顶点着色器做节省性能？ A：会导致顶点的自动插值导致结果过于柔和，而且大部分手游模型的面不高的情况下，太不可控了</strong></em>】</p>
+<p>在shader里把物体空间顶点传入片元，我们用这套保存的顶点在片元计算压平后的结果【<strong><em>Q：为什么不在顶点着色器做节省性能？
+A：会导致顶点的自动插值导致结果过于柔和，而且大部分手游模型的面不高的情况下，太不可控了</em></strong>】</p>
 <p>思路差不多是拿到世界空间矩阵M，去掉第1到第3行的第四个位置偏移。获得相对世界空间矩阵【就是不考虑位置偏移的世界空间】，把顶点转移到相对世界空间，把高度低于选定高度的压平到选定高度。和Gil不一样的地方在于Gil的方案是在一个Pass里真的顶点做了偏移压平，而我们做的仅仅是把低于这个位置的的顶点的对应的屏幕像素给一个1的值，其他部分都是0，做出一个液面高度的mask。当然液面的高度也可以用百分比的形式，但是这样得需要一个长方体包围盒，需要写一个包围盒的Gizmos来方便美术确定包围盒的长宽高，图方便就还是按照美术给定的高度做吧</p>
 <blockquote>
-<img src="/Bottle-Shading/mask.jpg" alt="mask" style="zoom:50%;">
+<p><img src="/Bottle-Shading/mask.jpg" alt="mask" style="zoom:50%;"></p>
 </blockquote>
-<p><em><strong>那么液面的范围如何处理呢？</strong></em></p>
+<p><strong><em>那么液面的范围如何处理呢？</em></strong></p>
 <p>最简单的方法是假定这个瓶子是圆柱状的</p>
 <p>我们很方便可以通过视角方向和液面的平面方程来确定交点，也就是所谓的射线平面求交，网上找个代码抄就完了</p>
-<img src="/Bottle-Shading/RP.png" alt="RP" style="zoom: 90%;">
-
+<p><img src="/Bottle-Shading/RP.png" alt="RP" style="zoom: 90%;"></p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">inline float3 RayPlaneIntersect( float3 rayOrigin,  float3 rayDirection,  float3 planeOrigin,  float3 planeNormal)</span><br><span class="line">        &#123;</span><br><span class="line">            float dist = dot(planeNormal, planeOrigin - rayOrigin) / dot(planeNormal, rayDirection);</span><br><span class="line">            return rayOrigin + rayDirection * dist;</span><br><span class="line">        &#125;</span><br></pre></td></tr></table></figure>
-
 <p>我们只需要计算液面中心位置和交点的距离，就能利用这个假定来确定液面的Mask范围、软硬分布【为什么需要软硬？因为液面和瓶子的接触位置会由于存在斥力并不会是一个非常硬的切边，事实上还是非常软的，我们需要这个软硬来做法线的插值】</p>
 <blockquote>
-<img src="/Bottle-Shading/mask2.jpg" alt="mask2" style="zoom:50%;">
-
+<p><img src="/Bottle-Shading/mask2.jpg" alt="mask2" style="zoom:50%;"></p>
 <p>当然，我们还需要处理从下往上看的情况，从下网上看是不需要这个Mask的，这里通过摄像机是否在液面上来判断</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">half sign_face=step(0,_WorldSpaceCameraPos.y-(intersectPos.y+UNITY_MATRIX_M._m13));</span><br></pre></td></tr></table></figure>
-
 <p>注意在算mask的时候，记得考虑空间的转换</p>
 <p>如果我们的玻璃杯想要正确的液面范围Mask，而不是简单的圆形近似呢？很显然也是可以做到的，需要深度图，但是我考虑到性能就没用，思路如下</p>
-<img src="/Bottle-Shading/mask3.jpg" alt="mask3" style="zoom:50%;">
+<p><img src="/Bottle-Shading/mask3.jpg" alt="mask3" style="zoom:50%;"></p>
 </blockquote>
-<h2 id="第四部分：如何纯trick的处理最后的渲染"><a href="#第四部分：如何纯trick的处理最后的渲染" class="headerlink" title="第四部分：如何纯trick的处理最后的渲染"></a>第四部分：如何纯trick的处理最后的渲染</h2><p>既然为了性能放弃了深度图和屏幕拷贝，我们自然而然需要把目标放在Cubemap上，显然我们可以利用反射探针去处理环境反射以及折射。</p>
-<p>第一层是玻璃的直接光反射，想效果好的可以走PBR，我选择是简单的计算高光，以及环境光反射采样的speccube0【Unity中 环境探针的结果存储在speccube0中】，虽然我没走PBR，但是还是得稍微和PBR靠一下，我提供了F0和Fresnel来去模拟表面的环境光反射的范围</p>
+<h2 id="第四部分如何纯trick的处理最后的渲染">第四部分：如何纯trick的处理最后的渲染</h2>
+<p>既然为了性能放弃了深度图和屏幕拷贝，我们自然而然需要把目标放在Cubemap上，显然我们可以利用反射探针去处理环境反射以及折射。</p>
+<p>第一层是玻璃的直接光反射，想效果好的可以走PBR，我选择是简单的计算高光，以及环境光反射采样的speccube0【Unity中
+环境探针的结果存储在speccube0中】，虽然我没走PBR，但是还是得稍微和PBR靠一下，我提供了F0和Fresnel来去模拟表面的环境光反射的范围</p>
 <p>第二层是折射，玻璃和液体可以共用一套折射，只不过是折射用的法线通过mask做了区分，再处理一下就能得到折射效果了，而玻璃是否粗糙会决定了折射的模糊程度，事实上就是一个简单的LOD采样CubeMap，当然我们需要让他本身LOD基本偏高一些来获得更多的模糊去模拟散射现象，或者干脆做两层，一层是低LOD采样，一层是高LOD采样mipmap模拟散射行为。</p>
-<p>我对于液体的渲染的理解就是，折射本身是一种光照路径被扭曲后的结果，而散射是环境光对于视线上各个位置都有自己的贡献，所以我认为可以本身把他们放在采样一个Cubemap里，只不过mipmap level需要给高一些来模拟散射。</p>
+<p>我对于液体的渲染的理解就是，折射本身是一种光照路径被扭曲后的结果，而散射是环境光对于视线上各个位置都有自己的贡献，所以我认为可以本身把他们放在采样一个Cubemap里，只不过mipmap
+level需要给高一些来模拟散射。</p>
 <p>而玻璃的环境反射你甚至可以matcap做，环境探针的话更加贴合场景。</p>
 <p>最后你只需要围绕这些内容去做自己的组织，就能做出一个看起来还凑合的单Pass玻璃+液体了，只不过可能mask会让代码写起来比较绕。</p>
 <p>一些细节这里就不提了，只提提思路。</p>
@@ -656,7 +670,7 @@ top:50vh;
         <div class="toc-catalog">
             <span class="iconfont-archer catalog-icon">&#xe613;</span><span>CATALOG</span>
         </div>
-        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%B8%B2%E6%9F%93%E6%80%9D%E8%B7%AF"><span class="toc-number">2.</span> <span class="toc-text">渲染思路</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E9%83%A8%E5%88%86%EF%BC%9A%E4%B8%80%E4%BA%9B%E5%88%9D%E6%9C%9F%E8%80%83%E8%99%91%E7%9A%84%E5%86%85%E5%AE%B9%EF%BC%8C%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%80%E4%BA%9B%E6%96%B9%E6%A1%88%E6%98%AF%E4%B8%8D%E5%90%88%E9%80%82%E7%9A%84"><span class="toc-number">2.1.</span> <span class="toc-text">第一部分：一些初期考虑的内容，为什么一些方案是不合适的</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%BA%8C%E9%83%A8%E5%88%86%EF%BC%9A%E5%85%B3%E4%BA%8Ematcap%E6%98%AF%E5%90%A6%E4%BD%BF%E7%94%A8"><span class="toc-number">2.2.</span> <span class="toc-text">第二部分：关于matcap是否使用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%B8%89%E9%83%A8%E5%88%86%EF%BC%9A%E5%85%B3%E4%BA%8E%E5%A6%82%E4%BD%95%E4%B8%80%E4%B8%AApass%E5%86%85%E7%94%BB%E6%B6%B2%E9%9D%A2%E6%B6%B2%E4%BD%93%E5%92%8C%E7%8E%BB%E7%92%83"><span class="toc-number">2.3.</span> <span class="toc-text">第三部分：关于如何一个pass内画液面液体和玻璃</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E5%9B%9B%E9%83%A8%E5%88%86%EF%BC%9A%E5%A6%82%E4%BD%95%E7%BA%AFtrick%E7%9A%84%E5%A4%84%E7%90%86%E6%9C%80%E5%90%8E%E7%9A%84%E6%B8%B2%E6%9F%93"><span class="toc-number">2.4.</span> <span class="toc-text">第四部分：如何纯trick的处理最后的渲染</span></a></li></ol></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%B8%B2%E6%9F%93%E6%80%9D%E8%B7%AF"><span class="toc-number">2.</span> <span class="toc-text">渲染思路</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E9%83%A8%E5%88%86%E4%B8%80%E4%BA%9B%E5%88%9D%E6%9C%9F%E8%80%83%E8%99%91%E7%9A%84%E5%86%85%E5%AE%B9%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%80%E4%BA%9B%E6%96%B9%E6%A1%88%E6%98%AF%E4%B8%8D%E5%90%88%E9%80%82%E7%9A%84"><span class="toc-number">2.1.</span> <span class="toc-text">第一部分：一些初期考虑的内容，为什么一些方案是不合适的</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%BA%8C%E9%83%A8%E5%88%86%E5%85%B3%E4%BA%8Ematcap%E6%98%AF%E5%90%A6%E4%BD%BF%E7%94%A8"><span class="toc-number">2.2.</span> <span class="toc-text">第二部分：关于matcap是否使用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%B8%89%E9%83%A8%E5%88%86%E5%85%B3%E4%BA%8E%E5%A6%82%E4%BD%95%E4%B8%80%E4%B8%AApass%E5%86%85%E7%94%BB%E6%B6%B2%E9%9D%A2%E6%B6%B2%E4%BD%93%E5%92%8C%E7%8E%BB%E7%92%83"><span class="toc-number">2.3.</span> <span class="toc-text">第三部分：关于如何一个pass内画液面液体和玻璃</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E5%9B%9B%E9%83%A8%E5%88%86%E5%A6%82%E4%BD%95%E7%BA%AFtrick%E7%9A%84%E5%A4%84%E7%90%86%E6%9C%80%E5%90%8E%E7%9A%84%E6%B8%B2%E6%9F%93"><span class="toc-number">2.4.</span> <span class="toc-text">第四部分：如何纯trick的处理最后的渲染</span></a></li></ol></li></ol>
     </div>
     
     <div class="back-top iconfont-archer">&#xe639;</div>

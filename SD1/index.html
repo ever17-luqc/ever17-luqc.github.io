@@ -20,12 +20,12 @@
     <meta name="keywords" content="hexo,hexo-theme,hexo-blog">
     
     <meta name="description" content="">
-    <meta name="description" content="前言最近看了些SD大佬的教程，打算开一个 SD系列的文章记录一下学到的操作，当然，SD学起来难度不算高，TA的经验其实对于SD还是非常有用的，或者说SD非常适合TA同学去学习。个人对SD相当感兴趣，后续学习SD会继续记录这些内容权当笔记了。 阶梯状高度Shape节点出形状Curve节点做曲率变化，做出剧烈变化的高度   平滑边界线Histogram scan获得的纹理通常可能存在本身因素导致的边缘">
+    <meta name="description" content="前言 最近看了些SD大佬的教程，打算开一个 SD系列的文章记录一下学到的操作，当然，SD学起来难度不算高，TA的经验其实对于SD还是非常有用的，或者说SD非常适合TA同学去学习。个人对SD相当感兴趣，后续学习SD会继续记录这些内容权当笔记了。 阶梯状高度 Shape节点出形状Curve节点做曲率变化，做出剧烈变化的高度  平滑边界线 Histogram scan获得的纹理通常可能存">
 <meta property="og:type" content="article">
 <meta property="og:title" content="【Substance Designer】入门级SD技巧-1">
 <meta property="og:url" content="https://ever17-luqc.github.io/SD1/index.html">
 <meta property="og:site_name" content="ever17Blog">
-<meta property="og:description" content="前言最近看了些SD大佬的教程，打算开一个 SD系列的文章记录一下学到的操作，当然，SD学起来难度不算高，TA的经验其实对于SD还是非常有用的，或者说SD非常适合TA同学去学习。个人对SD相当感兴趣，后续学习SD会继续记录这些内容权当笔记了。 阶梯状高度Shape节点出形状Curve节点做曲率变化，做出剧烈变化的高度   平滑边界线Histogram scan获得的纹理通常可能存在本身因素导致的边缘">
+<meta property="og:description" content="前言 最近看了些SD大佬的教程，打算开一个 SD系列的文章记录一下学到的操作，当然，SD学起来难度不算高，TA的经验其实对于SD还是非常有用的，或者说SD非常适合TA同学去学习。个人对SD相当感兴趣，后续学习SD会继续记录这些内容权当笔记了。 阶梯状高度 Shape节点出形状Curve节点做曲率变化，做出剧烈变化的高度  平滑边界线 Histogram scan获得的纹理通常可能存">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://ever17-luqc.github.io/SD1/1.png">
 <meta property="og:image" content="https://ever17-luqc.github.io/SD1/2.png">
@@ -435,41 +435,49 @@ height:50vh;
         <div class="container container-unloaded">
             <main class="main post-page">
     <article class="article-entry">
-        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>最近看了些SD大佬的教程，打算开一个 SD系列的文章记录一下学到的操作，当然，SD学起来难度不算高，TA的经验其实对于SD还是非常有用的，或者说SD非常适合TA同学去学习。个人对SD相当感兴趣，后续学习SD会继续记录这些内容权当笔记了。</p>
-<h2 id="阶梯状高度"><a href="#阶梯状高度" class="headerlink" title="阶梯状高度"></a>阶梯状高度</h2><p>Shape节点出形状Curve节点做曲率变化，做出剧烈变化的高度</p>
-<img src="/SD1/1.png" alt="1" style="zoom:80%;">
-
-<h2 id="平滑边界线"><a href="#平滑边界线" class="headerlink" title="平滑边界线"></a>平滑边界线</h2><p>Histogram scan获得的纹理通常可能存在本身因素导致的边缘硬，如果需要软过度的包边，可以使用边缘检测获得再blend到Histogram scan后的纹理中</p>
-<img src="/SD1/2.png" alt="2" style="zoom:80%;">
-
-<h2 id="边缘检测处理"><a href="#边缘检测处理" class="headerlink" title="边缘检测处理"></a>边缘检测处理</h2><img src="/SD1/3.png" alt="3" style="zoom:80%;">
-
-<p>如图如果本身纹理就是这种情况，会导致边缘检测描边出问题，解决的做法为通过histogram range或者level把颜色对比拉开，因为边缘检测计算的是灰度梯度，如果颜色不拉开就会出现问题。</p>
-<img src="/SD1/4.png" alt="4" style="zoom:80%;">
-
-<h2 id="渐变灰度的边缘检测"><a href="#渐变灰度的边缘检测" class="headerlink" title="渐变灰度的边缘检测"></a>渐变灰度的边缘检测</h2><img src="/SD1/5.png" alt="5" style="zoom:80%;">
-
-<p>通过QuantizeGrayscale灰度分层拉出明显边缘，进行边缘检测，再搭配bevel和slope blur制造裂纹等等效果</p>
-<h2 id="Directional-wrap"><a href="#Directional-wrap" class="headerlink" title="Directional wrap"></a>Directional wrap</h2><img src="/SD1/6.png" alt="6" style="zoom:80%;">
-
-<p>通过高度图输入，使用Directional warp 扰动细节纹理，使得细节纹理的随着高度起伏偏移。对应木纹、面包、风化岩石等等</p>
-<h2 id="高度图上色做法"><a href="#高度图上色做法" class="headerlink" title="高度图上色做法"></a>高度图上色做法</h2><img src="/SD1/7.png" alt="7" style="zoom:80%;">
-
+        <h1 id="前言">前言</h1>
+<p>最近看了些SD大佬的教程，打算开一个
+SD系列的文章记录一下学到的操作，当然，SD学起来难度不算高，TA的经验其实对于SD还是非常有用的，或者说SD非常适合TA同学去学习。个人对SD相当感兴趣，后续学习SD会继续记录这些内容权当笔记了。</p>
+<h2 id="阶梯状高度">阶梯状高度</h2>
+<p>Shape节点出形状Curve节点做曲率变化，做出剧烈变化的高度</p>
+<p><img src="/SD1/1.png" alt="1" style="zoom:80%;"></p>
+<h2 id="平滑边界线">平滑边界线</h2>
+<p>Histogram
+scan获得的纹理通常可能存在本身因素导致的边缘硬，如果需要软过度的包边，可以使用边缘检测获得再blend到Histogram
+scan后的纹理中</p>
+<p><img src="/SD1/2.png" alt="2" style="zoom:80%;"></p>
+<h2 id="边缘检测处理">边缘检测处理</h2>
+<p><img src="/SD1/3.png" alt="3" style="zoom:80%;"></p>
+<p>如图如果本身纹理就是这种情况，会导致边缘检测描边出问题，解决的做法为通过histogram
+range或者level把颜色对比拉开，因为边缘检测计算的是灰度梯度，如果颜色不拉开就会出现问题。</p>
+<p><img src="/SD1/4.png" alt="4" style="zoom:80%;"></p>
+<h2 id="渐变灰度的边缘检测">渐变灰度的边缘检测</h2>
+<p><img src="/SD1/5.png" alt="5" style="zoom:80%;"></p>
+<p>通过QuantizeGrayscale灰度分层拉出明显边缘，进行边缘检测，再搭配bevel和slope
+blur制造裂纹等等效果</p>
+<h2 id="directional-wrap">Directional wrap</h2>
+<p><img src="/SD1/6.png" alt="6" style="zoom:80%;"></p>
+<p>通过高度图输入，使用Directional warp
+扰动细节纹理，使得细节纹理的随着高度起伏偏移。对应木纹、面包、风化岩石等等</p>
+<h2 id="高度图上色做法">高度图上色做法</h2>
+<p><img src="/SD1/7.png" alt="7" style="zoom:80%;"></p>
 <p>高度图转发现算出曲率，使用手段弱化平滑后gradientmap上色</p>
-<h2 id="Non-Uniformed-blur"><a href="#Non-Uniformed-blur" class="headerlink" title="Non-Uniformed blur"></a>Non-Uniformed blur</h2><img src="/SD1/8.png" alt="8" style="zoom:80%;">
-
-<p>通过源物体shape作为blur map控制blur范围，修改角度获得硬边扩散blur效果，适合硬表面</p>
-<h2 id="废弃湿地板做法"><a href="#废弃湿地板做法" class="headerlink" title="废弃湿地板做法"></a>废弃湿地板做法</h2><img src="/SD1/9.png" alt="9" style="zoom:80%;">
-
-<p>通过Directional Wrap可以使得Histogram scan获得的纹理更加贴合地板缝，在某些破碎点能获得贴合地板缝的裂口</p>
-<h2 id="地板起伏"><a href="#地板起伏" class="headerlink" title="地板起伏"></a>地板起伏</h2><p>通过floodfill+floodfill to gradient获得不同块的不同灰度渐变，得到起伏的高度</p>
-<img src="/SD1/10.png" alt="10" style="zoom:80%;">
-
-<h2 id="地面裂石"><a href="#地面裂石" class="headerlink" title="地面裂石"></a>地面裂石</h2><img src="/SD1/11.png" alt="11" style="zoom:67%;">
-
+<h2 id="non-uniformed-blur">Non-Uniformed blur</h2>
+<p><img src="/SD1/8.png" alt="8" style="zoom:80%;"></p>
+<p>通过源物体shape作为blur
+map控制blur范围，修改角度获得硬边扩散blur效果，适合硬表面</p>
+<h2 id="废弃湿地板做法">废弃湿地板做法</h2>
+<p><img src="/SD1/9.png" alt="9" style="zoom:80%;"></p>
+<p>通过Directional Wrap可以使得Histogram
+scan获得的纹理更加贴合地板缝，在某些破碎点能获得贴合地板缝的裂口</p>
+<h2 id="地板起伏">地板起伏</h2>
+<p>通过floodfill+floodfill to
+gradient获得不同块的不同灰度渐变，得到起伏的高度</p>
+<p><img src="/SD1/10.png" alt="10" style="zoom:80%;"></p>
+<h2 id="地面裂石">地面裂石</h2>
+<p><img src="/SD1/11.png" alt="11" style="zoom:67%;"></p>
 <p>不同方向的floodfilltograyscale打磨对应块面的形状，Bbox获得对应块面的占的面积大小，autolevel拉开对比度，制造不同大小石块的高度区分</p>
-<img src="/SD1/12.png" alt="12" style="zoom: 67%;">
-
+<p><img src="/SD1/12.png" alt="12" style="zoom: 67%;"></p>
 <p>如果是更加风格化或者有硬边的，可以用gradientmap给他做硬边的灰度映射，或者level也行</p>
 
     </article>
@@ -623,7 +631,7 @@ top:50vh;
         <div class="toc-catalog">
             <span class="iconfont-archer catalog-icon">&#xe613;</span><span>CATALOG</span>
         </div>
-        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%98%B6%E6%A2%AF%E7%8A%B6%E9%AB%98%E5%BA%A6"><span class="toc-number">1.1.</span> <span class="toc-text">阶梯状高度</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B9%B3%E6%BB%91%E8%BE%B9%E7%95%8C%E7%BA%BF"><span class="toc-number">1.2.</span> <span class="toc-text">平滑边界线</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BE%B9%E7%BC%98%E6%A3%80%E6%B5%8B%E5%A4%84%E7%90%86"><span class="toc-number">1.3.</span> <span class="toc-text">边缘检测处理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B8%90%E5%8F%98%E7%81%B0%E5%BA%A6%E7%9A%84%E8%BE%B9%E7%BC%98%E6%A3%80%E6%B5%8B"><span class="toc-number">1.4.</span> <span class="toc-text">渐变灰度的边缘检测</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Directional-wrap"><span class="toc-number">1.5.</span> <span class="toc-text">Directional wrap</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%AB%98%E5%BA%A6%E5%9B%BE%E4%B8%8A%E8%89%B2%E5%81%9A%E6%B3%95"><span class="toc-number">1.6.</span> <span class="toc-text">高度图上色做法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Non-Uniformed-blur"><span class="toc-number">1.7.</span> <span class="toc-text">Non-Uniformed blur</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BA%9F%E5%BC%83%E6%B9%BF%E5%9C%B0%E6%9D%BF%E5%81%9A%E6%B3%95"><span class="toc-number">1.8.</span> <span class="toc-text">废弃湿地板做法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9C%B0%E6%9D%BF%E8%B5%B7%E4%BC%8F"><span class="toc-number">1.9.</span> <span class="toc-text">地板起伏</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9C%B0%E9%9D%A2%E8%A3%82%E7%9F%B3"><span class="toc-number">1.10.</span> <span class="toc-text">地面裂石</span></a></li></ol></li></ol>
+        <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.</span> <span class="toc-text">前言</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%98%B6%E6%A2%AF%E7%8A%B6%E9%AB%98%E5%BA%A6"><span class="toc-number">1.1.</span> <span class="toc-text">阶梯状高度</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B9%B3%E6%BB%91%E8%BE%B9%E7%95%8C%E7%BA%BF"><span class="toc-number">1.2.</span> <span class="toc-text">平滑边界线</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BE%B9%E7%BC%98%E6%A3%80%E6%B5%8B%E5%A4%84%E7%90%86"><span class="toc-number">1.3.</span> <span class="toc-text">边缘检测处理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B8%90%E5%8F%98%E7%81%B0%E5%BA%A6%E7%9A%84%E8%BE%B9%E7%BC%98%E6%A3%80%E6%B5%8B"><span class="toc-number">1.4.</span> <span class="toc-text">渐变灰度的边缘检测</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#directional-wrap"><span class="toc-number">1.5.</span> <span class="toc-text">Directional wrap</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%AB%98%E5%BA%A6%E5%9B%BE%E4%B8%8A%E8%89%B2%E5%81%9A%E6%B3%95"><span class="toc-number">1.6.</span> <span class="toc-text">高度图上色做法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#non-uniformed-blur"><span class="toc-number">1.7.</span> <span class="toc-text">Non-Uniformed blur</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BA%9F%E5%BC%83%E6%B9%BF%E5%9C%B0%E6%9D%BF%E5%81%9A%E6%B3%95"><span class="toc-number">1.8.</span> <span class="toc-text">废弃湿地板做法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9C%B0%E6%9D%BF%E8%B5%B7%E4%BC%8F"><span class="toc-number">1.9.</span> <span class="toc-text">地板起伏</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9C%B0%E9%9D%A2%E8%A3%82%E7%9F%B3"><span class="toc-number">1.10.</span> <span class="toc-text">地面裂石</span></a></li></ol></li></ol>
     </div>
     
     <div class="back-top iconfont-archer">&#xe639;</div>
