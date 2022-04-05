@@ -37,6 +37,7 @@
 <meta property="og:image" content="https://ever17-luqc.github.io/Atmosphere/7.png">
 <meta property="og:image" content="https://ever17-luqc.github.io/Atmosphere/equation.svg">
 <meta property="og:image" content="https://ever17-luqc.github.io/Atmosphere/9.png">
+<meta property="og:image" content="https://ever17-luqc.github.io/Atmosphere/10.png">
 <meta property="article:published_time" content="2021-10-03T06:51:20.000Z">
 <meta property="article:modified_time" content="2021-10-06T14:35:23.467Z">
 <meta property="article:author" content="luqc">
@@ -228,7 +229,11 @@
     
     <!-- 谷歌统计  -->
     
-<meta name="generator" content="Hexo 5.4.0"></head>
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 5.4.0"></head>
 
     
         <body class="post-body">
@@ -440,7 +445,7 @@ height:50vh;
 
 <p><a href="%E5%A4%AA%E9%98%B3%E5%85%89%E7%BB%8F%E8%BF%87%E7%9C%9F%E7%A9%BA%EF%BC%8C%E5%B0%84%E5%85%A5%E5%A4%A7%E6%B0%94%E5%B1%82%E5%BC%80%E5%A7%8B%E8%A1%B0%E5%87%8F%EF%BC%88%E8%BF%99%E9%87%8C%E6%95%A3%E5%B0%84%E5%88%B0%E5%88%AB%E7%9A%84%E6%96%B9%E5%90%91%E7%9A%84%E5%85%89%E5%9C%A8%E5%8D%95%E6%AC%A1%E6%95%A3%E5%B0%84%E6%A8%A1%E5%9E%8B%E7%94%B1%E4%BA%8E%E5%AF%B9%E6%9C%80%E5%90%8E%E7%BB%93%E6%9E%9C%E6%B2%A1%E8%B4%A1%E7%8C%AE%E4%B8%8D%E8%80%83%E8%99%91%E5%9C%A8%E5%86%85%EF%BC%89%E6%B2%BF%E7%9D%80%E5%8E%9F%E6%9D%A5%E7%9A%84%E5%85%89%E8%B7%AF%E7%BB%A7%E7%BB%AD%E5%88%B0P%E7%94%B1%E4%BA%8E%E6%95%A3%E5%B0%84%E6%94%B9%E5%8F%98%E6%96%B9%E5%90%91%E8%BF%9B%E5%85%A5%E4%BA%BA%E7%9C%BC">^</a>: 图源 荒野大镖客2的大气散射效果</p>
 <p>前一阵子出于某些原因看了alan那篇很知名的大气散射的文章翻译，自己又找了点文章看了看，有所收获</p>
-<h1 id="大气散射理论相关"><a href="#大气散射理论相关" class="headerlink" title="大气散射理论相关"></a>大气散射理论相关</h1><p>首先由于光这种东西非常特殊，具有波粒二象性，可以认为是粒子也可以认为是电磁波。在大气中（真空中不会发生散射），电磁波由于和大气分子或者气溶胶发生相互作用【<em><strong>这里和大气分子由于本身非常微观，对于尺度小于光的波长1/10的粒子，如大气分子等，会发生瑞利散射所以这种情况下一般用瑞利散射模型去表示，气溶胶相对大气分子来说比较大，尺度与波长相当会发生米氏散射，也就是说米氏散射和瑞利散射是共存的而不是对于一种模型不同的描述</strong></em>】</p>
+<h1 id="大气散射理论相关"><a href="#大气散射理论相关" class="headerlink" title="大气散射理论相关"></a>大气散射理论相关</h1><p>首先由于光这种东西非常特殊，具有波粒二象性，可以认为是粒子也可以认为是电磁波。在大气中（真空中不会发生散射），电磁波由于和大气分子或者气溶胶发生相互作用【<em><strong>这里和大气分子由于本身非常微观，对于尺度小于光的波长1&#x2F;10的粒子，如大气分子等，会发生瑞利散射所以这种情况下一般用瑞利散射模型去表示，气溶胶相对大气分子来说比较大，尺度与波长相当会发生米氏散射，也就是说米氏散射和瑞利散射是共存的而不是对于一种模型不同的描述</strong></em>】</p>
 <p>而正是因为大气和光会发生这种交互，导致大气的渲染非常困难，实时渲染中我们通常使用单次渲染模型去描述大气散射【单次渲染模型：不考虑其他方向的光的散射造成的影响，只考虑对应的光的方向的散射，[也就是冯乐乐那篇文章说的]([<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/36498679">Rendering] 基于物理的大气渲染 - 知乎 (zhihu.com)</a>)：“光线从太阳发出过、只经过一次散射被改变方向后射入我们的眼睛。”，因为一个点当前的光可能是多个方向散射过来的光的和】</p>
 <img src="/Atmosphere/2.png" alt="2" style="zoom: 80%;">
 
@@ -454,8 +459,8 @@ height:50vh;
 
 <p>T表示的是在该路径上光的衰减比例，也就是透射率，引用冯乐乐的文章“该公式也可以被认为是<strong>零级散射（zero scattering）</strong>，即不考虑任何散射事件、直接考虑经过衰减后光强。“</p>
 <p>这段CP线段在alan的文章中被称为是出射散射部分。</p>
-<h2 id="聚焦CP出射散射部分"><a href="#聚焦CP出射散射部分" class="headerlink" title="聚焦CP出射散射部分"></a>聚焦CP出射散射部分</h2><p>假设光线***I<sub>0</sub><em><strong>与大气中的粒子发生碰撞之后能量为</strong></em>I<sub>1</sub>**<em>，衰减比例为β，那么I<sub>1</sub>=（1-β）</em>I<sub>0</sub></p>
-<p>如果这段距离x内的介质是均匀的，剩余的能量I=I<sub>0</sub><em>（-β</em> *x）  【可以参考 alan的推导】</p>
+<h2 id="聚焦CP出射散射部分"><a href="#聚焦CP出射散射部分" class="headerlink" title="聚焦CP出射散射部分"></a>聚焦CP出射散射部分</h2><p>假设光线***I<sub>0</sub><em><strong>与大气中的粒子发生碰撞之后能量为</strong></em>I<sub>1</sub>**<em>，衰减比例为β，那么I<sub>1</sub>&#x3D;（1-β）</em>I<sub>0</sub></p>
+<p>如果这段距离x内的介质是均匀的，剩余的能量I&#x3D;I<sub>0</sub><em>（-β</em> *x）  【可以参考 alan的推导】</p>
 <p>但是由于不同高度下大气并非均匀，密度随着高度稳步增加，所以这本身是一个积分的过程。则有下面的推导</p>
 <img src="/Atmosphere/8.png" alt="8" style="zoom: 80%;">
 
@@ -485,7 +490,7 @@ height:50vh;
 <h2 id="聚焦PA入射散射部分到最终结果"><a href="#聚焦PA入射散射部分到最终结果" class="headerlink" title="聚焦PA入射散射部分到最终结果"></a>聚焦PA入射散射部分到最终结果</h2><img src="/Atmosphere/9.png" alt="9" style="zoom:67%;">
 
 <p>P仅仅只是路径上的一个点，我们要求出最终结果需要对其进行积分</p>
-
+<img src="/Atmosphere/10.png" class width="10">
 
 <p>这里我们将前面CP部分求出来的P点的能量I<sub>p</sub>代入方程获得最终渲染方程</p>
 <h1 id="小结"><a href="#小结" class="headerlink" title="小结"></a>小结</h1><p>本文到这里差不多告一段落了，这里不会提及相关的相位函数或者散射系数的公式【这并不是非常重要，有现成的公式可以抄】，主体还是对相关A点的能量如何得到做简单的一次概述，最近算是开始做实现了，等到实现效果了会再发一个实现篇。</p>
@@ -830,10 +835,6 @@ top:50vh;
     
     
     
-    
-    
-    
-    
     <div class="total-and-search">
         <div class="total-archive">
         Total : 16
@@ -950,27 +951,27 @@ top:50vh;
     
         <span class="sidebar-tag-name" data-tags="速途"><span class="iconfont-archer">&#xe606;</span>速途</span>
     
+        <span class="sidebar-tag-name" data-tags="Unity"><span class="iconfont-archer">&#xe606;</span>Unity</span>
+    
+        <span class="sidebar-tag-name" data-tags="Urp"><span class="iconfont-archer">&#xe606;</span>Urp</span>
+    
+        <span class="sidebar-tag-name" data-tags="Atmosphere"><span class="iconfont-archer">&#xe606;</span>Atmosphere</span>
+    
+        <span class="sidebar-tag-name" data-tags="Rendering"><span class="iconfont-archer">&#xe606;</span>Rendering</span>
+    
+        <span class="sidebar-tag-name" data-tags="Shader"><span class="iconfont-archer">&#xe606;</span>Shader</span>
+    
+        <span class="sidebar-tag-name" data-tags="trick"><span class="iconfont-archer">&#xe606;</span>trick</span>
+    
+        <span class="sidebar-tag-name" data-tags="ToonShading"><span class="iconfont-archer">&#xe606;</span>ToonShading</span>
+    
         <span class="sidebar-tag-name" data-tags="角色"><span class="iconfont-archer">&#xe606;</span>角色</span>
     
         <span class="sidebar-tag-name" data-tags="Substance Designer"><span class="iconfont-archer">&#xe606;</span>Substance Designer</span>
     
         <span class="sidebar-tag-name" data-tags="Material"><span class="iconfont-archer">&#xe606;</span>Material</span>
     
-        <span class="sidebar-tag-name" data-tags="Unity"><span class="iconfont-archer">&#xe606;</span>Unity</span>
-    
-        <span class="sidebar-tag-name" data-tags="Urp"><span class="iconfont-archer">&#xe606;</span>Urp</span>
-    
-        <span class="sidebar-tag-name" data-tags="Shader"><span class="iconfont-archer">&#xe606;</span>Shader</span>
-    
         <span class="sidebar-tag-name" data-tags="NPR"><span class="iconfont-archer">&#xe606;</span>NPR</span>
-    
-        <span class="sidebar-tag-name" data-tags="ToonShading"><span class="iconfont-archer">&#xe606;</span>ToonShading</span>
-    
-        <span class="sidebar-tag-name" data-tags="Atmosphere"><span class="iconfont-archer">&#xe606;</span>Atmosphere</span>
-    
-        <span class="sidebar-tag-name" data-tags="Rendering"><span class="iconfont-archer">&#xe606;</span>Rendering</span>
-    
-        <span class="sidebar-tag-name" data-tags="trick"><span class="iconfont-archer">&#xe606;</span>trick</span>
     
         <span class="sidebar-tag-name" data-tags="Papper"><span class="iconfont-archer">&#xe606;</span>Papper</span>
     
@@ -1009,9 +1010,9 @@ jsonContent:
     
         <span class="sidebar-category-name" data-categories="原画"><span class="iconfont-archer">&#xe60a;</span>原画</span>
     
-        <span class="sidebar-category-name" data-categories="Substance-Designer"><span class="iconfont-archer">&#xe60a;</span>Substance-Designer</span>
-    
         <span class="sidebar-category-name" data-categories="Unity"><span class="iconfont-archer">&#xe60a;</span>Unity</span>
+    
+        <span class="sidebar-category-name" data-categories="Substance-Designer"><span class="iconfont-archer">&#xe60a;</span>Substance-Designer</span>
     
         <span class="sidebar-category-name" data-categories="Unity/ToonShading"><span class="iconfont-archer">&#xe60a;</span>Unity/ToonShading</span>
     

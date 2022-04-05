@@ -20,12 +20,12 @@
     <meta name="keywords" content="hexo,hexo-theme,hexo-blog">
     
     <meta name="description" content="">
-    <meta name="description" content="前言紧接上一篇文章，简单在URP实现以下屏幕空间平面反射，同样会和上篇一样着重于原理以及基础实现，不会涉及更加深层次的东西比如多平台优化（如果想学习更加深入的，可以移步Colin的ColinLeung-NiloCat&#x2F;UnityURP-MobileScreenSpacePlanarReflection: Reusable RendererFeature of MobileScreenSpacePl">
+    <meta name="description" content="前言紧接上一篇文章，简单在URP实现以下屏幕空间平面反射，同样会和上篇一样着重于原理以及基础实现，不会涉及更加深层次的东西比如多平台优化（如果想学习更加深入的，可以移步Colin的ColinLeung-NiloCat&#x2F;UnityURP-MobileScreenSpacePlanarReflection: Reusable RendererFeature of MobileScreenSp">
 <meta property="og:type" content="article">
 <meta property="og:title" content="【Unity-URP】快速入门屏幕空间平面反射(SSPR)————（1）">
 <meta property="og:url" content="https://ever17-luqc.github.io/SSPR/index.html">
 <meta property="og:site_name" content="ever17Blog">
-<meta property="og:description" content="前言紧接上一篇文章，简单在URP实现以下屏幕空间平面反射，同样会和上篇一样着重于原理以及基础实现，不会涉及更加深层次的东西比如多平台优化（如果想学习更加深入的，可以移步Colin的ColinLeung-NiloCat&#x2F;UnityURP-MobileScreenSpacePlanarReflection: Reusable RendererFeature of MobileScreenSpacePl">
+<meta property="og:description" content="前言紧接上一篇文章，简单在URP实现以下屏幕空间平面反射，同样会和上篇一样着重于原理以及基础实现，不会涉及更加深层次的东西比如多平台优化（如果想学习更加深入的，可以移步Colin的ColinLeung-NiloCat&#x2F;UnityURP-MobileScreenSpacePlanarReflection: Reusable RendererFeature of MobileScreenSp">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://ever17-luqc.github.io/SSPR/SSPIR_NoDistort.jpg">
 <meta property="og:image" content="https://ever17-luqc.github.io/SSPR/SSPIR_WriteUAV-1.png">
@@ -221,7 +221,11 @@
     
     <!-- 谷歌统计  -->
     
-<meta name="generator" content="Hexo 5.4.0"></head>
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 5.4.0"></head>
 
     
         <body class="post-body">
@@ -426,7 +430,7 @@ height:50vh;
         <div class="container container-unloaded">
             <main class="main post-page">
     <article class="article-entry">
-        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>紧接上一篇文章，简单在URP实现以下屏幕空间平面反射，同样会和上篇一样着重于原理以及基础实现，不会涉及更加深层次的东西比如多平台优化（如果想学习更加深入的，可以移步Colin的<a target="_blank" rel="noopener" href="https://github.com/ColinLeung-NiloCat/UnityURP-MobileScreenSpacePlanarReflection">ColinLeung-NiloCat/UnityURP-MobileScreenSpacePlanarReflection: Reusable RendererFeature of MobileScreenSpacePlanarReflection (github.com)</a>   或者<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/150890059">Unity URP 移动平台的屏幕空间平面反射（SSPR）趟坑记 - 知乎 (zhihu.com)</a>），当然，后续如果有空了可能会把这部分学完了作为（2）发布。当然为SSPR会涉及到computeshader，是一个不错的入门computeshader的切入点。</p>
+        <h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>紧接上一篇文章，简单在URP实现以下屏幕空间平面反射，同样会和上篇一样着重于原理以及基础实现，不会涉及更加深层次的东西比如多平台优化（如果想学习更加深入的，可以移步Colin的<a target="_blank" rel="noopener" href="https://github.com/ColinLeung-NiloCat/UnityURP-MobileScreenSpacePlanarReflection">ColinLeung-NiloCat&#x2F;UnityURP-MobileScreenSpacePlanarReflection: Reusable RendererFeature of MobileScreenSpacePlanarReflection (github.com)</a>   或者<a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/150890059">Unity URP 移动平台的屏幕空间平面反射（SSPR）趟坑记 - 知乎 (zhihu.com)</a>），当然，后续如果有空了可能会把这部分学完了作为（2）发布。当然为SSPR会涉及到computeshader，是一个不错的入门computeshader的切入点。</p>
 <h1 id="关于ScreenSpacePlanarReflection-SSPR"><a href="#关于ScreenSpacePlanarReflection-SSPR" class="headerlink" title="关于ScreenSpacePlanarReflection(SSPR)"></a>关于ScreenSpacePlanarReflection(SSPR)</h1><p>没怎么仔细考究到底是哪家先提出的概念，但是最有名的估计还属Ubisoft在ghost-recon-wildlands中使用的SSPR。Ubisoft的图形程序remi-genin在自己的博客也发布了他们的做法（<a target="_blank" rel="noopener" href="http://remi-genin.fr/blog/screen-space-plane-indexed-reflection-in-ghost-recon-wildlands/">Screen Space Planar Reflections in Ghost Recon Wildlands – Rémi Génin (remi-genin.fr)</a>）。相比SSR，SSPR免去了Rymarching的高消耗，性能大幅提升，甚至可以适用于移动端，相比平面反射也不存在drawcall翻倍的情况，当然没有免费的午餐，和SSR一样无法映射屏幕外的物体，而且会由于透视的问题导致gaps的出现需要自己处理拉伸</p>
 <img src="/SSPR/SSPIR_NoDistort.jpg" alt="SSPIR_NoDistort" style="zoom:80%;">
 
@@ -443,7 +447,7 @@ height:50vh;
 <p>computeshader能充分利用GPU的数据处理能力，把大量重复的计算放在GPU端处理（瓶颈在于需要CPU传输数据到GPU）。</p>
 <h2 id="computeshader的名词解释"><a href="#computeshader的名词解释" class="headerlink" title="computeshader的名词解释"></a>computeshader的名词解释</h2><p>（以下摘自 <a target="_blank" rel="noopener" href="https://www.bilibili.com/read/cv6995587">URP管线的自学HLSL之路 第二十九篇 ComputeShader释义 - 哔哩哔哩专栏 (bilibili.com)</a>，可以去原文进一步了解，这里只放我认为比较重要的）</p>
 <p>线程（Thread）：最基础工元。</p>
-<p>线程组（ThreadGroup）：多个线程的组合，一个线程组的线程是按XYZ3个维度进行排布。如[numthreads(4,8,12)]是定义x方向4个线程，y方向8个线程，z方向12个线程的一个线程组。1个线程组的大小（ThreadGroupSize）最大为1024，也就是x<em>y</em>z&lt;=1024。</p>
+<p>线程组（ThreadGroup）：多个线程的组合，一个线程组的线程是按XYZ3个维度进行排布。如[numthreads(4,8,12)]是定义x方向4个线程，y方向8个线程，z方向12个线程的一个线程组。1个线程组的大小（ThreadGroupSize）最大为1024，也就是x<em>y</em>z&lt;&#x3D;1024。</p>
 <p>对于AMD的GPU平台，线程组的大小建议定义成64的倍数（WaveFront构架）。</p>
 <p>对于Nvidia的GPU平台，线程组的大小建议定义成32的倍数（SIMD32(Warp)构架）。</p>
 <p>调度（Dispatch）：多个线程组的组合，一个Dispatch的线程组是按XYZ3个维度进行排布。如Dispatch（KernelID，3，9，12）是定义x方向3个线程组，y方向9个线程组，z方向12个线程组，调用ComputeShader里KernelID的kernel函数的一个调度。</p>
@@ -816,10 +820,6 @@ top:50vh;
     
     
     
-    
-    
-    
-    
     <div class="total-and-search">
         <div class="total-archive">
         Total : 16
@@ -936,27 +936,27 @@ top:50vh;
     
         <span class="sidebar-tag-name" data-tags="速途"><span class="iconfont-archer">&#xe606;</span>速途</span>
     
+        <span class="sidebar-tag-name" data-tags="Unity"><span class="iconfont-archer">&#xe606;</span>Unity</span>
+    
+        <span class="sidebar-tag-name" data-tags="Urp"><span class="iconfont-archer">&#xe606;</span>Urp</span>
+    
+        <span class="sidebar-tag-name" data-tags="Atmosphere"><span class="iconfont-archer">&#xe606;</span>Atmosphere</span>
+    
+        <span class="sidebar-tag-name" data-tags="Rendering"><span class="iconfont-archer">&#xe606;</span>Rendering</span>
+    
+        <span class="sidebar-tag-name" data-tags="Shader"><span class="iconfont-archer">&#xe606;</span>Shader</span>
+    
+        <span class="sidebar-tag-name" data-tags="trick"><span class="iconfont-archer">&#xe606;</span>trick</span>
+    
+        <span class="sidebar-tag-name" data-tags="ToonShading"><span class="iconfont-archer">&#xe606;</span>ToonShading</span>
+    
         <span class="sidebar-tag-name" data-tags="角色"><span class="iconfont-archer">&#xe606;</span>角色</span>
     
         <span class="sidebar-tag-name" data-tags="Substance Designer"><span class="iconfont-archer">&#xe606;</span>Substance Designer</span>
     
         <span class="sidebar-tag-name" data-tags="Material"><span class="iconfont-archer">&#xe606;</span>Material</span>
     
-        <span class="sidebar-tag-name" data-tags="Unity"><span class="iconfont-archer">&#xe606;</span>Unity</span>
-    
-        <span class="sidebar-tag-name" data-tags="Urp"><span class="iconfont-archer">&#xe606;</span>Urp</span>
-    
-        <span class="sidebar-tag-name" data-tags="Shader"><span class="iconfont-archer">&#xe606;</span>Shader</span>
-    
         <span class="sidebar-tag-name" data-tags="NPR"><span class="iconfont-archer">&#xe606;</span>NPR</span>
-    
-        <span class="sidebar-tag-name" data-tags="ToonShading"><span class="iconfont-archer">&#xe606;</span>ToonShading</span>
-    
-        <span class="sidebar-tag-name" data-tags="Atmosphere"><span class="iconfont-archer">&#xe606;</span>Atmosphere</span>
-    
-        <span class="sidebar-tag-name" data-tags="Rendering"><span class="iconfont-archer">&#xe606;</span>Rendering</span>
-    
-        <span class="sidebar-tag-name" data-tags="trick"><span class="iconfont-archer">&#xe606;</span>trick</span>
     
         <span class="sidebar-tag-name" data-tags="Papper"><span class="iconfont-archer">&#xe606;</span>Papper</span>
     
@@ -995,9 +995,9 @@ jsonContent:
     
         <span class="sidebar-category-name" data-categories="原画"><span class="iconfont-archer">&#xe60a;</span>原画</span>
     
-        <span class="sidebar-category-name" data-categories="Substance-Designer"><span class="iconfont-archer">&#xe60a;</span>Substance-Designer</span>
-    
         <span class="sidebar-category-name" data-categories="Unity"><span class="iconfont-archer">&#xe60a;</span>Unity</span>
+    
+        <span class="sidebar-category-name" data-categories="Substance-Designer"><span class="iconfont-archer">&#xe60a;</span>Substance-Designer</span>
     
         <span class="sidebar-category-name" data-categories="Unity/ToonShading"><span class="iconfont-archer">&#xe60a;</span>Unity/ToonShading</span>
     

@@ -56,8 +56,8 @@
 <meta property="article:tag" content="Unity">
 <meta property="article:tag" content="Urp">
 <meta property="article:tag" content="Shader">
-<meta property="article:tag" content="NPR">
 <meta property="article:tag" content="ToonShading">
+<meta property="article:tag" content="NPR">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://ever17-luqc.github.io/ToonShading-1/genshin.jpg">
     <meta http-equiv="Cache-control" content="no-cache">
@@ -242,7 +242,11 @@
     
     <!-- 谷歌统计  -->
     
-<meta name="generator" content="Hexo 5.4.0"></head>
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 5.4.0"></head>
 
     
         <body class="post-body">
@@ -314,9 +318,9 @@ height:50vh;
     
         <a class="post-tag" href="javascript:void(0);" data-tags = "Shader">Shader</a>
     
-        <a class="post-tag" href="javascript:void(0);" data-tags = "NPR">NPR</a>
-    
         <a class="post-tag" href="javascript:void(0);" data-tags = "ToonShading">ToonShading</a>
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags = "NPR">NPR</a>
     
 </div>
                 
@@ -486,9 +490,9 @@ height:50vh;
 <p>​    也就是说卡通渲染和PBR虽然有着明确的边界，但是完全可以做到合理结合（虽然这篇文章将的更多偏向日式卡渲），战双就在高光中引入了PBR的高光项，让部分材质的金属感更加符合现实做到了不错的融合。本文不会涉及PBR的深入部分，因为本文重点是卡渲后续就带一下，后续有时间会开一个PBR的文章。</p>
 <p>​    但是如果纯PBR或者PBR为主的流程 （例如守望先锋），会让制作流程大大缩短，因为PBR的流程相关DCC一站到位，基本没过多需要修改的地方，对于3D美术也会非常的友好，而传统的卡渲只要有自己的定制化，必然需要一段时间的美术团队磨合（上年底毕业的时候公司在做的二刺猿项目当时就因为这点使用了衣服PBR皮肤卡渲的做法来大大削减开发成本和时间，当然也有风格上的因素需要写实一点的衣服，算是一举两得吧）。</p>
 <p>   讲完卡通渲染的理解，讲讲日式的卡渲的特点。如果是学过原画或者了解过相关内容的朋友应该了解，现在原画分成了两个大的种类：平涂和厚涂。平涂在日系二次元里可以理解为赛璐璐，也就是常见的描边+明显的明暗交界+相对于厚涂更加明快的颜色。区别于厚涂，日式卡通颜色选用会偏向于亮、高饱和，过度或者说是明暗交界线会更加硬朗极致点就是后面会说的cellshading，而明暗交界的软硬算是界定半厚涂风格的赛璐璐和纯赛璐璐的区别。</p>
-<p> ==<em><strong>半厚涂风格的赛璐璐：</strong></em>==<img src="/ToonShading-1/nomx-0526.jpg" alt="nomx-0526" style="zoom:80%;"></p>
+<p> &#x3D;&#x3D;<em><strong>半厚涂风格的赛璐璐：</strong></em>&#x3D;&#x3D;<img src="/ToonShading-1/nomx-0526.jpg" alt="nomx-0526" style="zoom:80%;"></p>
 <p>[]: <a target="_blank" rel="noopener" href="https://www.artstation.com/artwork/xJVlrW">https://www.artstation.com/artwork/xJVlrW</a>    “图源我非常喜欢日本的大佬：Nomad.的artstation”</p>
-<p> ==<em><strong>纯赛璐璐：</strong></em>==</p>
+<p> &#x3D;&#x3D;<em><strong>纯赛璐璐：</strong></em>&#x3D;&#x3D;</p>
 <img src="/ToonShading-1/roma-gewska-tree.jpg" alt="roma-gewska-tree" style="zoom: 33%;">
 
 <p>[]: <a target="_blank" rel="noopener" href="https://www.artstation.com/artwork/bKyNXE">https://www.artstation.com/artwork/bKyNXE</a>    “找不到合适的图了，这张画风偏美式一点，凑合看”</p>
@@ -530,13 +534,13 @@ height:50vh;
 
 
 <p>分享一个我自己的rampmap制作小工具</p>
-<p><a target="_blank" rel="noopener" href="https://github.com/ever17-luqc/Unity_ToonRampmapGen/blob/main/ToonRampMapGen.cs">Unity_ToonRampmapGen/ToonRampMapGen.cs at main · ever17-luqc/Unity_ToonRampmapGen (github.com)</a></p>
+<p><a target="_blank" rel="noopener" href="https://github.com/ever17-luqc/Unity_ToonRampmapGen/blob/main/ToonRampMapGen.cs">Unity_ToonRampmapGen&#x2F;ToonRampMapGen.cs at main · ever17-luqc&#x2F;Unity_ToonRampmapGen (github.com)</a></p>
 <p>如果考虑曲率，那其实rampmap就和SSSLut一个原理了！SSSLut其实本身就是一个二维的rampmap，或者说他们本质都是一个Lut。</p>
 <h3 id="起夜级李姐-ilm贴图"><a href="#起夜级李姐-ilm贴图" class="headerlink" title="起夜级李姐-ilm贴图"></a>起夜级李姐-ilm贴图</h3><p>更加官方的内容可以参考2015年GDC上Arc System Works’ RED team的分享“GuiltyGearXrd’s Art Style : The X Factor Between 2D and 3D”<a target="_blank" rel="noopener" href="https://www.youtube.com/watch?v=yhGjCzxJV3E">GuiltyGearXrd’s Art Style : The X Factor Between 2D and 3D - YouTube</a>，干活太多，网上也有太多的分析解读，这里只简单谈谈ilm贴图部分。</p>
 <img src="/ToonShading-1/arc.png" alt="arc" style="zoom:50%;">
 
 <p>他们的基础shading部分依然是沿用了celshading，这点现在大多纯日式渲染都是这个路子。因为如果smoothstep没那味儿，不够二，因为传统的日本动画也好漫画也好一般不会去做阴影过度（节省成本和时间）。</p>
-<p>然后就是关键点，他们的ilm贴图，其中RB通道控制高光的强度和范围比较常规，G通道比较酷炫，整了一个固定阴影通道，配合顶点色形成一个阈值区域，如果漫反射强度小于这个阈值将变成固定阴影区域，这种做法好处在于，如果漫反射贴图上画阴影显然是错误的做法，相当于漫反射贴图=漫反射*暗部阴影，这样在计算玩光照强度后乘上漫反射颜色等于做了两次暗部计算，会导致结果完全出乎把控。</p>
+<p>然后就是关键点，他们的ilm贴图，其中RB通道控制高光的强度和范围比较常规，G通道比较酷炫，整了一个固定阴影通道，配合顶点色形成一个阈值区域，如果漫反射强度小于这个阈值将变成固定阴影区域，这种做法好处在于，如果漫反射贴图上画阴影显然是错误的做法，相当于漫反射贴图&#x3D;漫反射*暗部阴影，这样在计算玩光照强度后乘上漫反射颜色等于做了两次暗部计算，会导致结果完全出乎把控。</p>
 <p>这个G通道也可以理解为PBR的AO的漫反射版本，AO遮蔽的是环境光，而ilm的G通道为的是动漫里的固定阴影区。</p>
 <h2 id="高光部分"><a href="#高光部分" class="headerlink" title="高光部分"></a>高光部分</h2><p>​        高光的做法暂时还比较常规，NPR里的修改高光的形状之类的做法以前试验过，但是效果非常不可控，这在于流程化的制作中是非常不利的。</p>
 <pre><code>    现在常见的做法还是ilm贴图RG通道控制高光强弱范围也就是类似simplelit的那套做法，还有就是引入PBR的高光项，比如现在常用的GGX高光项
@@ -582,7 +586,7 @@ height:50vh;
 <p>效果：</p>
 <img src="/ToonShading-1/RF.png" alt="RF" style="zoom:150%;">
 
-<p>==这里无视脖子那里的投影问题，因为这个模型脖子和脸是坐在一起用的一个材质球！！淦==</p>
+<p>&#x3D;&#x3D;这里无视脖子那里的投影问题，因为这个模型脖子和脸是坐在一起用的一个材质球！！淦&#x3D;&#x3D;</p>
 <p>shader：</p>
 <figure class="highlight glsl"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#ifdef _SPSHADOWMODE_RENDERERFEATURE</span></span><br><span class="line">             </span><br><span class="line">                half hairShadowTex=SAMPLE_TEXTURE2D(_HairShadowTexture,sampler_HairShadowTexture,i.shadowcoord.xy/i.shadowcoord.w+_RFShadowOffset*TransformWorldToViewDir(MainLightDir)*<span class="number">1</span>/(<span class="number">3</span>*i.vertex.w));</span><br><span class="line">                 ShadowAttenuation=(hairShadowTex-(i.vertex.z/i.vertex.w*<span class="number">0.5</span>+<span class="number">0.5</span>))&gt;<span class="number">0</span>?<span class="number">0</span>:<span class="number">1</span>;</span><br><span class="line">                ShadowAttenuation=lerp(<span class="number">1</span>,ShadowAttenuation,_SPShadowStr);</span><br><span class="line">                <span class="comment">//return ShadowAttenuation;</span></span><br><span class="line">              <span class="meta">#endif</span></span><br></pre></td></tr></table></figure>
 
@@ -940,10 +944,6 @@ top:50vh;
     
     
     
-    
-    
-    
-    
     <div class="total-and-search">
         <div class="total-archive">
         Total : 16
@@ -1060,27 +1060,27 @@ top:50vh;
     
         <span class="sidebar-tag-name" data-tags="速途"><span class="iconfont-archer">&#xe606;</span>速途</span>
     
+        <span class="sidebar-tag-name" data-tags="Unity"><span class="iconfont-archer">&#xe606;</span>Unity</span>
+    
+        <span class="sidebar-tag-name" data-tags="Urp"><span class="iconfont-archer">&#xe606;</span>Urp</span>
+    
+        <span class="sidebar-tag-name" data-tags="Atmosphere"><span class="iconfont-archer">&#xe606;</span>Atmosphere</span>
+    
+        <span class="sidebar-tag-name" data-tags="Rendering"><span class="iconfont-archer">&#xe606;</span>Rendering</span>
+    
+        <span class="sidebar-tag-name" data-tags="Shader"><span class="iconfont-archer">&#xe606;</span>Shader</span>
+    
+        <span class="sidebar-tag-name" data-tags="trick"><span class="iconfont-archer">&#xe606;</span>trick</span>
+    
+        <span class="sidebar-tag-name" data-tags="ToonShading"><span class="iconfont-archer">&#xe606;</span>ToonShading</span>
+    
         <span class="sidebar-tag-name" data-tags="角色"><span class="iconfont-archer">&#xe606;</span>角色</span>
     
         <span class="sidebar-tag-name" data-tags="Substance Designer"><span class="iconfont-archer">&#xe606;</span>Substance Designer</span>
     
         <span class="sidebar-tag-name" data-tags="Material"><span class="iconfont-archer">&#xe606;</span>Material</span>
     
-        <span class="sidebar-tag-name" data-tags="Unity"><span class="iconfont-archer">&#xe606;</span>Unity</span>
-    
-        <span class="sidebar-tag-name" data-tags="Urp"><span class="iconfont-archer">&#xe606;</span>Urp</span>
-    
-        <span class="sidebar-tag-name" data-tags="Shader"><span class="iconfont-archer">&#xe606;</span>Shader</span>
-    
         <span class="sidebar-tag-name" data-tags="NPR"><span class="iconfont-archer">&#xe606;</span>NPR</span>
-    
-        <span class="sidebar-tag-name" data-tags="ToonShading"><span class="iconfont-archer">&#xe606;</span>ToonShading</span>
-    
-        <span class="sidebar-tag-name" data-tags="Atmosphere"><span class="iconfont-archer">&#xe606;</span>Atmosphere</span>
-    
-        <span class="sidebar-tag-name" data-tags="Rendering"><span class="iconfont-archer">&#xe606;</span>Rendering</span>
-    
-        <span class="sidebar-tag-name" data-tags="trick"><span class="iconfont-archer">&#xe606;</span>trick</span>
     
         <span class="sidebar-tag-name" data-tags="Papper"><span class="iconfont-archer">&#xe606;</span>Papper</span>
     
@@ -1119,9 +1119,9 @@ jsonContent:
     
         <span class="sidebar-category-name" data-categories="原画"><span class="iconfont-archer">&#xe60a;</span>原画</span>
     
-        <span class="sidebar-category-name" data-categories="Substance-Designer"><span class="iconfont-archer">&#xe60a;</span>Substance-Designer</span>
-    
         <span class="sidebar-category-name" data-categories="Unity"><span class="iconfont-archer">&#xe60a;</span>Unity</span>
+    
+        <span class="sidebar-category-name" data-categories="Substance-Designer"><span class="iconfont-archer">&#xe60a;</span>Substance-Designer</span>
     
         <span class="sidebar-category-name" data-categories="Unity/ToonShading"><span class="iconfont-archer">&#xe60a;</span>Unity/ToonShading</span>
     

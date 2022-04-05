@@ -42,8 +42,8 @@
 <meta property="article:tag" content="Unity">
 <meta property="article:tag" content="Urp">
 <meta property="article:tag" content="Shader">
-<meta property="article:tag" content="ToonShading">
 <meta property="article:tag" content="trick">
+<meta property="article:tag" content="ToonShading">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://ever17-luqc.github.io/Bottle-Shading/RR2Bottle.png">
     <meta http-equiv="Cache-control" content="no-cache">
@@ -228,7 +228,11 @@
     
     <!-- 谷歌统计  -->
     
-<meta name="generator" content="Hexo 5.4.0"></head>
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 5.4.0"></head>
 
     
         <body class="post-body">
@@ -300,9 +304,9 @@ height:50vh;
     
         <a class="post-tag" href="javascript:void(0);" data-tags = "Shader">Shader</a>
     
-        <a class="post-tag" href="javascript:void(0);" data-tags = "ToonShading">ToonShading</a>
-    
         <a class="post-tag" href="javascript:void(0);" data-tags = "trick">trick</a>
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags = "ToonShading">ToonShading</a>
     
 </div>
                 
@@ -448,7 +452,7 @@ height:50vh;
 
 <p>​                拿Unity HDRP的举例，透明材质提供了折射的方案[双层表面的屏幕空间折射，由于光进入透明表面再出去会有两次折射]，最终的效果也算是差强人意，很难真正去拿这个去渲染瓶子，而且由于屏幕空间的折射[<code>类似屏幕空间反射，需要通过计算光线到达的位置的屏幕空间坐标去采样颜色缓冲的拷贝，这种其实严格算是一种不透明的渲染，只不过是拷贝需要在完成不透明渲染后采样，需要在透明队列去采样这张抓屏</code>]这个特性，如果需要做液体，需要用的不透明的方案去渲染液体模型，比如用环境探针去获得折射反射而不能用抓屏。如果真这样去做渲染玻璃杯和水，不谈最终结果是否接受，性能上就是一道坎了。</p>
 <p>​                为了手机上甚至普通配置也能兼容，我们需要一个不同以往的渲染方案需要效果视觉可信并且需要性能可控，尽量去舍弃使用抓屏和深度图，那么如何非常廉价的渲染出玻璃瓶和水，甚至在一个Pass内完成渲染呢。试本文将会提供一个思路。</p>
-<p>​                先放一个效果图【别问我为什么用手机拍，问就是工程在公司，写的时候只能拿当时随手拍的图了=-=】：</p>
+<p>​                先放一个效果图【别问我为什么用手机拍，问就是工程在公司，写的时候只能拿当时随手拍的图了&#x3D;-&#x3D;】：</p>
 <p>​                <img src="/Bottle-Shading/MyTest1.jpg" alt="MyTest1" style="zoom: 80%;"></p>
 <img src="/Bottle-Shading/MyTest2.jpg" alt="MyTest2" style="zoom: 80%;">
 
@@ -841,10 +845,6 @@ top:50vh;
     
     
     
-    
-    
-    
-    
     <div class="total-and-search">
         <div class="total-archive">
         Total : 16
@@ -961,27 +961,27 @@ top:50vh;
     
         <span class="sidebar-tag-name" data-tags="速途"><span class="iconfont-archer">&#xe606;</span>速途</span>
     
+        <span class="sidebar-tag-name" data-tags="Unity"><span class="iconfont-archer">&#xe606;</span>Unity</span>
+    
+        <span class="sidebar-tag-name" data-tags="Urp"><span class="iconfont-archer">&#xe606;</span>Urp</span>
+    
+        <span class="sidebar-tag-name" data-tags="Atmosphere"><span class="iconfont-archer">&#xe606;</span>Atmosphere</span>
+    
+        <span class="sidebar-tag-name" data-tags="Rendering"><span class="iconfont-archer">&#xe606;</span>Rendering</span>
+    
+        <span class="sidebar-tag-name" data-tags="Shader"><span class="iconfont-archer">&#xe606;</span>Shader</span>
+    
+        <span class="sidebar-tag-name" data-tags="trick"><span class="iconfont-archer">&#xe606;</span>trick</span>
+    
+        <span class="sidebar-tag-name" data-tags="ToonShading"><span class="iconfont-archer">&#xe606;</span>ToonShading</span>
+    
         <span class="sidebar-tag-name" data-tags="角色"><span class="iconfont-archer">&#xe606;</span>角色</span>
     
         <span class="sidebar-tag-name" data-tags="Substance Designer"><span class="iconfont-archer">&#xe606;</span>Substance Designer</span>
     
         <span class="sidebar-tag-name" data-tags="Material"><span class="iconfont-archer">&#xe606;</span>Material</span>
     
-        <span class="sidebar-tag-name" data-tags="Unity"><span class="iconfont-archer">&#xe606;</span>Unity</span>
-    
-        <span class="sidebar-tag-name" data-tags="Urp"><span class="iconfont-archer">&#xe606;</span>Urp</span>
-    
-        <span class="sidebar-tag-name" data-tags="Shader"><span class="iconfont-archer">&#xe606;</span>Shader</span>
-    
         <span class="sidebar-tag-name" data-tags="NPR"><span class="iconfont-archer">&#xe606;</span>NPR</span>
-    
-        <span class="sidebar-tag-name" data-tags="ToonShading"><span class="iconfont-archer">&#xe606;</span>ToonShading</span>
-    
-        <span class="sidebar-tag-name" data-tags="Atmosphere"><span class="iconfont-archer">&#xe606;</span>Atmosphere</span>
-    
-        <span class="sidebar-tag-name" data-tags="Rendering"><span class="iconfont-archer">&#xe606;</span>Rendering</span>
-    
-        <span class="sidebar-tag-name" data-tags="trick"><span class="iconfont-archer">&#xe606;</span>trick</span>
     
         <span class="sidebar-tag-name" data-tags="Papper"><span class="iconfont-archer">&#xe606;</span>Papper</span>
     
@@ -1020,9 +1020,9 @@ jsonContent:
     
         <span class="sidebar-category-name" data-categories="原画"><span class="iconfont-archer">&#xe60a;</span>原画</span>
     
-        <span class="sidebar-category-name" data-categories="Substance-Designer"><span class="iconfont-archer">&#xe60a;</span>Substance-Designer</span>
-    
         <span class="sidebar-category-name" data-categories="Unity"><span class="iconfont-archer">&#xe60a;</span>Unity</span>
+    
+        <span class="sidebar-category-name" data-categories="Substance-Designer"><span class="iconfont-archer">&#xe60a;</span>Substance-Designer</span>
     
         <span class="sidebar-category-name" data-categories="Unity/ToonShading"><span class="iconfont-archer">&#xe60a;</span>Unity/ToonShading</span>
     

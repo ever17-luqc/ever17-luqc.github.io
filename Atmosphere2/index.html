@@ -221,7 +221,11 @@
     
     <!-- 谷歌统计  -->
     
-<meta name="generator" content="Hexo 5.4.0"></head>
+<!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/hexo-math@4.0.0/dist/style.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 5.4.0"></head>
 
     
         <body class="post-body">
@@ -437,7 +441,7 @@ height:50vh;
 
 <h1 id="第二步：后处理shader编写"><a href="#第二步：后处理shader编写" class="headerlink" title="第二步：后处理shader编写"></a>第二步：后处理shader编写</h1><img src="/Atmosphere2/10.png" alt="10" style="zoom:80%;">
 
-<p>我们需要计算的部分其实非常简单，相位函数P是和ViewDir/LightDir点积相关，这部分套公式非常好求出。β(λ)也是套公式或者我们完全可以先粗略用一个参数代替。后面的积分部分就复杂了很多，我们先聚焦一点P的强度，是和CP、PA的光学深度有关，这部分需要各对路径上做一次积分，积分这部分我们用光线步进代替，路径长度也非常简单，我们可以利用勾股定理三角形的性质或者干脆用最粗暴的联立方程组解交点然后distance拿到长度。拿到P点的强度后，对应方向上的强度需要对整个视线路径上的P点积分。也就是整体其实算是一个积分嵌套（其中能把三次积分的for循环放在两次里做，这里仅仅为了跟着自己的思路来不做这些优化）</p>
+<p>我们需要计算的部分其实非常简单，相位函数P是和ViewDir&#x2F;LightDir点积相关，这部分套公式非常好求出。β(λ)也是套公式或者我们完全可以先粗略用一个参数代替。后面的积分部分就复杂了很多，我们先聚焦一点P的强度，是和CP、PA的光学深度有关，这部分需要各对路径上做一次积分，积分这部分我们用光线步进代替，路径长度也非常简单，我们可以利用勾股定理三角形的性质或者干脆用最粗暴的联立方程组解交点然后distance拿到长度。拿到P点的强度后，对应方向上的强度需要对整个视线路径上的P点积分。也就是整体其实算是一个积分嵌套（其中能把三次积分的for循环放在两次里做，这里仅仅为了跟着自己的思路来不做这些优化）</p>
 <p>第一步我们需要知道世界坐标，我们通过深度图可以很方便的拿到世界坐标，深度重建世界坐标方法非常多，这里直接用unity封装的方法解出</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">  </span><br><span class="line">float depth = SAMPLE_TEXTURE2D(_CameraDepthTexture,sampler_CameraDepthTexture,i.uv);</span><br><span class="line">               </span><br><span class="line">float3 posWS=ComputeWorldSpacePosition( i.uv,depth, UNITY_MATRIX_I_VP);</span><br><span class="line"></span><br></pre></td></tr></table></figure>
 
@@ -801,10 +805,6 @@ top:50vh;
     
     
     
-    
-    
-    
-    
     <div class="total-and-search">
         <div class="total-archive">
         Total : 16
@@ -921,27 +921,27 @@ top:50vh;
     
         <span class="sidebar-tag-name" data-tags="速途"><span class="iconfont-archer">&#xe606;</span>速途</span>
     
+        <span class="sidebar-tag-name" data-tags="Unity"><span class="iconfont-archer">&#xe606;</span>Unity</span>
+    
+        <span class="sidebar-tag-name" data-tags="Urp"><span class="iconfont-archer">&#xe606;</span>Urp</span>
+    
+        <span class="sidebar-tag-name" data-tags="Atmosphere"><span class="iconfont-archer">&#xe606;</span>Atmosphere</span>
+    
+        <span class="sidebar-tag-name" data-tags="Rendering"><span class="iconfont-archer">&#xe606;</span>Rendering</span>
+    
+        <span class="sidebar-tag-name" data-tags="Shader"><span class="iconfont-archer">&#xe606;</span>Shader</span>
+    
+        <span class="sidebar-tag-name" data-tags="trick"><span class="iconfont-archer">&#xe606;</span>trick</span>
+    
+        <span class="sidebar-tag-name" data-tags="ToonShading"><span class="iconfont-archer">&#xe606;</span>ToonShading</span>
+    
         <span class="sidebar-tag-name" data-tags="角色"><span class="iconfont-archer">&#xe606;</span>角色</span>
     
         <span class="sidebar-tag-name" data-tags="Substance Designer"><span class="iconfont-archer">&#xe606;</span>Substance Designer</span>
     
         <span class="sidebar-tag-name" data-tags="Material"><span class="iconfont-archer">&#xe606;</span>Material</span>
     
-        <span class="sidebar-tag-name" data-tags="Unity"><span class="iconfont-archer">&#xe606;</span>Unity</span>
-    
-        <span class="sidebar-tag-name" data-tags="Urp"><span class="iconfont-archer">&#xe606;</span>Urp</span>
-    
-        <span class="sidebar-tag-name" data-tags="Shader"><span class="iconfont-archer">&#xe606;</span>Shader</span>
-    
         <span class="sidebar-tag-name" data-tags="NPR"><span class="iconfont-archer">&#xe606;</span>NPR</span>
-    
-        <span class="sidebar-tag-name" data-tags="ToonShading"><span class="iconfont-archer">&#xe606;</span>ToonShading</span>
-    
-        <span class="sidebar-tag-name" data-tags="Atmosphere"><span class="iconfont-archer">&#xe606;</span>Atmosphere</span>
-    
-        <span class="sidebar-tag-name" data-tags="Rendering"><span class="iconfont-archer">&#xe606;</span>Rendering</span>
-    
-        <span class="sidebar-tag-name" data-tags="trick"><span class="iconfont-archer">&#xe606;</span>trick</span>
     
         <span class="sidebar-tag-name" data-tags="Papper"><span class="iconfont-archer">&#xe606;</span>Papper</span>
     
@@ -980,9 +980,9 @@ jsonContent:
     
         <span class="sidebar-category-name" data-categories="原画"><span class="iconfont-archer">&#xe60a;</span>原画</span>
     
-        <span class="sidebar-category-name" data-categories="Substance-Designer"><span class="iconfont-archer">&#xe60a;</span>Substance-Designer</span>
-    
         <span class="sidebar-category-name" data-categories="Unity"><span class="iconfont-archer">&#xe60a;</span>Unity</span>
+    
+        <span class="sidebar-category-name" data-categories="Substance-Designer"><span class="iconfont-archer">&#xe60a;</span>Substance-Designer</span>
     
         <span class="sidebar-category-name" data-categories="Unity/ToonShading"><span class="iconfont-archer">&#xe60a;</span>Unity/ToonShading</span>
     
