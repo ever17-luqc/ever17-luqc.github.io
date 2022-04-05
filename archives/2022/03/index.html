@@ -22,7 +22,7 @@
     <meta name="description" content="">
     <meta property="og:type" content="website">
 <meta property="og:title" content="ever17Blog">
-<meta property="og:url" content="https://ever17-luqc.github.io/archives/2021/index.html">
+<meta property="og:url" content="https://ever17-luqc.github.io/archives/2022/03/index.html">
 <meta property="og:site_name" content="ever17Blog">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:author" content="luqc">
@@ -355,391 +355,26 @@
     
     
     <article class="index-post">
-        <a class="abstract-title" href = "/ToonShading-3/" >
+        <a class="abstract-title" href = "/Atmoshperic-Papper-1/" >
             
-                <span>进阶日式动漫渲染【明暗分界线与风格化】</span>
+                <span>【经典老番系列】Precomputed Atmospheric Scattering-Eric Bruneton and Fabrice Neyret</span>
         </a>
         <div class="abstract-content">
-            前言国庆写了一篇关于睫毛眼睛特殊渲染的，这次讲讲关于明暗分界线，比较常规的做法就是之前第一篇基础篇里的step或者unityJapan UTS V2的那种类似两次smoothstep的算法，或者rampmap法，这些仅仅算是比较通用的做法，有些游戏如果风格特殊可能会做更多的trick去接近原画的风格，机缘巧合看到了最近网易的哈利波特手游，为了去接近那种美术卡通的做法去定制化了明暗分割线，这里就简单开一篇文章讲讲常用的两种做法。
-当然，首先得说说为什么会有这种需求
-
-
-可以明显的看到，角色明暗分界线有一条非常明显的描边，有非常强烈的笔触质感，
-
-
-即便是厚涂风格的概念设计在很多地方为了强调...
+            前言关于经典老番，是指那些做某些效果必看的内容。本篇是非常著名的Precomputed Atmospheric Scattering https://hal.inria.fr/inria-00288758/en，发表于2008年，是基本上做预计算大气散射必看的文章。
+为什么会写这篇？大气散射内容多而且杂，并且理解起来很麻烦，是我TA做了一年多认为最不好理解的内容之一，有工程难度Debug也很难找参考也得啃很久….在做到预计算大气散射的部分这篇基本也绕不开，但是当时只是浅看一下就跑去Github看了SlightMad的实现SlightlyMad ，这导致很多细节当时都没很好的吸收理解。这次...
         </div>
         <div class="abstract-post-meta">
             <!-- date  -->
             <div class="abstract-date">
-                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2021/10/10</span>
+                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2022/03/30</span>
             </div>
             <!-- tags  -->
             
             <div class= abstract-tags >
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "Unity">Unity</a>
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "Urp">Urp</a>
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "Shader">Shader</a>
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "NPR">NPR</a>
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "ToonShading">ToonShading</a>
-    
-</div>
-            
-        </div>
-    </article>
-    
-    
-    
-    
-    
-    
-    <article class="index-post">
-        <a class="abstract-title" href = "/Atmosphere2/" >
-            
-                <span>快速入门大气渲染【实现篇(一)】</span>
-        </a>
-        <div class="abstract-content">
-            前言上一篇讲到了大气散射单次散射的理论，这篇将会将理论化作实现，一步步去实现这套单次散射。因为是在URP去做后处理散射实现，需要用到RendererFeature，这部分本文不会涉及，如果对RendererFeature不怎么了解可以自行找文章了解。
-第一步：大体框架首先是volume面板，这样就能在volume里添加大气散射的后处理了
-123456789101112131415161718192021222324252627using System.Collections;using System.Collections.Generic;using UnityEngine;using ...
-        </div>
-        <div class="abstract-post-meta">
-            <!-- date  -->
-            <div class="abstract-date">
-                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2021/10/10</span>
-            </div>
-            <!-- tags  -->
-            
-            <div class= abstract-tags >
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "Unity">Unity</a>
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "Urp">Urp</a>
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "Atmosphere">Atmosphere</a>
     
         <a class="post-tag" href="javascript:void(0);" data-tags = "Rendering">Rendering</a>
     
-</div>
-            
-        </div>
-    </article>
-    
-    
-    
-    
-    
-    
-    <article class="index-post">
-        <a class="abstract-title" href = "/Atmosphere/" >
-            
-                <span>快速入门大气渲染【理论基础篇】</span>
-        </a>
-        <div class="abstract-content">
-            前言现在很多游戏为了场景的表现都会加入大气散射等等的效果，甚至有些NPR的游戏都会引入大气散射，大气散射和常规渲染不一样的地方在于常规渲染都是发生在面片表面的，而大气散射隶属于体渲染的范畴
-
-
-^: 图源 荒野大镖客2的大气散射效果
-前一阵子出于某些原因看了alan那篇很知名的大气散射的文章翻译，自己又找了点文章看了看，有所收获
-大气散射理论相关首先由于光这种东西非常特殊，具有波粒二象性，可以认为是粒子也可以认为是电磁波。在大气中（真空中不会发生散射），电磁波由于和大气分子或者气溶胶发生相互作用【这里和大气分子由于本身非常微观，对于尺度小于光的波长1/10的粒子，如大气分子等，会发生瑞利...
-        </div>
-        <div class="abstract-post-meta">
-            <!-- date  -->
-            <div class="abstract-date">
-                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2021/10/03</span>
-            </div>
-            <!-- tags  -->
-            
-            <div class= abstract-tags >
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "Unity">Unity</a>
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "Urp">Urp</a>
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "Atmosphere">Atmosphere</a>
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "Rendering">Rendering</a>
-    
-</div>
-            
-        </div>
-    </article>
-    
-    
-    
-    
-    
-    
-    <article class="index-post">
-        <a class="abstract-title" href = "/ToonShading-2/" >
-            
-                <span>进阶日式动漫渲染【睫毛以及眼睛】</span>
-        </a>
-        <div class="abstract-content">
-            前言前一阵子因为经历了一次休息和跳槽，博客停更了差不多两个月了，这阵子处理好了相关事情，趁着国庆假期写点有意思的，当然在这里祝各位国庆快乐，在再一次成为社畜之前享受得来不易的小长假。
-本篇是之前入门日式渲染的进阶渲染篇，这里以及以后进阶篇会着重讲解一些细节上的还原（入门篇相对来讲是比较通用的部分，这里的不一定是通用的，只是会更加有风格点），暂定下一篇是讲解二次元明暗分界线特殊描边。
-在二次元渲染中，如果不是PBR结合项目大多会向插画或者动漫的画风靠拢，导致会需要特殊的睫毛以及眼睛渲染，如下图：
-
-
-[^]: 图源Ryota-H 游戏白夜极光 貌似是北京永航研发的二次元手游
-而二次元的项目...
-        </div>
-        <div class="abstract-post-meta">
-            <!-- date  -->
-            <div class="abstract-date">
-                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2021/10/03</span>
-            </div>
-            <!-- tags  -->
-            
-            <div class= abstract-tags >
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "Unity">Unity</a>
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "Urp">Urp</a>
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "Shader">Shader</a>
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "NPR">NPR</a>
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "ToonShading">ToonShading</a>
-    
-</div>
-            
-        </div>
-    </article>
-    
-    
-    
-    
-    
-    
-    <article class="index-post">
-        <a class="abstract-title" href = "/ToonShading-1/" >
-            
-                <span>快速入门日式动漫渲染【基础Shading篇】</span>
-        </a>
-        <div class="abstract-content">
-            前言  须知写在最前：本文是基础篇，只涉及基础的日式卡通渲染，日式卡通因为和PBR完全不是一个概念，trick非常多，本文只涉及常见的做法。
-  图形学中有一个非真实感渲染（NPR），卡通渲染作为其中的一个分支，由于国内二刺猿手游的盛行相较其他内容简直如鱼得水，不过也由于本身并不基于物理，没那么多“奇形怪状”的公式，相较PBR渲染更加考验美术把控。由于二刺猿文化的兴起，为了拿走死宅钱包里的存货，国内二刺猿手游风行了一段时间了，各路厂商或多或少都整了点二刺猿方向的尝试。国内比较有代表性的米哈游的崩3或者原神
-
-
-库洛的战双
-
-
-​    
-​    日产的作品，最有代表性的就是罪恶装备系列...
-        </div>
-        <div class="abstract-post-meta">
-            <!-- date  -->
-            <div class="abstract-date">
-                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2021/07/12</span>
-            </div>
-            <!-- tags  -->
-            
-            <div class= abstract-tags >
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "Unity">Unity</a>
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "Urp">Urp</a>
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "Shader">Shader</a>
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "NPR">NPR</a>
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "ToonShading">ToonShading</a>
-    
-</div>
-            
-        </div>
-    </article>
-    
-    
-    
-    
-    
-    
-    <article class="index-post">
-        <a class="abstract-title" href = "/SSOutline/" >
-            
-                <span>【Unity-URP】快速入门精确物体屏幕空间描边</span>
-        </a>
-        <div class="abstract-content">
-            前言​    游戏中，我们常常能看到为了给玩家更好的选择反馈(知道自己到底选中的是哪个物体)，会给角色一个描边，而且大部分DCC或者引擎都是在scene窗口选择会有描边，如下图：
-
-
-但是这个描边常常都是只描角色轮廓，那么法线外扩/边缘光描边等等都实现不了这种效果，而纯屏幕空间描边也会有很多奇怪的描边，因为屏幕空间描边本身是基于高通滤波的，越高频越也就是越到了分界处越容易归到描边区。
-​    
-​        那么如何才能只描轮廓线呢？所以我们显然需要再原本的屏幕空间的做法上做改进。
-​        本篇内容难度相对其他的屏幕空间的效果来说，简直是张飞吃豆芽，而且由于实现这种效果会...
-        </div>
-        <div class="abstract-post-meta">
-            <!-- date  -->
-            <div class="abstract-date">
-                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2021/07/07</span>
-            </div>
-            <!-- tags  -->
-            
-            <div class= abstract-tags >
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "Unity">Unity</a>
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "Urp">Urp</a>
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "Shader">Shader</a>
-    
-</div>
-            
-        </div>
-    </article>
-    
-    
-    
-    
-    
-    
-    <article class="index-post">
-        <a class="abstract-title" href = "/SD-3090/" >
-            
-                <span>快速实战SD之3090核弹卡</span>
-        </a>
-        <div class="abstract-content">
-            前言SD教程看的多了，需要自己整点活把学的东西吸收成自己的，于是有了个点子，把程序纹理和拼纹理在一个工程里去实战一次，本篇会挑重点阐述一下SD里制作3090以及底下的编织沙发的思路做法。
-最终效果图
-
-
-
-完整节点
-
-细节思路大型搭建
-
-做法是我在快速入门SD（1）中提及的，利用edge detect的软角扩边，因为3090本身是具有弧度的，制作出大型之后，后续的各种切图案都会用得上
-外框部分
-
-切，就嗯切！拿polygon调整段数到3角形，压扁mirror出三角部分。拿之前的大型的边缘检测做一次相减，再和用三角形边缘检测获得的X做一个max，获得边缘框的大形状（但是事实上这样的效果还是...
-        </div>
-        <div class="abstract-post-meta">
-            <!-- date  -->
-            <div class="abstract-date">
-                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2021/07/07</span>
-            </div>
-            <!-- tags  -->
-            
-            <div class= abstract-tags >
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "Substance Designer">Substance Designer</a>
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "Material">Material</a>
-    
-</div>
-            
-        </div>
-    </article>
-    
-    
-    
-    
-    
-    
-    <article class="index-post">
-        <a class="abstract-title" href = "/PaintingPractice02/" >
-            
-                <span>【原画练习】一张角色速途</span>
-        </a>
-        <div class="abstract-content">
-            
-        </div>
-        <div class="abstract-post-meta">
-            <!-- date  -->
-            <div class="abstract-date">
-                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2021/07/07</span>
-            </div>
-            <!-- tags  -->
-            
-            <div class= abstract-tags >
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "原画">原画</a>
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "速途">速途</a>
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "角色">角色</a>
-    
-</div>
-            
-        </div>
-    </article>
-    
-    
-    
-    
-    
-    
-    <article class="index-post">
-        <a class="abstract-title" href = "/SD-FX/" >
-            
-                <span>【Substance Designer】快速入门SD:FXMap</span>
-        </a>
-        <div class="abstract-content">
-            前言零零散散接触了一段时间SD，一直都是看些教程学一些思路，最近在看Daneil Thiger的教程发现他用了一个重复纹理的节点（他自制的），但是自己尝试复现的
-时候法线常规的tile sampler实现不了这种重叠的纹理，而如果用transform又无法控制个数，于是自己找到了FXMap这个功能节点。算是SD非常具有代表性的东西了。我看了些关于FXMAP的文章和案例，于是尝试用FXMAP来做一个重叠纹理的自制节点，做法比较简单，也非常能体现FXMAP的便捷性，同样非常适合入门SD的初学者去理解。
-关于FXMAP1The FX-Map node allows the creation o...
-        </div>
-        <div class="abstract-post-meta">
-            <!-- date  -->
-            <div class="abstract-date">
-                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2021/06/30</span>
-            </div>
-            <!-- tags  -->
-            
-            <div class= abstract-tags >
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "Substance Designer">Substance Designer</a>
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "Material">Material</a>
-    
-</div>
-            
-        </div>
-    </article>
-    
-    
-    
-    
-    
-    
-    <article class="index-post">
-        <a class="abstract-title" href = "/SD1/" >
-            
-                <span>【Substance Designer】入门级SD技巧-1</span>
-        </a>
-        <div class="abstract-content">
-            前言最近看了些SD大佬的教程，打算开一个 SD系列的文章记录一下学到的操作，当然，SD学起来难度不算高，TA的经验其实对于SD还是非常有用的，或者说SD非常适合TA同学去学习。个人对SD相当感兴趣，后续学习SD会继续记录这些内容权当笔记了。
-阶梯状高度Shape节点出形状Curve节点做曲率变化，做出剧烈变化的高度
-
-
-平滑边界线Histogram scan获得的纹理通常可能存在本身因素导致的边缘硬，如果需要软过度的包边，可以使用边缘检测获得再blend到Histogram scan后的纹理中
-
-
-边缘检测处理
-
-如图如果本身纹理就是这种情况，会导致边缘检测描边出问题，解决的做法为通过h...
-        </div>
-        <div class="abstract-post-meta">
-            <!-- date  -->
-            <div class="abstract-date">
-                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2021/06/27</span>
-            </div>
-            <!-- tags  -->
-            
-            <div class= abstract-tags >
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "Substance Designer">Substance Designer</a>
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "Material">Material</a>
+        <a class="post-tag" href="javascript:void(0);" data-tags = "Papper">Papper</a>
     
 </div>
             
@@ -747,10 +382,6 @@
     </article>
     
     <!-- paginator  -->
-    
-    <nav class="page-nav">
-        <span class="page-number current">1</span><a class="page-number" href="/archives/2021/page/2/">2</a><a class="extend next" rel="next" href="/archives/2021/page/2/">NEXT &gt;</a>
-    </nav>
     
 </main>
             <!-- profile -->
