@@ -357,6 +357,46 @@
     
     
     <article class="index-post">
+        <a class="abstract-title" href = "/SH/" >
+            
+                <span>快速入门球谐【实战利用GPU从Cubemap重建球谐系数】</span>
+        </a>
+        <div class="abstract-content">
+            前言
+​
+球谐函数被游戏普遍运用，由于能通过一组基函数和系数去还原颜色信息，非常适合环境光漫反射去使用。unity中,我们我们通过SampleSH9函数去获得球谐光照的结果。那么，球谐光照是如何实现的，如何通过任意的Cubemap去还原球谐，本文将会带你快速入门。
+​
+当然，球谐系数不仅仅可以用在环境光照，也可以用在其他方面，本文末尾会有相关的一些引申。
+​
+同样，作为快速入门系列，并不会涉及球谐函数的具体推导【过于复杂，并且需要有非常好的基础，具体可以参考chopper大佬的文章：球谐光照——球谐函数 - 知乎
+(zhihu.com)】，相关推导过程这里只会一笔带过【问就...
+        </div>
+        <div class="abstract-post-meta">
+            <!-- date  -->
+            <div class="abstract-date">
+                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2022/05/22</span>
+            </div>
+            <!-- tags  -->
+            
+            <div class= abstract-tags >
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags = "Unity">Unity</a>
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags = "Urp">Urp</a>
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags = "Compute Shader">Compute Shader</a>
+    
+</div>
+            
+        </div>
+    </article>
+    
+    
+    
+    
+    
+    
+    <article class="index-post">
         <a class="abstract-title" href = "/Atmoshperic-Papper-1/" >
             
                 <span>【经典老番系列】Precomputed Atmospheric Scattering-Eric Bruneton and Fabrice Neyret</span>
@@ -730,51 +770,6 @@ V2的那种类似两次smoothstep的算法，或者rampmap法，这些仅仅算�
         </div>
     </article>
     
-    
-    
-    
-    
-    
-    <article class="index-post">
-        <a class="abstract-title" href = "/SD-3090/" >
-            
-                <span>快速实战SD之3090核弹卡</span>
-        </a>
-        <div class="abstract-content">
-            前言
-SD教程看的多了，需要自己整点活把学的东西吸收成自己的，于是有了个点子，把程序纹理和拼纹理在一个工程里去实战一次，本篇会挑重点阐述一下SD里制作3090以及底下的编织沙发的思路做法。
-最终效果图
-
-
-完整节点
-
-细节思路
-大型搭建
-
-做法是我在快速入门SD（1）中提及的，利用edge
-detect的软角扩边，因为3090本身是具有弧度的，制作出大型之后，后续的各种切图案都会用得上
-外框部分
-
-切，就嗯切！拿polygon调整段数到3角形，压扁mirror出三角部分。拿之前的大型的边缘检测做一次相减，再和用三角形边缘检测获得的X做一个max，获得边缘框的大...
-        </div>
-        <div class="abstract-post-meta">
-            <!-- date  -->
-            <div class="abstract-date">
-                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2021/07/07</span>
-            </div>
-            <!-- tags  -->
-            
-            <div class= abstract-tags >
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "Substance Designer">Substance Designer</a>
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "Material">Material</a>
-    
-</div>
-            
-        </div>
-    </article>
-    
     <!-- paginator  -->
     
     <nav class="page-nav">
@@ -1051,9 +1046,24 @@ detect的软角扩边，因为3090本身是具有弧度的，制作出大型之�
     
     
     
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     <div class="total-and-search">
         <div class="total-archive">
-        Total : 16
+        Total : 17
         </div>
         <!-- search  -->
         
@@ -1066,6 +1076,11 @@ detect的软角扩边，因为3090本身是具有弧度的，制作出大型之�
     
     <div class="archive-year"> 2022 </div>
     <ul class="year-list">
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">05/22</span><a class="archive-post-title" href= "/SH/" >快速入门球谐【实战利用GPU从Cubemap重建球谐系数】</a>
+        </li>
     
     
         <li class="archive-post-item">
@@ -1190,6 +1205,8 @@ detect的软角扩边，因为3090本身是具有弧度的，制作出大型之�
         <span class="sidebar-tag-name" data-tags="NPR"><span class="iconfont-archer">&#xe606;</span>NPR</span>
     
         <span class="sidebar-tag-name" data-tags="Papper"><span class="iconfont-archer">&#xe606;</span>Papper</span>
+    
+        <span class="sidebar-tag-name" data-tags="Compute Shader"><span class="iconfont-archer">&#xe606;</span>Compute Shader</span>
     
     </div>
     <div class="iconfont-archer sidebar-tags-empty">&#xe678;</div>

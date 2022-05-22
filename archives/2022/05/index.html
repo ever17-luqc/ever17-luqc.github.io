@@ -22,7 +22,7 @@
     <meta name="description" content="">
     <meta property="og:type" content="website">
 <meta property="og:title" content="ever17Blog">
-<meta property="og:url" content="https://ever17-luqc.github.io/categories/%E5%8E%9F%E7%94%BB/index.html">
+<meta property="og:url" content="https://ever17-luqc.github.io/archives/2022/05/index.html">
 <meta property="og:site_name" content="ever17Blog">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:author" content="luqc">
@@ -357,98 +357,34 @@
     
     
     <article class="index-post">
-        <a class="abstract-title" href = "/Arcane-jinx/" >
+        <a class="abstract-title" href = "/SH/" >
             
-                <span>【同人】Arcane jinx</span>
+                <span>快速入门球谐【实战利用GPU从Cubemap重建球谐系数】</span>
         </a>
         <div class="abstract-content">
-            前一阵子看完双城之战，撸了一张JInx，传了A站忘记传博客了，补一张=-=
-
-
+            前言
+​
+球谐函数被游戏普遍运用，由于能通过一组基函数和系数去还原颜色信息，非常适合环境光漫反射去使用。unity中,我们我们通过SampleSH9函数去获得球谐光照的结果。那么，球谐光照是如何实现的，如何通过任意的Cubemap去还原球谐，本文将会带你快速入门。
+​
+当然，球谐系数不仅仅可以用在环境光照，也可以用在其他方面，本文末尾会有相关的一些引申。
+​
+同样，作为快速入门系列，并不会涉及球谐函数的具体推导【过于复杂，并且需要有非常好的基础，具体可以参考chopper大佬的文章：球谐光照——球谐函数 - 知乎
+(zhihu.com)】，相关推导过程这里只会一笔带过【问就...
         </div>
         <div class="abstract-post-meta">
             <!-- date  -->
             <div class="abstract-date">
-                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2022/02/12</span>
+                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2022/05/22</span>
             </div>
             <!-- tags  -->
             
             <div class= abstract-tags >
     
-        <a class="post-tag" href="javascript:void(0);" data-tags = "原画">原画</a>
+        <a class="post-tag" href="javascript:void(0);" data-tags = "Unity">Unity</a>
     
-        <a class="post-tag" href="javascript:void(0);" data-tags = "场景">场景</a>
+        <a class="post-tag" href="javascript:void(0);" data-tags = "Urp">Urp</a>
     
-        <a class="post-tag" href="javascript:void(0);" data-tags = "速途">速途</a>
-    
-</div>
-            
-        </div>
-    </article>
-    
-    
-    
-    
-    
-    
-    <article class="index-post">
-        <a class="abstract-title" href = "/PaintingPractice02/" >
-            
-                <span>【原画练习】一张角色速途</span>
-        </a>
-        <div class="abstract-content">
-            
-
-        </div>
-        <div class="abstract-post-meta">
-            <!-- date  -->
-            <div class="abstract-date">
-                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2021/07/07</span>
-            </div>
-            <!-- tags  -->
-            
-            <div class= abstract-tags >
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "原画">原画</a>
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "速途">速途</a>
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "角色">角色</a>
-    
-</div>
-            
-        </div>
-    </article>
-    
-    
-    
-    
-    
-    
-    <article class="index-post">
-        <a class="abstract-title" href = "/PaintingPractice01/" >
-            
-                <span>【原画日常练习】速途场景</span>
-        </a>
-        <div class="abstract-content">
-            场景原画练习，找找上色的感觉
-
-
-        </div>
-        <div class="abstract-post-meta">
-            <!-- date  -->
-            <div class="abstract-date">
-                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2021/06/13</span>
-            </div>
-            <!-- tags  -->
-            
-            <div class= abstract-tags >
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "原画">原画</a>
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "场景">场景</a>
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "速途">速途</a>
+        <a class="post-tag" href="javascript:void(0);" data-tags = "Compute Shader">Compute Shader</a>
     
 </div>
             

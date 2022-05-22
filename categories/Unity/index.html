@@ -357,6 +357,46 @@
     
     
     <article class="index-post">
+        <a class="abstract-title" href = "/SH/" >
+            
+                <span>快速入门球谐【实战利用GPU从Cubemap重建球谐系数】</span>
+        </a>
+        <div class="abstract-content">
+            前言
+​
+球谐函数被游戏普遍运用，由于能通过一组基函数和系数去还原颜色信息，非常适合环境光漫反射去使用。unity中,我们我们通过SampleSH9函数去获得球谐光照的结果。那么，球谐光照是如何实现的，如何通过任意的Cubemap去还原球谐，本文将会带你快速入门。
+​
+当然，球谐系数不仅仅可以用在环境光照，也可以用在其他方面，本文末尾会有相关的一些引申。
+​
+同样，作为快速入门系列，并不会涉及球谐函数的具体推导【过于复杂，并且需要有非常好的基础，具体可以参考chopper大佬的文章：球谐光照——球谐函数 - 知乎
+(zhihu.com)】，相关推导过程这里只会一笔带过【问就...
+        </div>
+        <div class="abstract-post-meta">
+            <!-- date  -->
+            <div class="abstract-date">
+                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2022/05/22</span>
+            </div>
+            <!-- tags  -->
+            
+            <div class= abstract-tags >
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags = "Unity">Unity</a>
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags = "Urp">Urp</a>
+    
+        <a class="post-tag" href="javascript:void(0);" data-tags = "Compute Shader">Compute Shader</a>
+    
+</div>
+            
+        </div>
+    </article>
+    
+    
+    
+    
+    
+    
+    <article class="index-post">
         <a class="abstract-title" href = "/Atmoshperic-Papper-1/" >
             
                 <span>【经典老番系列】Precomputed Atmospheric Scattering-Eric Bruneton and Fabrice Neyret</span>
@@ -733,45 +773,11 @@ Reusable RendererFeature of MobileScreenSpacePlanarReflection
         </div>
     </article>
     
-    
-    
-    
-    
-    
-    <article class="index-post">
-        <a class="abstract-title" href = "/SSR/" >
-            
-                <span>【Unity-URP】快速入门屏幕空间反射(SSR)</span>
-        </a>
-        <div class="abstract-content">
-            前言
-关于我的第一篇博客为什么写这个以及会涉及什么：
-在我任职A向TA的第一年，由于项目里使用了URP，需要学习的内容也较为多，而RenderFeature算是一个比较有意思的东西，能让使用者轻松插入你想做的渲染,所以用它做了一个后处理向的实践顺便了解一下SSR的原理。
-这篇博客会在URP上搭建一个简易版本的SSR，不会涉及优化以及进阶，着重于理清SSR的原理，同时会涉及到URP的Rendererfeature写法。如果你是一位学习URP的新人，希望本文能对你有所帮助。
-关于ScreenSpaceReflection(SSR)
-为了表现光滑的平面的反射效果（实时，非烘焙），常见...
-        </div>
-        <div class="abstract-post-meta">
-            <!-- date  -->
-            <div class="abstract-date">
-                <span class="abstract-calander iconfont-archer">&#xe676;</span><span class="abstract-time">2021/05/30</span>
-            </div>
-            <!-- tags  -->
-            
-            <div class= abstract-tags >
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "Unity">Unity</a>
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "Urp">Urp</a>
-    
-        <a class="post-tag" href="javascript:void(0);" data-tags = "Shader">Shader</a>
-    
-</div>
-            
-        </div>
-    </article>
-    
     <!-- paginator  -->
+    
+    <nav class="page-nav">
+        <span class="page-number current">1</span><a class="page-number" href="/categories/Unity/page/2/">2</a><a class="extend next" rel="next" href="/categories/Unity/page/2/">NEXT &gt;</a>
+    </nav>
     
 </main>
             <!-- profile -->
@@ -1043,9 +1049,24 @@ Reusable RendererFeature of MobileScreenSpacePlanarReflection
     
     
     
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     <div class="total-and-search">
         <div class="total-archive">
-        Total : 16
+        Total : 17
         </div>
         <!-- search  -->
         
@@ -1058,6 +1079,11 @@ Reusable RendererFeature of MobileScreenSpacePlanarReflection
     
     <div class="archive-year"> 2022 </div>
     <ul class="year-list">
+    
+    
+        <li class="archive-post-item">
+            <span class="archive-post-date">05/22</span><a class="archive-post-title" href= "/SH/" >快速入门球谐【实战利用GPU从Cubemap重建球谐系数】</a>
+        </li>
     
     
         <li class="archive-post-item">
@@ -1182,6 +1208,8 @@ Reusable RendererFeature of MobileScreenSpacePlanarReflection
         <span class="sidebar-tag-name" data-tags="NPR"><span class="iconfont-archer">&#xe606;</span>NPR</span>
     
         <span class="sidebar-tag-name" data-tags="Papper"><span class="iconfont-archer">&#xe606;</span>Papper</span>
+    
+        <span class="sidebar-tag-name" data-tags="Compute Shader"><span class="iconfont-archer">&#xe606;</span>Compute Shader</span>
     
     </div>
     <div class="iconfont-archer sidebar-tags-empty">&#xe678;</div>
